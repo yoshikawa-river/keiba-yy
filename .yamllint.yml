@@ -1,0 +1,14 @@
+# .yamllint.yml
+extends: default
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+  comments:
+    min-spaces-from-content: 2
+  document-start: disable
+  indentation:
+    spaces: 2
