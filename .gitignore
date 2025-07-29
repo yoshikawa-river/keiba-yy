@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Project specific
+*.log
+logs/
+.env
+.env.local
+*.db
+*.sqlite3
+volumes/postgres_data/
+volumes/redis_data/
+volumes/mlflow/
+volumes/models/*.pkl
+volumes/models/*.joblib
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.coverage.*
+coverage.xml
+*.cover
+.hypothesis/
+
+# Docker
+docker-compose.override.yml
+
+# ML/Data
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+outputs/predictions/*
+!outputs/predictions/.gitkeep
+outputs/reports/*
+!outputs/reports/.gitkeep
+
+# Temporary files
+*.tmp
+*.bak
+.~lock.*
