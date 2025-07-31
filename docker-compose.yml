@@ -1,0 +1,217 @@
+version: '3.8'
+
+services:
+  # PostgreSQLデータベース
+  postgres:
+    image: postgres:16-alpine
+    container_name: keiba-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DATABASE_USER:-keiba_user}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-keiba_password}
+      POSTGRES_DB: ${DATABASE_NAME:-keiba_db}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+      TZ: "Asia/Tokyo"
+    ports:
+      - "${DATABASE_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USER:-keiba_user}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - keiba-network
+
+  # Redis（キャッシュ・Celery用）
+  redis:
+    image: redis:7-alpine
+    container_name: keiba-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - keiba-network
+
+  # Pythonアプリケーション（API・バッチ処理）
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    container_name: keiba-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-keiba_user}:${DATABASE_PASSWORD:-keiba_password}@postgres:5432/${DATABASE_NAME:-keiba_db}
+      REDIS_URL: redis://redis:6379/0
+      PYTHONPATH: /app
+      TZ: "Asia/Tokyo"
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./src:/app/src
+      - ./configs:/app/configs
+      - ./scripts:/app/scripts
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./volumes/csv_import:/app/csv_import
+      - ./logs:/app/logs
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - keiba-network
+
+  # Jupyter Lab
+  jupyter:
+    build:
+      context: .
+      dockerfile: ./docker/jupyter/Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    container_name: keiba-jupyter
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-keiba_user}:${DATABASE_PASSWORD:-keiba_password}@postgres:5432/${DATABASE_NAME:-keiba_db}
+      JUPYTER_ENABLE_LAB: "yes"
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN:-keiba_jupyter_token}
+      PYTHONPATH: /app
+      TZ: "Asia/Tokyo"
+    ports:
+      - "${JUPYTER_PORT:-8888}:8888"
+    volumes:
+      - ./src:/app/src
+      - ./notebooks:/app/notebooks
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./configs:/app/configs
+    command: jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='${JUPYTER_TOKEN:-keiba_jupyter_token}'
+    networks:
+      - keiba-network
+
+  # Streamlitダッシュボード
+  streamlit:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    container_name: keiba-streamlit
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-keiba_user}:${DATABASE_PASSWORD:-keiba_password}@postgres:5432/${DATABASE_NAME:-keiba_db}
+      PYTHONPATH: /app
+      TZ: "Asia/Tokyo"
+    ports:
+      - "${STREAMLIT_PORT:-8501}:8501"
+    volumes:
+      - ./src:/app/src
+      - ./streamlit:/app/streamlit
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./configs:/app/configs
+    command: streamlit run streamlit/app.py --server.port=8501 --server.address=0.0.0.0
+    networks:
+      - keiba-network
+
+  # MLflow（実験管理）
+  mlflow:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    container_name: keiba-mlflow
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      MLFLOW_BACKEND_STORE_URI: postgresql://${DATABASE_USER:-keiba_user}:${DATABASE_PASSWORD:-keiba_password}@postgres:5432/${DATABASE_NAME:-keiba_db}
+      MLFLOW_DEFAULT_ARTIFACT_ROOT: /app/mlruns
+      TZ: "Asia/Tokyo"
+    ports:
+      - "${MLFLOW_PORT:-5000}:5000"
+    volumes:
+      - ./volumes/mlflow:/app/mlruns
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri postgresql://${DATABASE_USER:-keiba_user}:${DATABASE_PASSWORD:-keiba_password}@postgres:5432/${DATABASE_NAME:-keiba_db} --default-artifact-root /app/mlruns
+    networks:
+      - keiba-network
+
+  # Celeryワーカー（非同期タスク処理）
+  celery:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    container_name: keiba-celery
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${DATABASE_USER:-keiba_user}:${DATABASE_PASSWORD:-keiba_password}@postgres:5432/${DATABASE_NAME:-keiba_db}
+      REDIS_URL: redis://redis:6379/0
+      PYTHONPATH: /app
+      TZ: "Asia/Tokyo"
+    volumes:
+      - ./src:/app/src
+      - ./configs:/app/configs
+      - ./data:/app/data
+      - ./outputs:/app/outputs
+      - ./logs:/app/logs
+    command: celery -A src.tasks.celery_app worker --loglevel=info
+    networks:
+      - keiba-network
+
+  # Flower（Celery監視）
+  flower:
+    build:
+      context: .
+      dockerfile: ./docker/python/Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.10}
+    container_name: keiba-flower
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - celery
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      TZ: "Asia/Tokyo"
+    ports:
+      - "${FLOWER_PORT:-5555}:5555"
+    command: celery -A src.tasks.celery_app flower --port=5555
+    networks:
+      - keiba-network
+
+networks:
+  keiba-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
