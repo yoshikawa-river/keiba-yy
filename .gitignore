@@ -43,6 +43,7 @@ logs/
 *.db
 *.sqlite3
 volumes/postgres_data/
+volumes/mysql_data/
 volumes/redis_data/
 volumes/mlflow/
 volumes/models/*.pkl
@@ -74,6 +75,10 @@ outputs/predictions/*
 !outputs/predictions/.gitkeep
 outputs/reports/*
 !outputs/reports/.gitkeep
+outputs/models/*
+!outputs/models/.gitkeep
+volumes/csv_import/*.csv
+!volumes/csv_import/.gitkeep
 
 # Temporary files
 *.tmp

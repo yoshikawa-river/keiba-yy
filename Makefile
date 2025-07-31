@@ -1,332 +1,127 @@
-# Makefile for 競馬予想AIシステム
+.PHONY: help build up down restart logs shell db-shell jupyter test lint format clean
 
-# 変数定義
-PYTHON := python3
-DOCKER_COMPOSE := docker-compose
-PROJECT_NAME := keiba-ai
-SRC_DIR := src
-TEST_DIR := tests
-COVERAGE_DIR := htmlcov
-
-# デフォルトのターゲット
+# デフォルトターゲット
 .DEFAULT_GOAL := help
 
-# カラー定義
-COLOR_RESET   = \033[0m
-COLOR_INFO    = \033[36m
-COLOR_SUCCESS = \033[32m
-COLOR_WARNING = \033[33m
-COLOR_ERROR   = \033[31m
+# ヘルプ
+help: ## ヘルプを表示
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-# ヘルプ表示
-.PHONY: help
-help: ## このヘルプメッセージを表示
-	@echo "$(COLOR_INFO)競馬予想AIシステム - 開発用コマンド$(COLOR_RESET)"
-	@echo ""
-	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "$(COLOR_SUCCESS)%-20s$(COLOR_RESET) %s\n", $$1, $$2}'
-	@echo ""
-	@echo "$(COLOR_INFO)使用例:$(COLOR_RESET)"
-	@echo "  make setup        # 初回セットアップ"
-	@echo "  make dev          # 開発環境起動"
-	@echo "  make test         # テスト実行"
+# 環境構築
+setup: ## 初期セットアップ
+	@echo "Setting up the project..."
+	@cp .env.example .env 2>/dev/null || echo ".env already exists"
+	@mkdir -p volumes/csv_import volumes/mlflow volumes/mysql_data logs outputs/models outputs/predictions outputs/reports
+	@echo "Setup completed!"
 
-# =============================================================================
-# セットアップ関連
-# =============================================================================
+# Docker操作
+build: ## Dockerイメージをビルド
+	docker compose build
 
-.PHONY: setup
-setup: ## 初回セットアップ（全体）
-	@echo "$(COLOR_INFO)=== プロジェクトセットアップ開始 ===$(COLOR_RESET)"
-	@make create-dirs
-	@make install-hooks
-	@make install-dev
-	@make docker-build
-	@echo "$(COLOR_SUCCESS)✓ セットアップ完了$(COLOR_RESET)"
+up: ## コンテナを起動
+	docker compose up -d
 
-.PHONY: create-dirs
-create-dirs: ## プロジェクトディレクトリ作成
-	@echo "$(COLOR_INFO)ディレクトリ構造を作成中...$(COLOR_RESET)"
-	@bash scripts/setup/create_project_structure.sh
+down: ## コンテナを停止
+	docker compose down
 
-.PHONY: install-hooks
-install-hooks: ## pre-commitフックのインストール
-	@echo "$(COLOR_INFO)pre-commitフックをインストール中...$(COLOR_RESET)"
-	@pre-commit install
-	@pre-commit install --hook-type commit-msg
+restart: ## コンテナを再起動
+	docker compose restart
 
-.PHONY: install-dev
-install-dev: ## 開発用依存パッケージのインストール
-	@echo "$(COLOR_INFO)開発用パッケージをインストール中...$(COLOR_RESET)"
-	@$(PYTHON) -m pip install --upgrade pip
-	@$(PYTHON) -m pip install -r requirements-dev.txt
+logs: ## ログを表示（全サービス）
+	docker compose logs -f
 
-.PHONY: clean-setup
-clean-setup: ## セットアップのクリーンアップ
-	@echo "$(COLOR_WARNING)セットアップをクリーンアップ中...$(COLOR_RESET)"
-	@pre-commit uninstall
-	@rm -rf venv/
-	@find . -type d -name "__pycache__" -exec rm -rf {} +
-	@find . -type f -name "*.pyc" -delete
-
-# =============================================================================
-# Docker関連
-# =============================================================================
-
-.PHONY: docker-build
-docker-build: ## Dockerイメージをビルド
-	@echo "$(COLOR_INFO)Dockerイメージをビルド中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) build
-
-.PHONY: docker-build-no-cache
-docker-build-no-cache: ## Dockerイメージをキャッシュなしでビルド
-	@echo "$(COLOR_INFO)Dockerイメージをクリーンビルド中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) build --no-cache
-
-.PHONY: up
-up: ## Docker環境を起動
-	@echo "$(COLOR_INFO)Docker環境を起動中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) up -d
-	@echo "$(COLOR_SUCCESS)✓ サービスが起動しました$(COLOR_RESET)"
-	@echo "  - Jupyter Lab: http://localhost:8888"
-	@echo "  - Streamlit:   http://localhost:8501"
-	@echo "  - MLflow:      http://localhost:5000"
-	@echo "  - API:         http://localhost:8000"
-
-.PHONY: down
-down: ## Docker環境を停止
-	@echo "$(COLOR_INFO)Docker環境を停止中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) down
-
-.PHONY: restart
-restart: down up ## Docker環境を再起動
-
-.PHONY: ps
-ps: ## Dockerコンテナの状態を表示
-	@$(DOCKER_COMPOSE) ps
-
-.PHONY: logs
-logs: ## Dockerログを表示（全サービス）
-	@$(DOCKER_COMPOSE) logs -f
-
-.PHONY: logs-app
 logs-app: ## アプリケーションのログを表示
-	@$(DOCKER_COMPOSE) logs -f app
+	docker compose logs -f app
 
-.PHONY: shell
-shell: ## Pythonコンテナのシェルに接続
-	@$(DOCKER_COMPOSE) exec app bash
+logs-db: ## データベースのログを表示
+	docker compose logs -f mysql
 
-.PHONY: db-shell
-db-shell: ## データベースのシェルに接続
-	@$(DOCKER_COMPOSE) exec postgres psql -U keiba_user -d keiba_db
+ps: ## コンテナの状態を表示
+	docker compose ps
 
-.PHONY: clean-docker
-clean-docker: ## Dockerリソースをクリーンアップ
-	@echo "$(COLOR_WARNING)Dockerリソースをクリーンアップ中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) down -v
-	@docker system prune -f
+# コンテナ内操作
+shell: ## アプリケーションコンテナにアクセス
+	docker compose exec app bash
 
-# =============================================================================
-# 開発関連
-# =============================================================================
+db-shell: ## MySQLコンテナにアクセス
+	docker compose exec mysql mysql -u${DATABASE_USER:-keiba_user} -p${DATABASE_PASSWORD:-keiba_password} ${DATABASE_NAME:-keiba_db}
 
-.PHONY: dev
-dev: ## 開発サーバーを起動（ローカル）
-	@echo "$(COLOR_INFO)開発サーバーを起動中...$(COLOR_RESET)"
-	@python -m uvicorn src.api.main:app --reload --host 0.0.0.0 --port 8000
-
-.PHONY: jupyter
 jupyter: ## Jupyter Labを起動
-	@echo "$(COLOR_INFO)Jupyter Labを起動中...$(COLOR_RESET)"
-	@open http://localhost:8888
+	docker compose up -d jupyter
+	@echo "Jupyter Lab is running at http://localhost:8888"
 
-.PHONY: streamlit
-streamlit: ## Streamlitダッシュボードを起動
-	@echo "$(COLOR_INFO)Streamlitを起動中...$(COLOR_RESET)"
-	@open http://localhost:8501
+streamlit: ## Streamlitを起動
+	docker compose up -d streamlit
+	@echo "Streamlit is running at http://localhost:8501"
 
-.PHONY: mlflow
-mlflow: ## MLflow UIを起動
-	@echo "$(COLOR_INFO)MLflow UIを起動中...$(COLOR_RESET)"
-	@open http://localhost:5000
+mlflow: ## MLflowを起動
+	docker compose up -d mlflow
+	@echo "MLflow is running at http://localhost:5000"
 
-# =============================================================================
-# コード品質関連
-# =============================================================================
-
-.PHONY: format
-format: ## コードをフォーマット（black + isort）
-	@echo "$(COLOR_INFO)コードをフォーマット中...$(COLOR_RESET)"
-	@black $(SRC_DIR) $(TEST_DIR)
-	@isort $(SRC_DIR) $(TEST_DIR)
-
-.PHONY: lint
-lint: ## コードをリント（flake8 + mypy）
-	@echo "$(COLOR_INFO)コードをリント中...$(COLOR_RESET)"
-	@flake8 $(SRC_DIR) $(TEST_DIR)
-	@mypy $(SRC_DIR)
-
-.PHONY: check
-check: format lint ## フォーマットとリントを実行
-
-.PHONY: pre-commit
-pre-commit: ## pre-commitを手動実行
-	@pre-commit run --all-files
-
-# =============================================================================
-# テスト関連
-# =============================================================================
-
-.PHONY: test
+# 開発ツール
 test: ## テストを実行
-	@echo "$(COLOR_INFO)テストを実行中...$(COLOR_RESET)"
-	@pytest $(TEST_DIR) -v
+	docker compose exec app pytest tests/ -v
 
-.PHONY: test-cov
 test-cov: ## カバレッジ付きでテストを実行
-	@echo "$(COLOR_INFO)カバレッジ測定中...$(COLOR_RESET)"
-	@pytest $(TEST_DIR) --cov=$(SRC_DIR) --cov-report=html --cov-report=term
+	docker compose exec app pytest tests/ -v --cov=src --cov-report=html
 
-.PHONY: test-watch
-test-watch: ## ファイル変更を監視してテストを自動実行
-	@echo "$(COLOR_INFO)テスト監視モード...$(COLOR_RESET)"
-	@ptw $(TEST_DIR) -- -v
+lint: ## コードをチェック
+	docker compose exec app flake8 src/
+	docker compose exec app mypy src/
 
-.PHONY: open-cov
-open-cov: ## カバレッジレポートを開く
-	@open $(COVERAGE_DIR)/index.html
+format: ## コードをフォーマット
+	docker compose exec app black src/
+	docker compose exec app isort src/
 
-# =============================================================================
-# データ関連
-# =============================================================================
-
-.PHONY: csv-import
-csv-import: ## CSVファイルをインポート
-	@echo "$(COLOR_INFO)CSVファイルをインポート中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app python scripts/data/import_csv.py
-
-.PHONY: db-migrate
+# データベース操作
 db-migrate: ## データベースマイグレーションを実行
-	@echo "$(COLOR_INFO)マイグレーションを実行中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app alembic upgrade head
+	docker compose exec app alembic upgrade head
 
-.PHONY: db-rollback
-db-rollback: ## データベースを1つ前にロールバック
-	@echo "$(COLOR_WARNING)データベースをロールバック中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app alembic downgrade -1
+db-rollback: ## データベースマイグレーションをロールバック
+	docker compose exec app alembic downgrade -1
 
-.PHONY: db-reset
-db-reset: ## データベースをリセット
-	@echo "$(COLOR_WARNING)データベースをリセット中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app alembic downgrade base
-	@$(DOCKER_COMPOSE) exec app alembic upgrade head
+db-reset: ## データベースをリセット（注意！）
+	docker compose exec mysql mysql -u root -p${DATABASE_ROOT_PASSWORD:-root_password} -e "DROP DATABASE IF EXISTS ${DATABASE_NAME:-keiba_db}; CREATE DATABASE ${DATABASE_NAME:-keiba_db};"
+	docker compose exec mysql mysql -u root -p${DATABASE_ROOT_PASSWORD:-root_password} ${DATABASE_NAME:-keiba_db} < docker/mysql/init.sql
 
-# =============================================================================
-# 機械学習関連
-# =============================================================================
+# データ処理
+csv-import: ## CSVファイルをインポート
+	docker compose exec app python -m src.data.importers.csv_importer
 
-.PHONY: train
-train: ## モデルの学習を実行
-	@echo "$(COLOR_INFO)モデルを学習中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app python scripts/ml/train_model.py
+train: ## モデルを学習
+	docker compose exec app python -m src.ml.trainers.train_model
 
-.PHONY: predict
 predict: ## 予測を実行
-	@echo "$(COLOR_INFO)予測を実行中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app python scripts/ml/predict.py
+	docker compose exec app python -m src.ml.predictors.predict
 
-.PHONY: evaluate
-evaluate: ## モデルの評価を実行
-	@echo "$(COLOR_INFO)モデルを評価中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec app python scripts/ml/evaluate_model.py
+# バッチジョブ
+celery-worker: ## Celeryワーカーを起動
+	docker compose up -d celery
 
-# =============================================================================
-# ドキュメント関連
-# =============================================================================
+celery-flower: ## Flower（Celery監視）を起動
+	docker compose up -d flower
+	@echo "Flower is running at http://localhost:5555"
 
-.PHONY: docs
-docs: ## ドキュメントを生成
-	@echo "$(COLOR_INFO)ドキュメントを生成中...$(COLOR_RESET)"
-	@cd docs && make html
+# クリーンアップ
+clean: ## 不要なファイルを削除
+	find . -type f -name "*.pyc" -delete
+	find . -type d -name "__pycache__" -delete
+	find . -type d -name ".pytest_cache" -delete
+	rm -rf htmlcov/
+	rm -rf .coverage
+	rm -rf .mypy_cache/
 
-.PHONY: docs-serve
-docs-serve: ## ドキュメントサーバーを起動
-	@echo "$(COLOR_INFO)ドキュメントサーバーを起動中...$(COLOR_RESET)"
-	@cd docs && python -m http.server 8080
+clean-all: clean ## すべてのDockerリソースをクリーンアップ（注意！）
+	docker compose down -v
+	docker system prune -af
 
-# =============================================================================
-# バックアップ関連
-# =============================================================================
-
-.PHONY: backup
+# バックアップ
 backup: ## データベースをバックアップ
-	@echo "$(COLOR_INFO)データベースをバックアップ中...$(COLOR_RESET)"
 	@mkdir -p backups
-	@$(DOCKER_COMPOSE) exec postgres pg_dump -U keiba_user keiba_db > \
-		backups/backup_$(shell date +%Y%m%d_%H%M%S).sql
-	@echo "$(COLOR_SUCCESS)✓ バックアップ完了$(COLOR_RESET)"
+	docker compose exec mysql mysqldump -u${DATABASE_USER:-keiba_user} -p${DATABASE_PASSWORD:-keiba_password} ${DATABASE_NAME:-keiba_db} > backups/keiba_db_$(shell date +%Y%m%d_%H%M%S).sql
+	@echo "Backup completed: backups/keiba_db_$(shell date +%Y%m%d_%H%M%S).sql"
 
-.PHONY: restore
-restore: ## 最新のバックアップから復元
-	@echo "$(COLOR_WARNING)データベースを復元中...$(COLOR_RESET)"
-	@$(DOCKER_COMPOSE) exec -T postgres psql -U keiba_user keiba_db < \
-		$(shell ls -t backups/*.sql | head -1)
-	@echo "$(COLOR_SUCCESS)✓ 復元完了$(COLOR_RESET)"
-
-# =============================================================================
-# その他
-# =============================================================================
-
-.PHONY: clean
-clean: ## 一時ファイルをクリーンアップ
-	@echo "$(COLOR_INFO)一時ファイルをクリーンアップ中...$(COLOR_RESET)"
-	@find . -type d -name "__pycache__" -exec rm -rf {} +
-	@find . -type f -name "*.pyc" -delete
-	@find . -type f -name ".DS_Store" -delete
-	@rm -rf .pytest_cache
-	@rm -rf .coverage
-	@rm -rf $(COVERAGE_DIR)
-	@rm -rf .mypy_cache
-
-.PHONY: version
-version: ## バージョン情報を表示
-	@echo "$(COLOR_INFO)バージョン情報:$(COLOR_RESET)"
-	@echo "  Python:         $(shell python --version)"
-	@echo "  Docker:         $(shell docker --version)"
-	@echo "  Docker Compose: $(shell docker-compose --version)"
-	@echo "  Project:        $(PROJECT_NAME) v0.1.0"
-
-.PHONY: check-deps
-check-deps: ## 依存関係の更新をチェック
-	@echo "$(COLOR_INFO)依存関係の更新をチェック中...$(COLOR_RESET)"
-	@pip list --outdated
-
-# Git関連のエイリアス
-.PHONY: git-status
-git-status: ## Git status
-	@git status
-
-.PHONY: git-pull
-git-pull: ## Git pull
-	@git pull origin develop
-
-.PHONY: git-push
-git-push: ## Git push
-	@git push origin develop
-
-# 開発フロー用の複合コマンド
-.PHONY: dev-start
-dev-start: up logs ## 開発環境を起動してログを表示
-
-.PHONY: dev-stop
-dev-stop: down clean ## 開発環境を停止してクリーンアップ
-
-.PHONY: dev-restart
-dev-restart: dev-stop dev-start ## 開発環境を完全に再起動
-
-.PHONY: dev-check
-dev-check: check test ## コード品質チェックとテストを実行
-
-.PHONY: release-check
-release-check: clean check test-cov docs ## リリース前の完全チェック
+restore: ## データベースをリストア（BACKUP_FILE=backups/xxx.sql）
+	@if [ -z "$(BACKUP_FILE)" ]; then echo "Usage: make restore BACKUP_FILE=backups/xxx.sql"; exit 1; fi
+	docker compose exec -T mysql mysql -u${DATABASE_USER:-keiba_user} -p${DATABASE_PASSWORD:-keiba_password} ${DATABASE_NAME:-keiba_db} < $(BACKUP_FILE)
+	@echo "Restore completed from: $(BACKUP_FILE)"

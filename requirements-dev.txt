@@ -1,48 +1,29 @@
-# Development dependencies
+# Include production dependencies
 -r requirements.txt
 
+# Development dependencies
 # Testing
 pytest==7.4.3
 pytest-cov==4.1.0
 pytest-asyncio==0.21.1
 pytest-mock==3.12.0
 pytest-xdist==3.5.0
-hypothesis==6.92.1
 
-# Code Quality
+# Code quality
 black==23.12.1
 flake8==7.0.0
-flake8-docstrings==1.7.0
-flake8-bugbear==23.12.2
-flake8-comprehensions==3.14.0
-flake8-simplify==0.21.0
 mypy==1.8.0
 isort==5.13.2
-bandit==1.7.6
+pre-commit==3.6.0
 
 # Documentation
 sphinx==7.2.6
 sphinx-rtd-theme==2.0.0
-sphinx-autodoc-typehints==1.25.2
-myst-parser==2.0.0
 
-# Development Tools
-ipython==8.19.0
+# Development tools
 ipdb==0.13.13
-rich==13.7.0
-pre-commit==3.6.0
-commitizen==3.13.0
-
-# Testing Tools
-locust==2.20.0
-faker==21.0.0
-factory-boy==3.3.0
-
-# Monitoring
-py-spy==0.3.14
-memory-profiler==0.61.0
-
-# Notebook
-nbstripout==0.6.1
-nbconvert==7.14.0
-nbformat==5.9.2
+jupyter==1.0.0
+jupyterlab==4.0.9
+ipykernel==6.27.1
+ipywidgets==8.1.1
+watchdog==3.0.0

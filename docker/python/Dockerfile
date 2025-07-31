@@ -21,8 +21,9 @@ RUN apt-get update && apt-get install -y \
     vim \
     # ビルドツール
     build-essential \
-    # PostgreSQL開発ライブラリ
-    libpq-dev \
+    # MySQL開発ライブラリ
+    default-libmysqlclient-dev \
+    pkg-config \
     # 画像処理用
     libglib2.0-0 \
     libsm6 \
