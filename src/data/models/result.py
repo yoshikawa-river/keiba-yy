@@ -5,10 +5,10 @@
 """
 from sqlalchemy import (
     Column,
-    Decimal,
     ForeignKey,
     Index,
     Integer,
+    Numeric,
     String,
     Text,
     Time,
@@ -50,13 +50,13 @@ class RaceEntry(BaseModel):
         ForeignKey("trainers.id", ondelete="RESTRICT"),
         comment="調教師ID",
     )
-    weight_carried = Column(Decimal(4, 1), nullable=False, comment="斤量")
+    weight_carried = Column(Numeric(4, 1), nullable=False, comment="斤量")
     horse_weight = Column(Integer, comment="馬体重")
     horse_weight_diff = Column(Integer, comment="馬体重増減")
     age = Column(Integer, nullable=False, comment="年齢")
-    odds_win = Column(Decimal(6, 1), comment="単勝オッズ")
-    odds_place_min = Column(Decimal(6, 1), comment="複勝オッズ（最小）")
-    odds_place_max = Column(Decimal(6, 1), comment="複勝オッズ（最大）")
+    odds_win = Column(Numeric(6, 1), comment="単勝オッズ")
+    odds_place_min = Column(Numeric(6, 1), comment="複勝オッズ（最小）")
+    odds_place_max = Column(Numeric(6, 1), comment="複勝オッズ（最大）")
     popularity = Column(Integer, comment="人気順位")
 
     # リレーション
@@ -90,7 +90,7 @@ class RaceResult(BaseModel):
     )
     finish_position = Column(Integer, comment="着順")
     finish_time = Column(Time, comment="タイム")
-    last_3f_time = Column(Decimal(4, 1), comment="上がり3ハロン")
+    last_3f_time = Column(Numeric(4, 1), comment="上がり3ハロン")
     corner_positions = Column(String(20), comment="通過順位")
     remarks = Column(Text, comment="備考")
     prize_money = Column(Integer, comment="獲得賞金")

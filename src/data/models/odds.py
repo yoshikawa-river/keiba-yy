@@ -7,10 +7,10 @@ from sqlalchemy import (
     JSON,
     Column,
     DateTime,
-    Decimal,
     ForeignKey,
     Index,
     Integer,
+    Numeric,
     String,
     UniqueConstraint,
 )
@@ -37,7 +37,7 @@ class OddsHistory(BaseModel):
         nullable=False,
         comment="オッズ種別 (win/place/quinella/etc)",
     )
-    odds_value = Column(Decimal(8, 1), nullable=False, comment="オッズ値")
+    odds_value = Column(Numeric(8, 1), nullable=False, comment="オッズ値")
     recorded_at = Column(DateTime, nullable=False, comment="記録日時")
 
     # リレーション
