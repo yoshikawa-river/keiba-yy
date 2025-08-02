@@ -100,12 +100,12 @@ class BaseValidator(ABC):
         """
         result = ValidationResult(is_valid=True)
 
-        for field in required_fields:
-            if field not in data or data[field] is None or data[field] == "":
+        for field_name in required_fields:
+            if field_name not in data or data[field_name] is None or data[field_name] == "":
                 result.add_error(
-                    field=field,
+                    field=field_name,
                     value=None,
-                    message=f"必須フィールド '{field}' が空です",
+                    message=f"必須フィールド '{field_name}' が空です",
                     error_type="required_field_missing"
                 )
 

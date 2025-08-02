@@ -174,7 +174,7 @@ class TestRaceCSVParser:
     def test_save_row_new_race(self, parser, mock_session):
         """新規レース保存のテスト"""
         # 競馬場のモック
-        mock_racecourse = Mock(spec=Racecourse, id=1)
+        Mock(spec=Racecourse, id=1)
         
         # queryチェーンのモック設定
         mock_query = MagicMock()

@@ -305,7 +305,6 @@ class TestDataValidator:
         mock_session.query().filter_by().first.return_value = None
         
         # 現在の年から計算して不一致になるようにテストデータを作成
-        from datetime import date
         current_year = date.today().year
         birth_year = current_year - 10  # 10年前に生まれた馬
         
@@ -377,10 +376,10 @@ class TestValidationRules:
         assert validator("202401010101") is True
         
         # エラーケース
-        assert validator("") != True
-        assert validator("12345") != True  # 短すぎ
-        assert validator("20240101010A") != True  # 文字が含まれる
-        assert validator("202413010101") != True  # 不正な月
+        assert validator("") is not True
+        assert validator("12345") is not True  # 短すぎ
+        assert validator("20240101010A") is not True  # 文字が含まれる
+        assert validator("202413010101") is not True  # 不正な月
 
     def test_horse_weight_validator(self):
         """馬体重バリデーターのテスト"""
@@ -388,9 +387,9 @@ class TestValidationRules:
         
         assert validator(450) is True
         assert validator("450") is True
-        assert validator(250) != True  # 軽すぎ
-        assert validator(800) != True  # 重すぎ
-        assert validator("abc") != True  # 数値でない
+        assert validator(250) is not True  # 軽すぎ
+        assert validator(800) is not True  # 重すぎ
+        assert validator("abc") is not True  # 数値でない
 
     def test_time_format_validator(self):
         """タイムフォーマットバリデーターのテスト"""
@@ -399,27 +398,27 @@ class TestValidationRules:
         assert validator("1:23.4") is True
         assert validator("83.4") is True
         assert validator("123.4") is True
-        assert validator("1:234") != True  # 不正なフォーマット
-        assert validator("abc") != True
+        assert validator("1:234") is not True  # 不正なフォーマット
+        assert validator("abc") is not True
 
     def test_odds_combination_validator(self):
         """オッズ組み合わせバリデーターのテスト"""
         # 単勝
         validator = ValidationRules.odds_combination_validator("win")
         assert validator("3") is True
-        assert validator("3-5") != True
+        assert validator("3-5") is not True
         
         # 馬連
         validator = ValidationRules.odds_combination_validator("exacta")
         assert validator("3-5") is True
-        assert validator("3") != True
-        assert validator("3-3") != True  # 同じ馬番
+        assert validator("3") is not True
+        assert validator("3-3") is not True  # 同じ馬番
         
         # 3連単
         validator = ValidationRules.odds_combination_validator("trifecta")
         assert validator("3-5-7") is True
-        assert validator("3-5") != True
-        assert validator("3-3-5") != True  # 重複
+        assert validator("3-5") is not True
+        assert validator("3-3-5") is not True  # 重複
 
 
 class TestDataQualityRules:

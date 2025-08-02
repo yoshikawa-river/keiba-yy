@@ -5,6 +5,7 @@
 """
 from typing import Any, Dict, List, Optional, Type
 
+import pandas as pd
 from sqlalchemy.orm import Session
 
 from src.core.logging import logger

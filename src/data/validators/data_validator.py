@@ -292,7 +292,6 @@ class DataValidator(BaseValidator):
         if recorded_at_str and race:
             try:
                 recorded_at = datetime.strptime(recorded_at_str, "%Y-%m-%d %H:%M:%S")
-                race_datetime = datetime.combine(race.race_date, datetime.min.time())
                 
                 # レース日より後の記録は無効
                 if recorded_at.date() > race.race_date:

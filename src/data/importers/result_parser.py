@@ -346,7 +346,7 @@ class ResultCSVParser(BaseCSVParser):
                 milliseconds = int(parts[1]) * 100 if len(parts) > 1 else 0
                 
                 return time(0, minutes, seconds, milliseconds * 1000)
-        except:
+        except Exception:
             return None
 
     def _parse_margin(self, margin: Any) -> Optional[str]:

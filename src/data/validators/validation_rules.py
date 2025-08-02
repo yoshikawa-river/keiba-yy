@@ -27,7 +27,7 @@ class ValidationRules:
                 except ValueError:
                     continue
             return False
-        except:
+        except Exception:
             return False
 
     @staticmethod
@@ -47,7 +47,6 @@ class ValidationRules:
         year = int(value_str[:4])
         month = int(value_str[4:6])
         day = int(value_str[6:8])
-        venue = value_str[8:10]
         race_num = int(value_str[10:12])
         
         if year < 1900 or year > 2100:
@@ -75,7 +74,7 @@ class ValidationRules:
             if weight < 300 or weight > 700:
                 return f"馬体重が異常です: {weight}kg（通常300-700kg）"
             return True
-        except:
+        except Exception:
             return "馬体重は数値である必要があります"
 
     @staticmethod

@@ -281,7 +281,7 @@ class TestBatchProcessor:
             }
             
             # レース情報のみ処理
-            result = processor.process_all(file_types=[FileType.RACE_INFO])
+            processor.process_all(file_types=[FileType.RACE_INFO])
             
             # 1ファイルのみ処理される
             assert mock_process_file.call_count == 1
@@ -327,7 +327,7 @@ class TestBatchProcessor:
             }
             
             # 馬情報のみ処理
-            result = processor.process_file_type(FileType.HORSE_INFO)
+            processor.process_file_type(FileType.HORSE_INFO)
             
             # 1ファイルのみ処理される
             assert mock_process_file.call_count == 1
