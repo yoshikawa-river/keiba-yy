@@ -15,19 +15,26 @@ uv pip install -r requirements-dev.txt
 
 # データベースのセットアップ（Docker Composeを使用）
 echo "🗄️ テスト用データベースの起動..."
-docker-compose up -d postgres
+docker-compose up -d mysql
 
 # データベースの起動を待つ
 echo "⏳ データベースの起動を待機中..."
-sleep 5
+for i in {1..30}; do
+  if mysqladmin ping -h localhost -u keiba_user -pkeiba_password --silent 2>/dev/null; then
+    echo "✅ MySQLが起動しました"
+    break
+  fi
+  echo "Waiting for MySQL... ($i/30)"
+  sleep 2
+done
 
 # マイグレーションの実行
 echo "🔄 マイグレーションの実行..."
-DATABASE_URL="postgresql://keiba_user:keiba_password@localhost:5432/keiba_ai" uv run alembic upgrade head
+DATABASE_URL="mysql+pymysql://keiba_user:keiba_password@localhost:3306/keiba_ai?charset=utf8mb4" uv run alembic upgrade head
 
 # テストの実行
 echo "🧪 テストの実行..."
-DATABASE_URL="postgresql://keiba_user:keiba_password@localhost:5432/keiba_ai" uv run pytest tests/ -v --cov=src --cov-report=term
+DATABASE_URL="mysql+pymysql://keiba_user:keiba_password@localhost:3306/keiba_ai?charset=utf8mb4" uv run pytest tests/ -v --cov=src --cov-report=term
 
 # Lintチェック
 echo "🔍 Lintチェック..."
