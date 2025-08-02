@@ -5,10 +5,10 @@
 """
 
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.declarative import DeclarativeMeta

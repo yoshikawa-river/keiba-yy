@@ -25,8 +25,12 @@ class ImportManager:
         Args:
             import_base_dir: インポート基底ディレクトリ
         """
-        self.import_base_dir = import_base_dir or (settings.DATA_DIR or Path("data")) / "imports"
-        self.history_file = (settings.DATA_DIR or Path("data")) / "import_history.json"
+        self.import_base_dir = (
+            import_base_dir or (settings.DATA_DIR or Path("data")) / "imports"
+        )
+        self.history_file = (
+            (settings.DATA_DIR or Path("data")) / "import_history.json"
+        )
         self.import_history = self._load_history()
 
     def import_from_directory(
@@ -312,4 +316,6 @@ class ImportManager:
         total_rows = sum(imp.get("total_rows", 0) for imp in imports)
         success_rows = sum(imp.get("success_rows", 0) for imp in imports)
 
-        return success_rows / total_rows if total_rows > 0 else 0  # type: ignore
+        return (
+            success_rows / total_rows if total_rows > 0 else 0
+        )  # type: ignore

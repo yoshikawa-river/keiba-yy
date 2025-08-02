@@ -38,7 +38,9 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(self.schema)
+            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(
+                self.schema
+            )
         else:
             self.schema_validator: Optional[SchemaValidator] = None
 
@@ -115,7 +117,9 @@ class ValidatedCSVParser(BaseCSVParser):
                             f"メッセージ: {val_error.message}"
                         )
                         self._add_error(
-                            idx, val_error.message, {val_error.field: val_error.value}
+                            idx,
+                            val_error.message,
+                            {val_error.field: val_error.value},
                         )
                     error += 1
                     continue
@@ -129,7 +133,9 @@ class ValidatedCSVParser(BaseCSVParser):
                 is_valid, error_msg = self._validate_row(transformed)
                 if not is_valid:
                     logger.error(f"行 {idx}: {error_msg}")
-                    self._add_error(idx, error_msg or "バリデーションエラー", row_dict)
+                    self._add_error(
+                        idx, error_msg or "バリデーションエラー", row_dict
+                    )
                     error += 1
                     continue
 
