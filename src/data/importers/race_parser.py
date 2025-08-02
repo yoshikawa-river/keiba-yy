@@ -5,8 +5,8 @@ TARGET frontier JVから出力されたレース情報CSVをパースし、
 データベースに保存する機能を提供
 """
 
-from datetime import datetime, date
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import date, datetime
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -20,7 +20,7 @@ from src.data.models.race import Race, Racecourse
 class RaceCSVParser(BaseCSVParser):
     """レース情報CSVパーサー"""
 
-    def _get_column_mappings(self) -> Dict[str, str]:
+    def _get_column_mappings(self) -> dict[str, str]:
         """CSVカラムとDBカラムのマッピング"""
         return {
             "レースID": "race_key",
@@ -39,11 +39,11 @@ class RaceCSVParser(BaseCSVParser):
             "回り": "direction",
         }
 
-    def _get_required_columns(self) -> List[str]:
+    def _get_required_columns(self) -> list[str]:
         """必須カラムのリスト"""
         return ["レースID", "開催日", "R", "レース名", "競馬場", "コース", "距離"]
 
-    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
         """
         行データを変換
 
@@ -97,7 +97,7 @@ class RaceCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}")
 
-    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         レースデータのバリデーション
 
@@ -134,7 +134,7 @@ class RaceCSVParser(BaseCSVParser):
 
         return True, None
 
-    def _save_row(self, row_data: Dict[str, Any]) -> bool:
+    def _save_row(self, row_data: dict[str, Any]) -> bool:
         """
         レースデータを保存
 
@@ -238,12 +238,11 @@ class RaceCSVParser(BaseCSVParser):
 
         if "芝" in track:
             return "芝"
-        elif "ダ" in track or "ダート" in track:
+        if "ダ" in track or "ダート" in track:
             return "ダート"
-        elif "障" in track or "障害" in track:
+        if "障" in track or "障害" in track:
             return "障害"
-        else:
-            return track
+        return track
 
     def _normalize_weather(self, weather: str) -> str:
         """天候を正規化"""
@@ -286,14 +285,13 @@ class RaceCSVParser(BaseCSVParser):
 
         if "右" in direction:
             return "右"
-        elif "左" in direction:
+        if "左" in direction:
             return "左"
-        elif "直" in direction:
+        if "直" in direction:
             return "直線"
-        else:
-            return direction
+        return direction
 
-    def _get_valid_venues(self) -> List[str]:
+    def _get_valid_venues(self) -> list[str]:
         """有効な競馬場名のリスト"""
         return [
             "東京",

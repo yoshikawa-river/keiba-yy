@@ -4,13 +4,14 @@ SQLAlchemyモデルの動作確認スクリプト
 
 モデルの定義とリレーションが正しく機能するか確認
 """
+
 import sys
 from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
 sys.path.append(str(Path(__file__).parents[2]))
 
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
 
 from sqlalchemy import create_engine
@@ -21,8 +22,8 @@ from src.data.models import (
     Horse,
     Jockey,
     Race,
-    RaceEntry,
     Racecourse,
+    RaceEntry,
     Trainer,
 )
 

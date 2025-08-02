@@ -6,9 +6,10 @@ loguruを使用した統一的なロギング設定を提供
 
 import logging
 import sys
+from collections.abc import Callable
 from functools import wraps
 from pathlib import Path
-from typing import Any, Callable, Optional, Union
+from typing import Any
 
 from loguru import logger
 
@@ -24,9 +25,9 @@ class LoggerManager:
 
     def setup_logging(
         self,
-        log_level: Optional[str] = None,
-        log_file: Optional[Union[str, Path]] = None,
-        log_format: Optional[str] = None,
+        log_level: str | None = None,
+        log_file: str | Path | None = None,
+        log_format: str | None = None,
         serialize: bool = False,
         backtrace: bool = True,
         diagnose: bool = True,
@@ -118,14 +119,13 @@ class LoggerManager:
                 "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
                 "{message}"
             )
-        else:
-            # 開発環境: 読みやすい形式
-            return (
-                "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
-                "<level>{level: <8}</level> | "
-                "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
-                "<level>{message}</level>"
-            )
+        # 開発環境: 読みやすい形式
+        return (
+            "<green>{time:YYYY-MM-DD HH:mm:ss.SSS}</green> | "
+            "<level>{level: <8}</level> | "
+            "<cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> | "
+            "<level>{message}</level>"
+        )
 
     def _integrate_stdlib_logging(self) -> None:
         """標準ライブラリのloggingとloguruを統合"""

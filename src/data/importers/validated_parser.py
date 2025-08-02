@@ -4,7 +4,7 @@
 バリデーション機能を統合したCSVパーサー
 """
 
-from typing import Any, Dict, List, Optional, Type
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -21,7 +21,7 @@ class ValidatedCSVParser(BaseCSVParser):
     def __init__(
         self,
         db_session: Session,
-        schema: Optional[Schema] = None,
+        schema: Schema | None = None,
         validate_business_logic: bool = True,
     ):
         """
@@ -38,19 +38,17 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(
-                self.schema
-            )
+            self.schema_validator: SchemaValidator | None = SchemaValidator(self.schema)
         else:
-            self.schema_validator: Optional[SchemaValidator] = None
+            self.schema_validator: SchemaValidator | None = None
 
         if self.validate_business_logic:
-            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
+            self.data_validator: DataValidator | None = DataValidator(db_session)
         else:
-            self.data_validator: Optional[DataValidator] = None
+            self.data_validator: DataValidator | None = None
 
     def _validate_row_with_validators(
-        self, row_data: Dict[str, Any]
+        self, row_data: dict[str, Any]
     ) -> ValidationResult:
         """
         バリデーターを使用して行データを検証
@@ -76,9 +74,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return combined_result
 
-    def _process_batch(
-        self, batch_df: pd.DataFrame, dry_run: bool = False
-    ) -> None:
+    def _process_batch(self, batch_df: pd.DataFrame, dry_run: bool = False) -> None:
         """
         バッチデータを処理（バリデーション統合版）
 
@@ -135,9 +131,7 @@ class ValidatedCSVParser(BaseCSVParser):
                 is_valid, error_msg = self._validate_row(transformed)
                 if not is_valid:
                     logger.error(f"行 {idx}: {error_msg}")
-                    self._add_error(
-                        idx, error_msg or "バリデーションエラー", row_dict
-                    )
+                    self._add_error(idx, error_msg or "バリデーションエラー", row_dict)
                     error += 1
                     continue
 
@@ -150,7 +144,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
             except Exception as e:
                 logger.error(f"行 {idx}: 予期しないエラー - {e}")
-                self._add_error(idx, f"予期しないエラー: {str(e)}", row_dict)
+                self._add_error(idx, f"予期しないエラー: {e!s}", row_dict)
                 error += 1
 
         # 統計情報の更新
@@ -160,7 +154,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return {"success": success, "error": error, "skip": skip}
 
-    def get_validation_report(self) -> Dict[str, Any]:
+    def get_validation_report(self) -> dict[str, Any]:
         """
         バリデーションレポートを取得
 
@@ -191,17 +185,17 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return report
 
-    def _count_error_types(self) -> Dict[str, int]:
+    def _count_error_types(self) -> dict[str, int]:
         """エラータイプをカウント"""
-        error_types: Dict[str, int] = {}
+        error_types: dict[str, int] = {}
         for error in self.errors:
             error_type = error.get("type", "unknown")
             error_types[error_type] = error_types.get(error_type, 0) + 1
         return error_types
 
-    def _count_warning_types(self) -> Dict[str, int]:
+    def _count_warning_types(self) -> dict[str, int]:
         """警告タイプをカウント"""
-        warning_types: Dict[str, int] = {}
+        warning_types: dict[str, int] = {}
         for warning in self.warnings:
             warning_type = warning.get("type", "unknown")
             warning_types[warning_type] = warning_types.get(warning_type, 0) + 1

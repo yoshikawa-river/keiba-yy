@@ -4,6 +4,7 @@
 
 config、database、logging、exceptionsの動作を確認
 """
+
 import sys
 from pathlib import Path
 
@@ -16,8 +17,6 @@ from datetime import datetime
 from src.core import (
     DatabaseError,
     ValidationError,
-    get_db,
-    log,
     log_execution_time,
     logger,
     settings,

@@ -1,13 +1,13 @@
-name: Test CI
+name: Lint and Format
 
 on:
   push:
-    branches: [ main, feature/github-actions-ci ]
+    branches: [ main, develop, 'feature/*', 'fix/*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     
     steps:
@@ -29,11 +29,14 @@ jobs:
         uv pip install -r requirements.txt
         uv pip install -r requirements-dev.txt
     
-    - name: Run tests
+    - name: Run Ruff linter
       run: |
-        uv run pytest tests/ -v --ignore=tests/integration/
+        uv run ruff check src/ tests/ scripts/ --output-format=github
     
-    - name: Run linting
+    - name: Check code formatting
       run: |
-        uv run ruff check src/ tests/ scripts/
         uv run ruff format --check src/ tests/ scripts/
+    
+    - name: Run type checking with mypy
+      run: |
+        uv run mypy src/ --config-file mypy.ini || true

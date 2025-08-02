@@ -4,7 +4,8 @@
 データスキーマの検証機能を提供
 """
 
-from typing import Any, Callable, Dict, List, Optional, Type, Union
+from collections.abc import Callable
+from typing import Any, Union
 
 from src.core.logging import logger
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -16,13 +17,13 @@ class SchemaField:
     def __init__(
         self,
         name: str,
-        field_type: Type,
+        field_type: type,
         required: bool = False,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
-        pattern: Optional[str] = None,
-        enum_values: Optional[List[Any]] = None,
-        custom_validator: Optional[Callable[[Any], bool]] = None,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        pattern: str | None = None,
+        enum_values: list[Any] | None = None,
+        custom_validator: Callable[[Any], bool] | None = None,
     ):
         self.name = name
         self.field_type = field_type
@@ -37,7 +38,7 @@ class SchemaField:
 class Schema:
     """データスキーマ定義"""
 
-    def __init__(self, name: str, fields: List[SchemaField]):
+    def __init__(self, name: str, fields: list[SchemaField]):
         self.name = name
         self.fields = {field.name: field for field in fields}
         self.required_fields = [field.name for field in fields if field.required]
@@ -57,7 +58,7 @@ class SchemaValidator(BaseValidator):
         super().__init__(strict_mode)
         self.schema = schema
 
-    def validate(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate(self, data: dict[str, Any]) -> ValidationResult:
         """
         スキーマに基づいてデータをバリデーション
 
@@ -164,7 +165,7 @@ class SchemaValidator(BaseValidator):
                     result.add_error(
                         field=field_name,
                         value=value,
-                        message=f"カスタムバリデーションに失敗しました",
+                        message="カスタムバリデーションに失敗しました",
                         error_type="custom_validation_failed",
                     )
                 elif isinstance(custom_result, str):
@@ -179,15 +180,15 @@ class SchemaValidator(BaseValidator):
                 result.add_error(
                     field=field_name,
                     value=value,
-                    message=f"カスタムバリデーターエラー: {str(e)}",
+                    message=f"カスタムバリデーターエラー: {e!s}",
                     error_type="custom_validator_error",
                 )
 
         return result
 
     def _check_field_type(
-        self, field: str, value: Any, expected_type: Type
-    ) -> Optional[Any]:
+        self, field: str, value: Any, expected_type: type
+    ) -> Any | None:
         """
         フィールドの型をチェック（Union型対応）
 

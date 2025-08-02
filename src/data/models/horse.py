@@ -7,11 +7,9 @@
 from sqlalchemy import (
     Column,
     Date,
-    ForeignKey,
     Index,
     Integer,
     String,
-    Text,
 )
 from sqlalchemy.orm import relationship
 

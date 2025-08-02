@@ -7,7 +7,7 @@ CSVインポート処理の管理とスケジューリング
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from src.core.config import settings
 from src.core.logging import logger
@@ -18,7 +18,7 @@ from src.data.processors.batch_processor import BatchProcessor, BatchResult
 class ImportManager:
     """インポート処理マネージャー"""
 
-    def __init__(self, import_base_dir: Optional[Path] = None):
+    def __init__(self, import_base_dir: Path | None = None):
         """
         インポートマネージャーの初期化
 
@@ -34,7 +34,7 @@ class ImportManager:
     def import_from_directory(
         self,
         directory_name: str,
-        file_types: Optional[List[FileType]] = None,
+        file_types: list[FileType] | None = None,
         batch_size: int = 1000,
         validate: bool = True,
         dry_run: bool = False,
@@ -98,8 +98,8 @@ class ImportManager:
     def import_incremental(
         self,
         directory_name: str,
-        since: Optional[datetime] = None,
-        file_types: Optional[List[FileType]] = None,
+        since: datetime | None = None,
+        file_types: list[FileType] | None = None,
     ) -> BatchResult:
         """
         増分インポート（前回インポート以降の新規ファイルのみ）
@@ -153,7 +153,7 @@ class ImportManager:
 
         return result
 
-    def retry_failed_imports(self, directory_name: Optional[str] = None) -> BatchResult:
+    def retry_failed_imports(self, directory_name: str | None = None) -> BatchResult:
         """
         失敗したインポートをリトライ
 
@@ -205,7 +205,7 @@ class ImportManager:
         total_result.end_time = datetime.now()
         return total_result
 
-    def get_import_status(self, directory_name: Optional[str] = None) -> Dict[str, Any]:
+    def get_import_status(self, directory_name: str | None = None) -> dict[str, Any]:
         """
         インポート状況を取得
 
@@ -229,41 +229,40 @@ class ImportManager:
                     imp.get("total_rows", 0) for imp in imports
                 ),
             }
-        else:
-            # 全体の状況
-            status = {
-                "directories": {},
-                "total_imports": 0,
-                "total_files_processed": 0,
-                "total_rows_processed": 0,
+        # 全体の状況
+        status = {
+            "directories": {},
+            "total_imports": 0,
+            "total_files_processed": 0,
+            "total_rows_processed": 0,
+        }
+
+        for dir_name, imports in self.import_history.items():
+            status["directories"][dir_name] = {  # type: ignore
+                "total_imports": len(imports),
+                "last_import": imports[-1] if imports else None,
+                "success_rate": self._calculate_success_rate(imports),
             }
+            status["total_imports"] += len(imports)  # type: ignore
+            status["total_files_processed"] += sum(
+                imp.get("processed_files", 0) for imp in imports
+            )
+            status["total_rows_processed"] += sum(
+                imp.get("total_rows", 0) for imp in imports
+            )
 
-            for dir_name, imports in self.import_history.items():
-                status["directories"][dir_name] = {  # type: ignore
-                    "total_imports": len(imports),
-                    "last_import": imports[-1] if imports else None,
-                    "success_rate": self._calculate_success_rate(imports),
-                }
-                status["total_imports"] += len(imports)  # type: ignore
-                status["total_files_processed"] += sum(
-                    imp.get("processed_files", 0) for imp in imports
-                )
-                status["total_rows_processed"] += sum(
-                    imp.get("total_rows", 0) for imp in imports
-                )
-
-            return status
+        return status
 
     def _progress_callback(self, current: int, total: int):
         """進捗コールバック"""
         percentage = (current / total * 100) if total > 0 else 0
         logger.info(f"進捗: {current}/{total} ({percentage:.1f}%)")
 
-    def _load_history(self) -> Dict[str, List[Dict[str, Any]]]:
+    def _load_history(self) -> dict[str, list[dict[str, Any]]]:
         """インポート履歴を読み込み"""
         if self.history_file.exists():
             try:
-                with open(self.history_file, "r") as f:
+                with open(self.history_file) as f:
                     return json.load(f)  # type: ignore
             except Exception as e:
                 logger.error(f"履歴ファイル読み込みエラー: {e}")
@@ -301,12 +300,12 @@ class ImportManager:
         self.import_history[directory_name].append(record)
         self._save_history()
 
-    def _get_last_import(self, directory_name: str) -> Optional[Dict[str, Any]]:
+    def _get_last_import(self, directory_name: str) -> dict[str, Any] | None:
         """最後のインポート情報を取得"""
         imports = self.import_history.get(directory_name, [])
         return imports[-1] if imports else None
 
-    def _calculate_success_rate(self, imports: List[Dict[str, Any]]) -> float:
+    def _calculate_success_rate(self, imports: list[dict[str, Any]]) -> float:
         """成功率を計算"""
         if not imports:
             return 0

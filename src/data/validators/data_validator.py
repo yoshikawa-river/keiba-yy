@@ -4,12 +4,11 @@
 ビジネスロジックを含むデータ検証機能を提供
 """
 
-from datetime import datetime, date
-from typing import Any, Dict, List, Optional
+from datetime import date, datetime
+from typing import Any
 
 from sqlalchemy.orm import Session
 
-from src.core.logging import logger
 from src.data.models.horse import Horse, Jockey, Trainer
 from src.data.models.race import Race, Racecourse
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -29,7 +28,7 @@ class DataValidator(BaseValidator):
         super().__init__(strict_mode)
         self.db_session = db_session
 
-    def validate(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate(self, data: dict[str, Any]) -> ValidationResult:
         """
         データをバリデーション（汎用メソッド）
 
@@ -42,23 +41,22 @@ class DataValidator(BaseValidator):
         # データタイプに応じて適切なバリデーションを実行
         if "race_key" in data and "race_name" in data:
             return self.validate_race(data)
-        elif "horse_key" in data and "name" in data and "sex" in data:
+        if "horse_key" in data and "name" in data and "sex" in data:
             return self.validate_horse(data)
-        elif "race_key" in data and "horse_key" in data and "jockey_key" in data:
+        if "race_key" in data and "horse_key" in data and "jockey_key" in data:
             return self.validate_race_result(data)
-        elif "race_key" in data and "odds_type" in data:
+        if "race_key" in data and "odds_type" in data:
             return self.validate_odds(data)
-        else:
-            result = ValidationResult(is_valid=False)
-            result.add_error(
-                field="data",
-                value=data,
-                message="データタイプを特定できません",
-                error_type="unknown_data_type",
-            )
-            return result
+        result = ValidationResult(is_valid=False)
+        result.add_error(
+            field="data",
+            value=data,
+            message="データタイプを特定できません",
+            error_type="unknown_data_type",
+        )
+        return result
 
-    def validate_race(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate_race(self, data: dict[str, Any]) -> ValidationResult:
         """
         レースデータのビジネスロジック検証
 
@@ -131,7 +129,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def validate_horse(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate_horse(self, data: dict[str, Any]) -> ValidationResult:
         """
         馬データのビジネスロジック検証
 
@@ -199,7 +197,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def validate_race_result(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate_race_result(self, data: dict[str, Any]) -> ValidationResult:
         """
         レース結果データのビジネスロジック検証
 
@@ -264,7 +262,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def validate_odds(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate_odds(self, data: dict[str, Any]) -> ValidationResult:
         """
         オッズデータのビジネスロジック検証
 
@@ -331,7 +329,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def _get_minimum_prize_for_grade(self, grade: str) -> Optional[int]:
+    def _get_minimum_prize_for_grade(self, grade: str) -> int | None:
         """グレードに応じた最低賞金を取得"""
         min_prizes = {
             "G1": 100000000,  # 1億円
@@ -355,13 +353,13 @@ class DataValidator(BaseValidator):
 
         if odds_type in ["win", "place"]:
             return len(parts) == 1 and parts[0].isdigit()
-        elif odds_type in ["exacta", "quinella", "wide"]:
+        if odds_type in ["exacta", "quinella", "wide"]:
             return (
                 len(parts) == 2
                 and all(p.isdigit() for p in parts)
                 and parts[0] != parts[1]
             )
-        elif odds_type in ["trio", "trifecta"]:
+        if odds_type in ["trio", "trifecta"]:
             return (
                 len(parts) == 3
                 and all(p.isdigit() for p in parts)
@@ -371,7 +369,7 @@ class DataValidator(BaseValidator):
         return False
 
     def validate_referential_integrity(
-        self, data_type: str, data: Dict[str, Any]
+        self, data_type: str, data: dict[str, Any]
     ) -> ValidationResult:
         """
         参照整合性を検証
