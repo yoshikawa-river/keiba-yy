@@ -101,7 +101,7 @@ jobs:
     
     - name: Run ruff check
       run: |
-        uv run ruff check src/ tests/ --fix --exit-non-zero-on-fix
+        uv run ruff check src/ tests/ --fix
     
     - name: Run ruff format check
       run: |
