@@ -11,19 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     
     services:
-      postgres:
-        image: postgres:15
+      mysql:
+        image: mysql:8.0
         env:
-          POSTGRES_USER: keiba_user
-          POSTGRES_PASSWORD: keiba_password
-          POSTGRES_DB: keiba_ai_test
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: keiba_ai_test
+          MYSQL_USER: keiba_user
+          MYSQL_PASSWORD: keiba_password
         options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
         ports:
-          - 5432:5432
+          - 3306:3306
 
     steps:
     - uses: actions/checkout@v4
@@ -54,13 +55,21 @@ jobs:
     
     - name: Set up test database
       env:
-        DATABASE_URL: postgresql://keiba_user:keiba_password@localhost:5432/keiba_ai_test
+        DATABASE_HOST: localhost
+        DATABASE_PORT: 3306
+        DATABASE_NAME: keiba_ai_test
+        DATABASE_USER: keiba_user
+        DATABASE_PASSWORD: keiba_password
       run: |
         uv run alembic upgrade head
     
     - name: Run tests with coverage
       env:
-        DATABASE_URL: postgresql://keiba_user:keiba_password@localhost:5432/keiba_ai_test
+        DATABASE_HOST: localhost
+        DATABASE_PORT: 3306
+        DATABASE_NAME: keiba_ai_test
+        DATABASE_USER: keiba_user
+        DATABASE_PASSWORD: keiba_password
         PYTHONPATH: ${{ github.workspace }}
       run: |
         uv run pytest tests/ -v --cov=src --cov-report=xml --cov-report=html --cov-report=term
