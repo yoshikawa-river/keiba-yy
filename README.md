@@ -1,5 +1,8 @@
 # 競馬予想AIシステム
 
+[![CI](https://github.com/yoshikawa-river/keiba-yy/actions/workflows/ci.yml/badge.svg)](https://github.com/yoshikawa-river/keiba-yy/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/yoshikawa-river/keiba-yy/branch/main/graph/badge.svg)](https://codecov.io/gh/yoshikawa-river/keiba-yy)
+
 JRA-VAN DataLabのデータを活用した個人用競馬予想AIシステム
 
 ## 概要

@@ -1,6 +1,7 @@
 """
 CSVパーサーのユニットテスト
 """
+
 import io
 from datetime import datetime, date, time
 from pathlib import Path
@@ -33,7 +34,7 @@ class TestCSVFileDetector:
         """レースファイルの判定テスト"""
         detector = CSVFileDetector(Path("."))
         headers = ["レースID", "開催日", "R", "レース名", "競馬場", "コース", "距離"]
-        
+
         file_type = detector._detect_file_type(headers)
         assert file_type == FileType.RACE_INFO
 
@@ -41,7 +42,7 @@ class TestCSVFileDetector:
         """馬ファイルの判定テスト"""
         detector = CSVFileDetector(Path("."))
         headers = ["馬ID", "馬名", "性別", "生年月日", "父", "母", "馬主"]
-        
+
         file_type = detector._detect_file_type(headers)
         assert file_type == FileType.HORSE_INFO
 
@@ -49,7 +50,7 @@ class TestCSVFileDetector:
         """結果ファイルの判定テスト"""
         detector = CSVFileDetector(Path("."))
         headers = ["着順", "馬名", "タイム", "オッズ", "馬番"]
-        
+
         file_type = detector._detect_file_type(headers)
         assert file_type == FileType.RACE_RESULT
 
@@ -57,7 +58,7 @@ class TestCSVFileDetector:
         """オッズファイルの判定テスト"""
         detector = CSVFileDetector(Path("."))
         headers = ["馬番", "単勝", "複勝", "馬連", "馬単"]
-        
+
         file_type = detector._detect_file_type(headers)
         assert file_type == FileType.ODDS_INFO
 
@@ -65,7 +66,7 @@ class TestCSVFileDetector:
         """不明なファイルの判定テスト"""
         detector = CSVFileDetector(Path("."))
         headers = ["列1", "列2", "列3"]
-        
+
         file_type = detector._detect_file_type(headers)
         assert file_type == FileType.UNKNOWN
 
@@ -100,18 +101,20 @@ class TestRaceCSVParser:
 
     def test_transform_row_basic(self, parser):
         """基本的な行変換のテスト"""
-        row = pd.Series({
-            "race_key": "202401010101",
-            "race_date": "2024-01-01",
-            "race_number": "1",
-            "race_name": "新春特別",
-            "venue_name": "東京",
-            "track_type": "芝",
-            "distance": "1600",
-        })
-        
+        row = pd.Series(
+            {
+                "race_key": "202401010101",
+                "race_date": "2024-01-01",
+                "race_number": "1",
+                "race_name": "新春特別",
+                "venue_name": "東京",
+                "track_type": "芝",
+                "distance": "1600",
+            }
+        )
+
         result = parser._transform_row(row)
-        
+
         assert result["race_key"] == "202401010101"
         assert result["race_date"] == date(2024, 1, 1)
         assert result["race_number"] == 1
@@ -122,22 +125,24 @@ class TestRaceCSVParser:
 
     def test_transform_row_with_optional(self, parser):
         """オプション項目を含む行変換のテスト"""
-        row = pd.Series({
-            "race_key": "202401010101",
-            "race_date": "2024-01-01",
-            "race_number": "1",
-            "race_name": "新春特別",
-            "venue_name": "東京",
-            "race_type": "芝",
-            "distance": "1600",
-            "weather": "晴",
-            "track_condition": "良",
-            "prize_money_1st": "1,000",
-            "grade": "G3",
-        })
-        
+        row = pd.Series(
+            {
+                "race_key": "202401010101",
+                "race_date": "2024-01-01",
+                "race_number": "1",
+                "race_name": "新春特別",
+                "venue_name": "東京",
+                "race_type": "芝",
+                "distance": "1600",
+                "weather": "晴",
+                "track_condition": "良",
+                "prize_money_1st": "1,000",
+                "grade": "G3",
+            }
+        )
+
         result = parser._transform_row(row)
-        
+
         assert result["weather"] == "晴"
         assert result["track_condition"] == "良"
         assert result["prize_money_1st"] == 1000
@@ -152,7 +157,7 @@ class TestRaceCSVParser:
             "distance": 1600,
             "race_type": "芝",
         }
-        
+
         is_valid, error = parser._validate_row(row)
         assert is_valid is True
         assert error is None
@@ -166,7 +171,7 @@ class TestRaceCSVParser:
             "distance": 1600,
             "race_type": "芝",
         }
-        
+
         is_valid, error = parser._validate_row(row)
         assert is_valid is False
         assert "不正なレースIDフォーマット" in error
@@ -174,13 +179,16 @@ class TestRaceCSVParser:
     def test_save_row_new_race(self, parser, mock_session):
         """新規レース保存のテスト"""
         # 競馬場のモック
-        mock_racecourse = Mock(spec=Racecourse, id=1)
-        
+        Mock(spec=Racecourse, id=1)
+
         # queryチェーンのモック設定
         mock_query = MagicMock()
-        mock_query.filter_by.return_value.first.side_effect = [None, None]  # 既存レースなし、既存競馬場なし
+        mock_query.filter_by.return_value.first.side_effect = [
+            None,
+            None,
+        ]  # 既存レースなし、既存競馬場なし
         mock_session.query.return_value = mock_query
-        
+
         row_data = {
             "race_key": "202401010101",
             "race_date": date(2024, 1, 1),
@@ -190,10 +198,10 @@ class TestRaceCSVParser:
             "race_type": "芝",
             "distance": 1600,
         }
-        
+
         # 保存実行
         result = parser._save_row(row_data)
-        
+
         assert result is True
         assert mock_session.add.called
         assert parser.statistics["insert_count"] == 1
@@ -235,14 +243,16 @@ class TestHorseCSVParser:
 
     def test_transform_row_basic(self, parser):
         """基本的な行変換のテスト"""
-        row = pd.Series({
-            "horse_key": "20210001",
-            "name": "テスト馬",
-            "sex_age": "牡3",
-        })
-        
+        row = pd.Series(
+            {
+                "horse_key": "20210001",
+                "name": "テスト馬",
+                "sex_age": "牡3",
+            }
+        )
+
         result = parser._transform_row(row)
-        
+
         assert result["horse_key"] == "20210001"
         assert result["name"] == "テスト馬"
         assert result["sex"] == "牡"
@@ -275,7 +285,7 @@ class TestResultCSVParser:
         # 分:秒.ミリ秒形式
         result = parser._parse_time("1:23.4")
         assert result == time(0, 1, 23, 400000)
-        
+
         # 秒.ミリ秒形式
         result = parser._parse_time("83.4")
         assert result == time(0, 1, 23, 400000)

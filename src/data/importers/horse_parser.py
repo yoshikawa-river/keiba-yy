@@ -4,7 +4,8 @@
 TARGET frontier JVから出力された馬情報CSVをパースし、
 データベースに保存する機能を提供
 """
-from datetime import datetime
+
+from datetime import datetime, date
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
@@ -173,13 +174,17 @@ class HorseCSVParser(BaseCSVParser):
                 for key, value in row_data.items():
                     setattr(existing, key, value)
                 self.statistics["update_count"] += 1
-                logger.debug(f"馬情報更新: {row_data['name']} ({row_data['horse_key']})")
+                logger.debug(
+                    f"馬情報更新: {row_data['name']} ({row_data['horse_key']})"
+                )
             else:
                 # 新規作成
                 horse = Horse(**row_data)
                 self.db_session.add(horse)
                 self.statistics["insert_count"] += 1
-                logger.debug(f"馬情報作成: {row_data['name']} ({row_data['horse_key']})")
+                logger.debug(
+                    f"馬情報作成: {row_data['name']} ({row_data['horse_key']})"
+                )
 
             return True
 
@@ -225,7 +230,7 @@ class HorseCSVParser(BaseCSVParser):
         except (IndexError, ValueError):
             raise ValidationError(f"年齢の抽出に失敗: {sex_age}")
 
-    def _parse_date(self, date_str: Any) -> datetime.date:
+    def _parse_date(self, date_str: Any) -> date:
         """日付文字列をパース"""
         if pd.isna(date_str):
             raise ValidationError("日付が空です")
@@ -307,7 +312,7 @@ class HorseCSVParser(BaseCSVParser):
     def _generate_trainer_key(self, name: str) -> str:
         """
         調教師キーを生成
-        
+
         実際のJRAキーがわからない場合の暫定処理
         """
         import hashlib
@@ -317,5 +322,5 @@ class HorseCSVParser(BaseCSVParser):
         hash_hex = hash_obj.hexdigest()
         # 16進数の最初の8文字を10進数に変換し、8桁にパディング
         trainer_key = str(int(hash_hex[:8], 16))[:8].zfill(8)
-        
+
         return trainer_key

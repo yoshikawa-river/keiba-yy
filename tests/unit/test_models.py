@@ -3,6 +3,7 @@ SQLAlchemyモデルのユニットテスト
 
 モデルの基本的な動作とリレーションのテスト
 """
+
 import json
 from datetime import date, datetime, time
 from decimal import Decimal
@@ -99,6 +100,7 @@ class TestRaceModel:
         """レースと競馬場のリレーションテスト"""
         racecourse = Racecourse(jra_code="09", name="阪神")
         db_session.add(racecourse)
+        db_session.flush()  # IDを生成
 
         race = Race(
             race_key="20240301091100",

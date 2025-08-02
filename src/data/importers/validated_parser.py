@@ -3,19 +3,27 @@
 
 バリデーション機能を統合したCSVパーサー
 """
+
 from typing import Any, Dict, List, Optional, Type
 
+import pandas as pd
 from sqlalchemy.orm import Session
 
 from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
-from src.data.validators import DataValidator, Schema, SchemaValidator, ValidationResult
+from src.data.validators import DataValidator, SchemaValidator, ValidationResult
+from src.data.validators.schema_validator import Schema
 
 
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
 
-    def __init__(self, db_session: Session, schema: Optional[Schema] = None, validate_business_logic: bool = True):
+    def __init__(
+        self,
+        db_session: Session,
+        schema: Optional[Schema] = None,
+        validate_business_logic: bool = True,
+    ):
         """
         バリデーション統合パーサーの初期化
 
@@ -27,19 +35,23 @@ class ValidatedCSVParser(BaseCSVParser):
         super().__init__(db_session)
         self.schema = schema
         self.validate_business_logic = validate_business_logic
-        
+
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator = SchemaValidator(self.schema)
+            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(
+                self.schema
+            )
         else:
-            self.schema_validator = None
-            
-        if self.validate_business_logic:
-            self.data_validator = DataValidator(db_session)
-        else:
-            self.data_validator = None
+            self.schema_validator: Optional[SchemaValidator] = None
 
-    def _validate_row_with_validators(self, row_data: Dict[str, Any]) -> ValidationResult:
+        if self.validate_business_logic:
+            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
+        else:
+            self.data_validator: Optional[DataValidator] = None
+
+    def _validate_row_with_validators(
+        self, row_data: Dict[str, Any]
+    ) -> ValidationResult:
         """
         バリデーターを使用して行データを検証
 
@@ -64,7 +76,9 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return combined_result
 
-    def _process_batch(self, batch_df: pd.DataFrame) -> Dict[str, int]:
+    def _process_batch(
+        self, batch_df: pd.DataFrame, dry_run: bool = False
+    ) -> None:
         """
         バッチデータを処理（バリデーション統合版）
 
@@ -107,7 +121,7 @@ class ValidatedCSVParser(BaseCSVParser):
                         self._add_error(
                             idx,
                             val_error.message,
-                            {val_error.field: val_error.value}
+                            {val_error.field: val_error.value},
                         )
                     error += 1
                     continue
@@ -121,7 +135,9 @@ class ValidatedCSVParser(BaseCSVParser):
                 is_valid, error_msg = self._validate_row(transformed)
                 if not is_valid:
                     logger.error(f"行 {idx}: {error_msg}")
-                    self._add_error(idx, error_msg, row_dict)
+                    self._add_error(
+                        idx, error_msg or "バリデーションエラー", row_dict
+                    )
                     error += 1
                     continue
 
@@ -160,23 +176,24 @@ class ValidatedCSVParser(BaseCSVParser):
                 "total_warnings": len(self.warnings),
                 "error_types": self._count_error_types(),
                 "warning_types": self._count_warning_types(),
-            }
+            },
         }
 
         # エラー率の計算
         if self.statistics["total_rows"] > 0:
+            total_rows = self.statistics["total_rows"]
             report["validation_summary"]["error_rate"] = (
-                self.statistics["error_count"] / self.statistics["total_rows"] * 100
+                self.statistics["error_count"] / total_rows * 100
             )
             report["validation_summary"]["success_rate"] = (
-                self.statistics["success_count"] / self.statistics["total_rows"] * 100
+                self.statistics["success_count"] / total_rows * 100
             )
 
         return report
 
     def _count_error_types(self) -> Dict[str, int]:
         """エラータイプをカウント"""
-        error_types = {}
+        error_types: Dict[str, int] = {}
         for error in self.errors:
             error_type = error.get("type", "unknown")
             error_types[error_type] = error_types.get(error_type, 0) + 1
@@ -184,7 +201,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
     def _count_warning_types(self) -> Dict[str, int]:
         """警告タイプをカウント"""
-        warning_types = {}
+        warning_types: Dict[str, int] = {}
         for warning in self.warnings:
             warning_type = warning.get("type", "unknown")
             warning_types[warning_type] = warning_types.get(warning_type, 0) + 1

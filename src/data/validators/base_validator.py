@@ -3,6 +3,7 @@
 
 すべてのバリデーターの基底となる抽象クラス
 """
+
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
@@ -11,6 +12,7 @@ from typing import Any, Dict, List, Optional
 @dataclass
 class ValidationError:
     """バリデーションエラー情報"""
+
     field: str
     value: Any
     message: str
@@ -20,19 +22,21 @@ class ValidationError:
 @dataclass
 class ValidationResult:
     """バリデーション結果"""
+
     is_valid: bool
     errors: List[ValidationError] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
-    def add_error(self, field: str, value: Any, message: str, error_type: str = "validation_error"):
+    def add_error(
+        self, field: str, value: Any, message: str, error_type: str = "validation_error"
+    ):
         """エラーを追加"""
-        self.errors.append(ValidationError(
-            field=field,
-            value=value,
-            message=message,
-            error_type=error_type
-        ))
+        self.errors.append(
+            ValidationError(
+                field=field, value=value, message=message, error_type=error_type
+            )
+        )
         self.is_valid = False
 
     def add_warning(self, message: str):
@@ -87,7 +91,9 @@ class BaseValidator(ABC):
             results.append(self.validate(data))
         return results
 
-    def _check_required_fields(self, data: Dict[str, Any], required_fields: List[str]) -> ValidationResult:
+    def _check_required_fields(
+        self, data: Dict[str, Any], required_fields: List[str]
+    ) -> ValidationResult:
         """
         必須フィールドをチェック
 
@@ -100,18 +106,24 @@ class BaseValidator(ABC):
         """
         result = ValidationResult(is_valid=True)
 
-        for field in required_fields:
-            if field not in data or data[field] is None or data[field] == "":
+        for field_name in required_fields:
+            if (
+                field_name not in data
+                or data[field_name] is None
+                or data[field_name] == ""
+            ):
                 result.add_error(
-                    field=field,
+                    field=field_name,
                     value=None,
-                    message=f"必須フィールド '{field}' が空です",
-                    error_type="required_field_missing"
+                    message=f"必須フィールド '{field_name}' が空です",
+                    error_type="required_field_missing",
                 )
 
         return result
 
-    def _check_data_type(self, field: str, value: Any, expected_type: type) -> Optional[ValidationError]:
+    def _check_data_type(
+        self, field: str, value: Any, expected_type: type
+    ) -> Optional[ValidationError]:
         """
         データ型をチェック
 
@@ -131,12 +143,18 @@ class BaseValidator(ABC):
                 field=field,
                 value=value,
                 message=f"フィールド '{field}' の型が不正です。期待: {expected_type.__name__}, 実際: {type(value).__name__}",
-                error_type="type_mismatch"
+                error_type="type_mismatch",
             )
 
         return None
 
-    def _check_numeric_range(self, field: str, value: Any, min_value: Optional[float] = None, max_value: Optional[float] = None) -> Optional[ValidationError]:
+    def _check_numeric_range(
+        self,
+        field: str,
+        value: Any,
+        min_value: Optional[float] = None,
+        max_value: Optional[float] = None,
+    ) -> Optional[ValidationError]:
         """
         数値の範囲をチェック
 
@@ -159,7 +177,7 @@ class BaseValidator(ABC):
                 field=field,
                 value=value,
                 message=f"フィールド '{field}' は数値である必要があります",
-                error_type="not_numeric"
+                error_type="not_numeric",
             )
 
         if min_value is not None and numeric_value < min_value:
@@ -167,7 +185,7 @@ class BaseValidator(ABC):
                 field=field,
                 value=value,
                 message=f"フィールド '{field}' の値が最小値 {min_value} より小さいです",
-                error_type="below_minimum"
+                error_type="below_minimum",
             )
 
         if max_value is not None and numeric_value > max_value:
@@ -175,12 +193,14 @@ class BaseValidator(ABC):
                 field=field,
                 value=value,
                 message=f"フィールド '{field}' の値が最大値 {max_value} より大きいです",
-                error_type="above_maximum"
+                error_type="above_maximum",
             )
 
         return None
 
-    def _check_string_pattern(self, field: str, value: Any, pattern: str) -> Optional[ValidationError]:
+    def _check_string_pattern(
+        self, field: str, value: Any, pattern: str
+    ) -> Optional[ValidationError]:
         """
         文字列パターンをチェック
 
@@ -205,12 +225,14 @@ class BaseValidator(ABC):
                 field=field,
                 value=value,
                 message=f"フィールド '{field}' のフォーマットが不正です",
-                error_type="pattern_mismatch"
+                error_type="pattern_mismatch",
             )
 
         return None
 
-    def _check_enum_value(self, field: str, value: Any, valid_values: List[Any]) -> Optional[ValidationError]:
+    def _check_enum_value(
+        self, field: str, value: Any, valid_values: List[Any]
+    ) -> Optional[ValidationError]:
         """
         列挙値をチェック
 
@@ -230,7 +252,7 @@ class BaseValidator(ABC):
                 field=field,
                 value=value,
                 message=f"フィールド '{field}' の値が不正です。有効な値: {valid_values}",
-                error_type="invalid_enum_value"
+                error_type="invalid_enum_value",
             )
 
         return None

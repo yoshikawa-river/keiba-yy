@@ -4,6 +4,7 @@ CSVファイル検出・分類機能
 TARGET frontier JVから出力されたCSVファイルを検出し、
 ファイルタイプを自動判定する機能を提供
 """
+
 import csv
 from dataclasses import dataclass
 from enum import Enum
@@ -77,7 +78,7 @@ class CSVFileDetector:
         Returns:
             検出されたCSVファイルのリスト
         """
-        csv_files = []
+        csv_files: List[CSVFile] = []
 
         if not self.import_dir.exists():
             logger.warning(f"インポートディレクトリが存在しません: {self.import_dir}")
@@ -151,8 +152,8 @@ class CSVFileDetector:
             raw_data = f.read(10240)
             result = chardet.detect(raw_data)
 
-        encoding = result.get("encoding", "").lower()
-        confidence = result.get("confidence", 0)
+        encoding = (result.get("encoding") or "").lower() if result else ""
+        confidence = result.get("confidence", 0) if result else 0
 
         # 日本語エンコーディングの正規化
         encoding_map = {
@@ -177,9 +178,7 @@ class CSVFileDetector:
 
         return normalized
 
-    def _detect_headers(
-        self, file_path: Path, encoding: str
-    ) -> Tuple[List[str], str]:
+    def _detect_headers(self, file_path: Path, encoding: str) -> Tuple[List[str], str]:
         """
         ヘッダーとデリミタを検出
 
@@ -240,7 +239,7 @@ class CSVFileDetector:
             match_scores[file_type] = match_rate
 
         # 最もマッチ率の高いタイプを選択
-        best_type = max(match_scores, key=match_scores.get)
+        best_type = max(match_scores, key=lambda x: match_scores[x])
         best_score = match_scores[best_type]
 
         # 閾値（70%）以上でないと判定しない

@@ -3,7 +3,8 @@
 
 データスキーマの検証機能を提供
 """
-from typing import Any, Dict, List, Optional, Type, Union
+
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 from src.core.logging import logger
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -21,7 +22,7 @@ class SchemaField:
         max_value: Optional[float] = None,
         pattern: Optional[str] = None,
         enum_values: Optional[List[Any]] = None,
-        custom_validator: Optional[callable] = None,
+        custom_validator: Optional[Callable[[Any], bool]] = None,
     ):
         self.name = name
         self.field_type = field_type
@@ -75,7 +76,9 @@ class SchemaValidator(BaseValidator):
         # 各フィールドのバリデーション
         for field_name, field_def in self.schema.fields.items():
             if field_name in data:
-                field_result = self._validate_field(field_name, data[field_name], field_def)
+                field_result = self._validate_field(
+                    field_name, data[field_name], field_def
+                )
                 result.merge(field_result)
 
         # 不明なフィールドチェック
@@ -92,7 +95,9 @@ class SchemaValidator(BaseValidator):
 
         return result
 
-    def _validate_field(self, field_name: str, value: Any, field_def: SchemaField) -> ValidationResult:
+    def _validate_field(
+        self, field_name: str, value: Any, field_def: SchemaField
+    ) -> ValidationResult:
         """
         フィールドをバリデーション
 
@@ -113,7 +118,7 @@ class SchemaValidator(BaseValidator):
                     field=field_name,
                     value=value,
                     message=f"必須フィールド '{field_name}' がNULLです",
-                    error_type="null_value"
+                    error_type="null_value",
                 )
             return result
 
@@ -135,14 +140,18 @@ class SchemaValidator(BaseValidator):
 
         # パターンチェック
         if field_def.pattern:
-            pattern_error = self._check_string_pattern(field_name, value, field_def.pattern)
+            pattern_error = self._check_string_pattern(
+                field_name, value, field_def.pattern
+            )
             if pattern_error:
                 result.errors.append(pattern_error)
                 result.is_valid = False
 
         # 列挙値チェック
         if field_def.enum_values:
-            enum_error = self._check_enum_value(field_name, value, field_def.enum_values)
+            enum_error = self._check_enum_value(
+                field_name, value, field_def.enum_values
+            )
             if enum_error:
                 result.errors.append(enum_error)
                 result.is_valid = False
@@ -156,14 +165,14 @@ class SchemaValidator(BaseValidator):
                         field=field_name,
                         value=value,
                         message=f"カスタムバリデーションに失敗しました",
-                        error_type="custom_validation_failed"
+                        error_type="custom_validation_failed",
                     )
                 elif isinstance(custom_result, str):
                     result.add_error(
                         field=field_name,
                         value=value,
                         message=custom_result,
-                        error_type="custom_validation_failed"
+                        error_type="custom_validation_failed",
                     )
             except Exception as e:
                 logger.error(f"カスタムバリデーターエラー: {e}")
@@ -171,12 +180,14 @@ class SchemaValidator(BaseValidator):
                     field=field_name,
                     value=value,
                     message=f"カスタムバリデーターエラー: {str(e)}",
-                    error_type="custom_validator_error"
+                    error_type="custom_validator_error",
                 )
 
         return result
 
-    def _check_field_type(self, field: str, value: Any, expected_type: Type) -> Optional[Any]:
+    def _check_field_type(
+        self, field: str, value: Any, expected_type: Type
+    ) -> Optional[Any]:
         """
         フィールドの型をチェック（Union型対応）
 
@@ -208,60 +219,114 @@ class PredefinedSchemas:
     @staticmethod
     def race_schema() -> Schema:
         """レース情報スキーマ"""
-        return Schema("race", [
-            SchemaField("race_key", str, required=True, pattern=r"^\d{12}$"),
-            SchemaField("race_date", str, required=True, pattern=r"^\d{4}-\d{2}-\d{2}$"),
-            SchemaField("race_number", int, required=True, min_value=1, max_value=12),
-            SchemaField("race_name", str, required=True),
-            SchemaField("venue_name", str, required=True),
-            SchemaField("race_type", str, required=True, enum_values=["芝", "ダート", "障害"]),
-            SchemaField("distance", int, required=True, min_value=800, max_value=3600),
-            SchemaField("weather", str, enum_values=["晴", "曇", "雨", "小雨", "雪"]),
-            SchemaField("track_condition", str, enum_values=["良", "稍重", "重", "不良"]),
-            SchemaField("grade", str, enum_values=["G1", "G2", "G3", "OP", "L", None]),
-        ])
+        return Schema(
+            "race",
+            [
+                SchemaField("race_key", str, required=True, pattern=r"^\d{12}$"),
+                SchemaField(
+                    "race_date", str, required=True, pattern=r"^\d{4}-\d{2}-\d{2}$"
+                ),
+                SchemaField(
+                    "race_number", int, required=True, min_value=1, max_value=12
+                ),
+                SchemaField("race_name", str, required=True),
+                SchemaField("venue_name", str, required=True),
+                SchemaField(
+                    "race_type",
+                    str,
+                    required=True,
+                    enum_values=["芝", "ダート", "障害"],
+                ),
+                SchemaField(
+                    "distance", int, required=True, min_value=800, max_value=3600
+                ),
+                SchemaField(
+                    "weather", str, enum_values=["晴", "曇", "雨", "小雨", "雪"]
+                ),
+                SchemaField(
+                    "track_condition", str, enum_values=["良", "稍重", "重", "不良"]
+                ),
+                SchemaField(
+                    "grade", str, enum_values=["G1", "G2", "G3", "OP", "L", None]
+                ),
+            ],
+        )
 
     @staticmethod
     def horse_schema() -> Schema:
         """馬情報スキーマ"""
-        return Schema("horse", [
-            SchemaField("horse_key", str, required=True, pattern=r"^\d{8,}$"),
-            SchemaField("name", str, required=True),
-            SchemaField("sex", str, required=True, enum_values=["牡", "牝", "騸"]),
-            SchemaField("age", int, required=True, min_value=1, max_value=30),
-            SchemaField("birth_date", str, pattern=r"^\d{4}-\d{2}-\d{2}$"),
-            SchemaField("color", str, enum_values=["鹿毛", "黒鹿毛", "栗毛", "栃栗毛", "芦毛", "白毛"]),
-            SchemaField("sire_name", str),
-            SchemaField("dam_name", str),
-            SchemaField("breeder", str),
-            SchemaField("owner", str),
-        ])
+        return Schema(
+            "horse",
+            [
+                SchemaField("horse_key", str, required=True, pattern=r"^\d{8,}$"),
+                SchemaField("name", str, required=True),
+                SchemaField("sex", str, required=True, enum_values=["牡", "牝", "騸"]),
+                SchemaField("age", int, required=True, min_value=1, max_value=30),
+                SchemaField("birth_date", str, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+                SchemaField(
+                    "color",
+                    str,
+                    enum_values=["鹿毛", "黒鹿毛", "栗毛", "栃栗毛", "芦毛", "白毛"],
+                ),
+                SchemaField("sire_name", str),
+                SchemaField("dam_name", str),
+                SchemaField("breeder", str),
+                SchemaField("owner", str),
+            ],
+        )
 
     @staticmethod
     def race_result_schema() -> Schema:
         """レース結果スキーマ"""
-        return Schema("race_result", [
-            SchemaField("race_key", str, required=True, pattern=r"^\d{12}$"),
-            SchemaField("post_position", int, required=True, min_value=1, max_value=28),
-            SchemaField("horse_key", str, required=True, pattern=r"^\d{8,}$"),
-            SchemaField("jockey_key", str, required=True, pattern=r"^\d{4,}$"),
-            SchemaField("weight_carried", float, required=True, min_value=48.0, max_value=65.0),
-            SchemaField("finish_position", int, min_value=1, max_value=28),
-            SchemaField("finish_time", str, pattern=r"^\d+:\d{2}\.\d$"),
-            SchemaField("win_odds", float, min_value=1.0),
-            SchemaField("favorite_order", int, min_value=1, max_value=28),
-        ])
+        return Schema(
+            "race_result",
+            [
+                SchemaField("race_key", str, required=True, pattern=r"^\d{12}$"),
+                SchemaField(
+                    "post_position", int, required=True, min_value=1, max_value=28
+                ),
+                SchemaField("horse_key", str, required=True, pattern=r"^\d{8,}$"),
+                SchemaField("jockey_key", str, required=True, pattern=r"^\d{4,}$"),
+                SchemaField(
+                    "weight_carried",
+                    float,
+                    required=True,
+                    min_value=48.0,
+                    max_value=65.0,
+                ),
+                SchemaField("finish_position", int, min_value=1, max_value=28),
+                SchemaField("finish_time", str, pattern=r"^\d+:\d{2}\.\d$"),
+                SchemaField("win_odds", float, min_value=1.0),
+                SchemaField("favorite_order", int, min_value=1, max_value=28),
+            ],
+        )
 
     @staticmethod
     def odds_schema() -> Schema:
         """オッズ情報スキーマ"""
-        return Schema("odds", [
-            SchemaField("race_key", str, required=True, pattern=r"^\d{12}$"),
-            SchemaField("recorded_at", str, required=True),
-            SchemaField("odds_type", str, required=True, enum_values=["win", "place", "exacta", "quinella", "wide", "trio", "trifecta"]),
-            SchemaField("combination", str, required=True),
-            SchemaField("odds_value", float, required=True, min_value=1.0),
-            SchemaField("popularity", int, min_value=1),
-            SchemaField("vote_count", int, min_value=0),
-            SchemaField("support_rate", float, min_value=0.0, max_value=100.0),
-        ])
+        return Schema(
+            "odds",
+            [
+                SchemaField("race_key", str, required=True, pattern=r"^\d{12}$"),
+                SchemaField("recorded_at", str, required=True),
+                SchemaField(
+                    "odds_type",
+                    str,
+                    required=True,
+                    enum_values=[
+                        "win",
+                        "place",
+                        "exacta",
+                        "quinella",
+                        "wide",
+                        "trio",
+                        "trifecta",
+                    ],
+                ),
+                SchemaField("combination", str, required=True),
+                SchemaField("odds_value", float, required=True, min_value=1.0),
+                SchemaField("popularity", int, min_value=1),
+                SchemaField("vote_count", int, min_value=0),
+                SchemaField("support_rate", float, min_value=0.0, max_value=100.0),
+            ],
+        )

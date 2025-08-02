@@ -4,6 +4,7 @@
 環境変数と設定ファイルから設定を読み込み、
 アプリケーション全体で使用する設定を管理する
 """
+
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -34,7 +35,9 @@ class Settings(BaseSettings):
     DATABASE_PORT: int = Field(default=3306, description="データベースポート")
     DATABASE_NAME: str = Field(default="keiba_db", description="データベース名")
     DATABASE_USER: str = Field(default="keiba_user", description="データベースユーザー")
-    DATABASE_PASSWORD: str = Field(default="keiba_password", description="データベースパスワード")
+    DATABASE_PASSWORD: str = Field(
+        default="keiba_password", description="データベースパスワード"
+    )
     DATABASE_POOL_SIZE: int = Field(default=10, description="コネクションプールサイズ")
     DATABASE_MAX_OVERFLOW: int = Field(default=20, description="最大オーバーフロー数")
     DATABASE_POOL_PRE_PING: bool = Field(default=True, description="接続前のping確認")
@@ -86,14 +89,18 @@ class Settings(BaseSettings):
 
     # === JRA-VAN設定 ===
     JRAVAN_USER_ID: Optional[str] = Field(default=None, description="JRA-VANユーザーID")
-    JRAVAN_PASSWORD: Optional[str] = Field(default=None, description="JRA-VANパスワード")
+    JRAVAN_PASSWORD: Optional[str] = Field(
+        default=None, description="JRA-VANパスワード"
+    )
 
     # === パス設定 ===
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
     DATA_DIR: Optional[Path] = Field(default=None, description="データディレクトリ")
     MODEL_DIR: Optional[Path] = Field(default=None, description="モデルディレクトリ")
     LOG_DIR: Optional[Path] = Field(default=None, description="ログディレクトリ")
-    PREDICTION_DIR: Optional[Path] = Field(default=None, description="予測結果ディレクトリ")
+    PREDICTION_DIR: Optional[Path] = Field(
+        default=None, description="予測結果ディレクトリ"
+    )
 
     # === 機械学習設定 ===
     ML_RANDOM_SEED: int = Field(default=42, description="乱数シード")
@@ -191,7 +198,7 @@ def get_settings() -> Settings:
 
     # 環境別設定ファイルが存在する場合は使用
     if Path(env_file).exists():
-        return Settings(_env_file=env_file)
+        return Settings(_env_file=env_file)  # type: ignore
 
     return Settings()
 

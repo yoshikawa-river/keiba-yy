@@ -3,12 +3,19 @@
 
 全てのモデルが継承する基底クラスを定義
 """
+
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from sqlalchemy import Column, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
+if TYPE_CHECKING:
+    from sqlalchemy.ext.declarative import DeclarativeMeta
+
+    Base: DeclarativeMeta = declarative_base()
+else:
+    Base = declarative_base()
 
 
 class BaseModel(Base):

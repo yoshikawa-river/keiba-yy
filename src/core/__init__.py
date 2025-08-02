@@ -3,6 +3,7 @@ Core module
 
 Provides basic functionality used throughout the application
 """
+
 from src.core.config import Settings, get_settings, settings
 from src.core.database import (
     DatabaseManager,

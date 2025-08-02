@@ -3,6 +3,7 @@ CSVパーサーの基底クラス
 
 全てのCSVパーサーが継承する抽象基底クラスを定義
 """
+
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -234,7 +235,9 @@ class BaseCSVParser(ABC):
                 is_valid, error_message = self._validate_row(transformed_data)
 
                 if not is_valid:
-                    self._add_error(idx, error_message, row.to_dict())
+                    self._add_error(
+                        idx, error_message or "バリデーションエラー", row.to_dict()
+                    )
                     self.statistics["error_count"] += 1
                     continue
 
@@ -295,6 +298,4 @@ class BaseCSVParser(ABC):
         if self.errors:
             logger.warning(f"エラー件数: {len(self.errors)}")
             for error in self.errors[:5]:  # 最初の5件
-                logger.warning(
-                    f"  行{error['row_index']}: {error['message']}"
-                )
+                logger.warning(f"  行{error['row_index']}: {error['message']}")
