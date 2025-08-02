@@ -146,6 +146,30 @@ class DataImportError(KeibaAIException):
         )
 
 
+class DataProcessingError(KeibaAIException):
+    """データ処理エラー"""
+
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+        super().__init__(
+            message=message,
+            error_code="DATA_PROCESSING_ERROR",
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            details=details,
+        )
+
+
+class FeatureExtractionError(KeibaAIException):
+    """特徴量抽出エラー"""
+
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+        super().__init__(
+            message=message,
+            error_code="FEATURE_EXTRACTION_ERROR",
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            details=details,
+        )
+
+
 # === 機械学習関連例外 ===
 
 
