@@ -133,7 +133,7 @@ class DataQualityReporter:
         except Exception as e:
             raise DataProcessingError(
                 f"欠損値統計レポート生成中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def _analyze_missing_patterns(self, df: pd.DataFrame) -> dict[str, Any]:
         """欠損値パターンの分析
@@ -376,7 +376,7 @@ class DataQualityReporter:
         except Exception as e:
             raise DataProcessingError(
                 f"データ分布レポート生成中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def _detect_outliers_iqr(self, data: pd.Series, threshold: float = 1.5) -> bool:
         """IQR法による外れ値の検出
@@ -407,7 +407,7 @@ class DataQualityReporter:
         """
         stats_df = pd.DataFrame(stats)
 
-        summary = {
+        return {
             "normal_distributed_columns": int(stats_df["is_normal"].sum()),
             "skewed_columns": int(stats_df["is_skewed"].sum()),
             "columns_with_outliers": int(stats_df["has_outliers"].sum()),
@@ -418,8 +418,6 @@ class DataQualityReporter:
                 "column"
             ].tolist(),
         }
-
-        return summary
 
     def _visualize_distributions(
         self, df: pd.DataFrame, columns: list[str], output_file: str
@@ -597,7 +595,7 @@ class DataQualityReporter:
         except Exception as e:
             raise DataProcessingError(
                 f"異常値レポート生成中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def _generate_outlier_summary(self, stats: list[dict]) -> dict[str, Any]:
         """外れ値統計のサマリー生成
@@ -610,7 +608,7 @@ class DataQualityReporter:
         """
         stats_df = pd.DataFrame(stats)
 
-        summary = {
+        return {
             "columns_with_outliers": int((stats_df["outlier_count"] > 0).sum()),
             "total_outliers": int(stats_df["outlier_count"].sum()),
             "average_outlier_ratio": float(stats_df["outlier_ratio"].mean()),
@@ -622,8 +620,6 @@ class DataQualityReporter:
                 "column"
             ].tolist(),
         }
-
-        return summary
 
     def _generate_outlier_recommendations(self, stats: list[dict]) -> list[str]:
         """外れ値処理の推奨事項を生成
@@ -781,4 +777,4 @@ class DataQualityReporter:
         except Exception as e:
             raise DataProcessingError(
                 f"包括的レポート生成中にエラーが発生しました: {e!s}"
-            )
+            ) from e

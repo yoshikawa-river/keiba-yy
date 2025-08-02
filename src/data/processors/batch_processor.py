@@ -8,7 +8,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, ClassVar
 
 from src.core.database import db_manager
 from src.core.exceptions import DataImportError
@@ -79,7 +79,7 @@ class BatchProcessor:
     """バッチプロセッサー"""
 
     # ファイルタイプとパーサーのマッピング
-    PARSER_MAPPING: dict[FileType, type[BaseCSVParser]] = {
+    PARSER_MAPPING: ClassVar[dict[FileType, type[BaseCSVParser]]] = {
         FileType.RACE_INFO: RaceCSVParser,
         FileType.HORSE_INFO: HorseCSVParser,
         FileType.RACE_RESULT: ResultCSVParser,

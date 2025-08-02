@@ -101,7 +101,9 @@ class DataCleaner:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"欠損値処理中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"欠損値処理中にエラーが発生しました: {e!s}"
+            ) from e
 
     def detect_outliers(
         self,
@@ -180,7 +182,9 @@ class DataCleaner:
             return outlier_flags, stats_df
 
         except Exception as e:
-            raise DataProcessingError(f"外れ値検出中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"外れ値検出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def handle_outliers(
         self,
@@ -239,7 +243,9 @@ class DataCleaner:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"外れ値処理中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"外れ値処理中にエラーが発生しました: {e!s}"
+            ) from e
 
     def normalize_data(
         self,
@@ -293,7 +299,9 @@ class DataCleaner:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"データ正規化中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"データ正規化中にエラーが発生しました: {e!s}"
+            ) from e
 
     def encode_categorical(
         self,
@@ -355,7 +363,7 @@ class DataCleaner:
         except Exception as e:
             raise DataProcessingError(
                 f"カテゴリ変数エンコーディング中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def clean_data(
         self,
@@ -422,4 +430,4 @@ class DataCleaner:
         except Exception as e:
             raise DataProcessingError(
                 f"データクレンジング中にエラーが発生しました: {e!s}"
-            )
+            ) from e

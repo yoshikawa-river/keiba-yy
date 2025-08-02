@@ -79,7 +79,7 @@ class TimeSeriesProcessor:
         except Exception as e:
             raise DataProcessingError(
                 f"日付データ標準化中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def _detect_date_columns(self, df: pd.DataFrame) -> list[str]:
         """日付カラムの自動検出
@@ -247,7 +247,7 @@ class TimeSeriesProcessor:
         except Exception as e:
             raise DataProcessingError(
                 f"時系列特徴量生成中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def create_lag_features(
         self,
@@ -316,7 +316,9 @@ class TimeSeriesProcessor:
                         df_processed[ma_col_name] = df_processed.groupby(group_columns)[
                             col
                         ].transform(
-                            lambda x: x.rolling(window=window, min_periods=1).mean()
+                            lambda x, w=window: x.rolling(
+                                window=w, min_periods=1
+                            ).mean()
                         )
                     else:
                         df_processed[ma_col_name] = (
@@ -332,7 +334,9 @@ class TimeSeriesProcessor:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"ラグ特徴量作成中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"ラグ特徴量作成中にエラーが発生しました: {e!s}"
+            ) from e
 
     def create_time_diff_features(
         self,
@@ -418,7 +422,7 @@ class TimeSeriesProcessor:
         except Exception as e:
             raise DataProcessingError(
                 f"時間差特徴量作成中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def create_seasonal_features(
         self, df: pd.DataFrame, date_column: str, country: str = "JP"
@@ -482,4 +486,4 @@ class TimeSeriesProcessor:
         except Exception as e:
             raise DataProcessingError(
                 f"季節性特徴量作成中にエラーが発生しました: {e!s}"
-            )
+            ) from e

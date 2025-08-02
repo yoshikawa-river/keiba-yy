@@ -120,7 +120,7 @@ class RelativeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"相対能力差特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_odds_based_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """オッズベースの特徴量抽出
@@ -235,7 +235,7 @@ class RelativeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"オッズベース特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_jockey_trainer_relative_features(
         self, df: pd.DataFrame
@@ -317,7 +317,7 @@ class RelativeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"騎手・調教師相対特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_position_relative_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """枠順・馬番の相対的な特徴量
@@ -404,7 +404,7 @@ class RelativeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"枠順相対特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_pace_relative_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """ペース・脚質の相対的な特徴量
@@ -487,7 +487,7 @@ class RelativeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"ペース相対特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_all_relative_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """全ての相対特徴量を抽出
@@ -523,4 +523,4 @@ class RelativeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"全相対特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e

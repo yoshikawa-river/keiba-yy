@@ -38,11 +38,11 @@ class RaceFeatureExtractor:
             # レースクラスのランク付け
             class_rank_map = {
                 "G1": 10,
-                "GⅠ": 10,
+                "GI": 10,
                 "G2": 9,
-                "GⅡ": 9,
+                "GII": 9,
                 "G3": 8,
-                "GⅢ": 8,
+                "GIII": 8,
                 "L": 7,
                 "Listed": 7,
                 "オープン": 6,
@@ -144,7 +144,7 @@ class RaceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"レースレベル特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_field_competition_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """出走馬の競争レベル特徴量抽出
@@ -247,7 +247,7 @@ class RaceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"出走馬競争レベル特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_pace_features(
         self, df: pd.DataFrame, historical_lap_times: pd.DataFrame | None = None
@@ -347,7 +347,7 @@ class RaceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"ペース予想特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_position_advantage_features(
         self, df: pd.DataFrame, course_statistics: pd.DataFrame | None = None
@@ -440,7 +440,7 @@ class RaceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"枠順有利不利特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_seasonal_race_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """季節・時期による特徴量抽出
@@ -517,7 +517,7 @@ class RaceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"季節・時期特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_all_race_features(
         self,
@@ -564,4 +564,4 @@ class RaceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"全レース特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e

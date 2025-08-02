@@ -321,6 +321,4 @@ class HorseCSVParser(BaseCSVParser):
         hash_obj = hashlib.md5(name.encode("utf-8"))
         hash_hex = hash_obj.hexdigest()
         # 16進数の最初の8文字を10進数に変換し、8桁にパディング
-        trainer_key = str(int(hash_hex[:8], 16))[:8].zfill(8)
-
-        return trainer_key
+        return str(int(hash_hex[:8], 16))[:8].zfill(8)

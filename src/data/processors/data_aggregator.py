@@ -114,7 +114,9 @@ class DataAggregator:
             return horse_stats
 
         except Exception as e:
-            raise DataProcessingError(f"馬別成績集計中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"馬別成績集計中にエラーが発生しました: {e!s}"
+            ) from e
 
     def aggregate_jockey_performance(
         self,
@@ -182,7 +184,9 @@ class DataAggregator:
             return jockey_stats
 
         except Exception as e:
-            raise DataProcessingError(f"騎手別成績集計中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"騎手別成績集計中にエラーが発生しました: {e!s}"
+            ) from e
 
     def aggregate_trainer_performance(
         self,
@@ -252,7 +256,7 @@ class DataAggregator:
         except Exception as e:
             raise DataProcessingError(
                 f"調教師別成績集計中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def aggregate_course_performance(
         self,
@@ -319,7 +323,7 @@ class DataAggregator:
         except Exception as e:
             raise DataProcessingError(
                 f"コース別成績集計中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def aggregate_recent_performance(
         self,
@@ -415,7 +419,9 @@ class DataAggregator:
             return recent_stats
 
         except Exception as e:
-            raise DataProcessingError(f"直近成績集計中にエラーが発生しました: {e!s}") from e
+            raise DataProcessingError(
+                f"直近成績集計中にエラーが発生しました: {e!s}"
+            ) from e
 
     def create_performance_trends(
         self,
@@ -493,4 +499,4 @@ class DataAggregator:
         except Exception as e:
             raise DataProcessingError(
                 f"パフォーマンストレンド作成中にエラーが発生しました: {e!s}"
-            )
+            ) from e

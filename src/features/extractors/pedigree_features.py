@@ -146,7 +146,7 @@ class PedigreeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"父馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_dam_sire_features(
         self,
@@ -243,7 +243,7 @@ class PedigreeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"母父馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_sibling_features(
         self,
@@ -350,7 +350,7 @@ class PedigreeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"兄弟馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def extract_bloodline_affinity(
         self, df: pd.DataFrame, bloodline_cross_performance: pd.DataFrame
@@ -433,7 +433,7 @@ class PedigreeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"血統相性特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
 
     def _get_distance_category(self, distance: float) -> str:
         """距離カテゴリの取得
@@ -515,11 +515,6 @@ class PedigreeFeatureExtractor:
         # 実際にはもっと詳細な血統表が必要
 
         # 重要種牡馬の系統チェック(仮実装)
-        major_bloodlines = {
-            "sunday_silence": {"Sunday Silence", "Deep Impact", "Heart's Cry"},
-            "northern_dancer": {"Northern Dancer", "Nijinsky", "Danzig"},
-            "mr_prospector": {"Mr. Prospector", "Kingmambo", "Seeking the Gold"},
-        }
 
         # 実装は簡略化
         return 0
@@ -577,4 +572,4 @@ class PedigreeFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(
                 f"全血統特徴量抽出中にエラーが発生しました: {e!s}"
-            )
+            ) from e
