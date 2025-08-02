@@ -45,9 +45,7 @@ class ValidatedCSVParser(BaseCSVParser):
             self.schema_validator: Optional[SchemaValidator] = None
 
         if self.validate_business_logic:
-            self.data_validator: Optional[DataValidator] = DataValidator(
-                db_session
-            )
+            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
         else:
             self.data_validator: Optional[DataValidator] = None
 
@@ -78,7 +76,9 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return combined_result
 
-    def _process_batch(self, batch_df: pd.DataFrame, dry_run: bool = False) -> None:
+    def _process_batch(
+        self, batch_df: pd.DataFrame, dry_run: bool = False
+    ) -> None:
         """
         バッチデータを処理（バリデーション統合版）
 
@@ -185,7 +185,9 @@ class ValidatedCSVParser(BaseCSVParser):
                 self.statistics["error_count"] / self.statistics["total_rows"] * 100
             )
             report["validation_summary"]["success_rate"] = (
-                self.statistics["success_count"] / self.statistics["total_rows"] * 100
+                self.statistics["success_count"]
+                / self.statistics["total_rows"]
+                * 100
             )
 
         return report

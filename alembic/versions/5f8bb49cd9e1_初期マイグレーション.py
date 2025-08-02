@@ -91,7 +91,7 @@ def upgrade() -> None:
     sa.Column('entry_count', sa.Integer(), nullable=True, comment='出走頭数'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['racecourse_id'], ['racecourses.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['racecourse_id'], ['racecourses.id']),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('race_key')
     )
@@ -157,9 +157,9 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['horse_id'], ['horses.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['jockey_id'], ['jockeys.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['jockey_id'], ['jockeys.id'], ondelete='RESTRICT'),
     sa.ForeignKeyConstraint(['race_id'], ['races.id'], ondelete='CASCADE'),
-    sa.ForeignKeyConstraint(['trainer_id'], ['trainers.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['trainer_id'], ['trainers.id'], ondelete='RESTRICT'),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('race_id', 'horse_number', name='unique_race_horse')
     )

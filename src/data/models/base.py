@@ -12,6 +12,7 @@ from sqlalchemy.ext.declarative import declarative_base
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.declarative import DeclarativeMeta
+
     Base: DeclarativeMeta = declarative_base()
 else:
     Base = declarative_base()
