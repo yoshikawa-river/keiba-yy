@@ -8,8 +8,13 @@ from datetime import datetime
 
 from sqlalchemy import Column, DateTime
 from sqlalchemy.ext.declarative import declarative_base
+from typing import TYPE_CHECKING
 
-Base = declarative_base()
+if TYPE_CHECKING:
+    from sqlalchemy.ext.declarative import DeclarativeMeta
+    Base: DeclarativeMeta = declarative_base()
+else:
+    Base = declarative_base()
 
 
 class BaseModel(Base):

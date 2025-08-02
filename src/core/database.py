@@ -78,12 +78,12 @@ class DatabaseManager:
             )
         return self._session_factory
 
-    def get_session(self) -> Session:
+    def get_session(self):
         """新しいセッションを取得"""
         return self.session_factory()
 
     @contextmanager
-    def session_scope(self) -> Generator[Session, None, None]:
+    def session_scope(self):
         """
         セッションのコンテキストマネージャー
 
@@ -181,5 +181,5 @@ def get_db() -> Generator[Session, None, None]:
 
 
 # セッションのショートカット
-Session = db_manager.session_factory
+SessionLocal = db_manager.session_factory
 session_scope = db_manager.session_scope

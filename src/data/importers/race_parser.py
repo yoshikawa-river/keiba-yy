@@ -5,7 +5,7 @@ TARGET frontier JVから出力されたレース情報CSVをパースし、
 データベースに保存する機能を提供
 """
 
-from datetime import datetime
+from datetime import datetime, date
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
@@ -181,7 +181,7 @@ class RaceCSVParser(BaseCSVParser):
             self.db_session.rollback()
             return False
 
-    def _parse_date(self, date_str: Any) -> datetime.date:
+    def _parse_date(self, date_str: Any) -> date:
         """日付文字列をパース"""
         if pd.isna(date_str):
             raise ValidationError("日付が空です")

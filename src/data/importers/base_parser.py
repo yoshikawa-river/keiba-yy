@@ -235,7 +235,7 @@ class BaseCSVParser(ABC):
                 is_valid, error_message = self._validate_row(transformed_data)
 
                 if not is_valid:
-                    self._add_error(idx, error_message, row.to_dict())
+                    self._add_error(idx, error_message or "バリデーションエラー", row.to_dict())
                     self.statistics["error_count"] += 1
                     continue
 

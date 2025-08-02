@@ -11,7 +11,8 @@ from sqlalchemy.orm import Session
 
 from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
-from src.data.validators import DataValidator, Schema, SchemaValidator, ValidationResult
+from src.data.validators import DataValidator, SchemaValidator, ValidationResult
+from src.data.validators.schema_validator import Schema
 
 
 class ValidatedCSVParser(BaseCSVParser):
@@ -37,14 +38,14 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator = SchemaValidator(self.schema)
+            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(self.schema)
         else:
-            self.schema_validator = None
+            self.schema_validator: Optional[SchemaValidator] = None
 
         if self.validate_business_logic:
-            self.data_validator = DataValidator(db_session)
+            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
         else:
-            self.data_validator = None
+            self.data_validator: Optional[DataValidator] = None
 
     def _validate_row_with_validators(
         self, row_data: Dict[str, Any]
@@ -73,7 +74,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return combined_result
 
-    def _process_batch(self, batch_df: pd.DataFrame) -> Dict[str, int]:
+    def _process_batch(self, batch_df: pd.DataFrame, dry_run: bool = False) -> None:
         """
         バッチデータを処理（バリデーション統合版）
 
@@ -128,7 +129,7 @@ class ValidatedCSVParser(BaseCSVParser):
                 is_valid, error_msg = self._validate_row(transformed)
                 if not is_valid:
                     logger.error(f"行 {idx}: {error_msg}")
-                    self._add_error(idx, error_msg, row_dict)
+                    self._add_error(idx, error_msg or "バリデーションエラー", row_dict)
                     error += 1
                     continue
 
@@ -183,7 +184,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
     def _count_error_types(self) -> Dict[str, int]:
         """エラータイプをカウント"""
-        error_types = {}
+        error_types: Dict[str, int] = {}
         for error in self.errors:
             error_type = error.get("type", "unknown")
             error_types[error_type] = error_types.get(error_type, 0) + 1
@@ -191,7 +192,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
     def _count_warning_types(self) -> Dict[str, int]:
         """警告タイプをカウント"""
-        warning_types = {}
+        warning_types: Dict[str, int] = {}
         for warning in self.warnings:
             warning_type = warning.get("type", "unknown")
             warning_types[warning_type] = warning_types.get(warning_type, 0) + 1

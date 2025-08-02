@@ -4,7 +4,7 @@
 データスキーマの検証機能を提供
 """
 
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Union
 
 from src.core.logging import logger
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -22,7 +22,7 @@ class SchemaField:
         max_value: Optional[float] = None,
         pattern: Optional[str] = None,
         enum_values: Optional[List[Any]] = None,
-        custom_validator: Optional[callable] = None,
+        custom_validator: Optional[Callable[[Any], bool]] = None,
     ):
         self.name = name
         self.field_type = field_type

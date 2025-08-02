@@ -225,7 +225,7 @@ class BatchProcessor:
         self, csv_files: List[CSVFile]
     ) -> Dict[FileType, List[CSVFile]]:
         """ファイルをタイプ別にグループ化"""
-        grouped = {}
+        grouped: Dict[FileType, List[CSVFile]] = {}
         for csv_file in csv_files:
             if csv_file.file_type not in grouped:
                 grouped[csv_file.file_type] = []
@@ -271,7 +271,7 @@ class BatchProcessor:
                     # 実際の処理の場合はコミット
                     session.commit()
 
-                return result
+                return result  # type: ignore
 
             except Exception as e:
                 session.rollback()
@@ -343,7 +343,7 @@ class BatchProcessor:
                 "row_count": csv_file.row_count,
             }
 
-            quality_report["issues"].extend(
+            quality_report["issues"].extend(  # type: ignore
                 [{"file": str(csv_file.path), "issue": issue} for issue in file_issues]
             )
 

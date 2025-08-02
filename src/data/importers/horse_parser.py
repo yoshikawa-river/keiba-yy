@@ -5,7 +5,7 @@ TARGET frontier JVから出力された馬情報CSVをパースし、
 データベースに保存する機能を提供
 """
 
-from datetime import datetime
+from datetime import datetime, date
 from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
@@ -230,7 +230,7 @@ class HorseCSVParser(BaseCSVParser):
         except (IndexError, ValueError):
             raise ValidationError(f"年齢の抽出に失敗: {sex_age}")
 
-    def _parse_date(self, date_str: Any) -> datetime.date:
+    def _parse_date(self, date_str: Any) -> date:
         """日付文字列をパース"""
         if pd.isna(date_str):
             raise ValidationError("日付が空です")

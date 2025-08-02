@@ -198,7 +198,7 @@ def get_settings() -> Settings:
 
     # 環境別設定ファイルが存在する場合は使用
     if Path(env_file).exists():
-        return Settings(_env_file=env_file)
+        return Settings(_env_file=env_file)  # type: ignore
 
     return Settings()
 

@@ -65,7 +65,7 @@ class LoggerManager:
 
         # ファイル出力の設定
         if log_file or settings.LOG_FILE:
-            log_path = Path(log_file or settings.LOG_FILE)
+            log_path = Path(log_file or settings.LOG_FILE or "app.log")
             log_path.parent.mkdir(parents=True, exist_ok=True)
 
             logger.add(
@@ -138,7 +138,7 @@ class LoggerManager:
                 try:
                     level = logger.level(record.levelname).name
                 except ValueError:
-                    level = record.levelno
+                    level = str(record.levelno)
 
                 # loguruでログ出力
                 logger.opt(depth=6, exception=record.exc_info).log(
@@ -158,7 +158,7 @@ class LoggerManager:
         Returns:
             BoundLogger: 名前付きロガー
         """
-        return logger.bind(name=name)
+        return BoundLogger(name)
 
 
 # ロガーマネージャーのシングルトンインスタンス

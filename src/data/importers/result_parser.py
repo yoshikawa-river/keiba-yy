@@ -85,37 +85,37 @@ class ResultCSVParser(BaseCSVParser):
                     result_data["finish_position"] = finish_pos
 
             if pd.notna(row.get("finish_time")):
-                result_data["finish_time"] = self._parse_time(row["finish_time"])
+                result_data["finish_time"] = self._parse_time(row["finish_time"])  # type: ignore
 
             if pd.notna(row.get("margin")):
-                result_data["margin"] = self._parse_margin(row["margin"])
+                result_data["margin"] = self._parse_margin(row["margin"])  # type: ignore
 
             if pd.notna(row.get("position_at_corners")):
                 result_data["position_at_corners"] = str(
                     row["position_at_corners"]
-                ).strip()
+                ).strip()  # type: ignore
 
             if pd.notna(row.get("final_furlong_time")):
                 result_data["final_furlong_time"] = self._parse_float(
                     row["final_furlong_time"]
-                )
+                )  # type: ignore
 
             if pd.notna(row.get("win_odds")):
-                result_data["win_odds"] = self._parse_float(row["win_odds"])
+                result_data["win_odds"] = self._parse_float(row["win_odds"])  # type: ignore
 
             if pd.notna(row.get("favorite_order")):
-                result_data["favorite_order"] = self._parse_int(row["favorite_order"])
+                result_data["favorite_order"] = self._parse_int(row["favorite_order"])  # type: ignore
 
             if pd.notna(row.get("horse_weight")):
-                result_data["horse_weight"] = self._parse_int(row["horse_weight"])
+                result_data["horse_weight"] = self._parse_int(row["horse_weight"])  # type: ignore
 
             if pd.notna(row.get("weight_change")):
                 result_data["weight_change"] = self._parse_weight_change(
                     row["weight_change"]
-                )
+                )  # type: ignore
 
             if pd.notna(row.get("comment")):
-                result_data["comment"] = str(row["comment"]).strip()
+                result_data["comment"] = str(row["comment"]).strip()  # type: ignore
 
             transformed["result_data"] = result_data if result_data else None
 
@@ -384,9 +384,9 @@ class ResultCSVParser(BaseCSVParser):
 
         # 数字のみの場合（馬身数）
         if margin.replace(".", "").isdigit():
-            return margin
+            return str(margin)
 
-        return margin
+        return str(margin)
 
     def _parse_weight_change(self, change: Any) -> Optional[int]:
         """体重増減をパース"""

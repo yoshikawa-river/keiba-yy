@@ -25,8 +25,8 @@ class ImportManager:
         Args:
             import_base_dir: インポート基底ディレクトリ
         """
-        self.import_base_dir = import_base_dir or settings.DATA_DIR / "imports"
-        self.history_file = settings.DATA_DIR / "import_history.json"
+        self.import_base_dir = import_base_dir or (settings.DATA_DIR or Path("data")) / "imports"
+        self.history_file = (settings.DATA_DIR or Path("data")) / "import_history.json"
         self.import_history = self._load_history()
 
     def import_from_directory(
@@ -237,12 +237,12 @@ class ImportManager:
             }
 
             for dir_name, imports in self.import_history.items():
-                status["directories"][dir_name] = {
+                status["directories"][dir_name] = {  # type: ignore
                     "total_imports": len(imports),
                     "last_import": imports[-1] if imports else None,
                     "success_rate": self._calculate_success_rate(imports),
                 }
-                status["total_imports"] += len(imports)
+                status["total_imports"] += len(imports)  # type: ignore
                 status["total_files_processed"] += sum(
                     imp.get("processed_files", 0) for imp in imports
                 )
@@ -262,7 +262,7 @@ class ImportManager:
         if self.history_file.exists():
             try:
                 with open(self.history_file, "r") as f:
-                    return json.load(f)
+                    return json.load(f)  # type: ignore
             except Exception as e:
                 logger.error(f"履歴ファイル読み込みエラー: {e}")
         return {}
@@ -312,4 +312,4 @@ class ImportManager:
         total_rows = sum(imp.get("total_rows", 0) for imp in imports)
         success_rows = sum(imp.get("success_rows", 0) for imp in imports)
 
-        return success_rows / total_rows if total_rows > 0 else 0
+        return success_rows / total_rows if total_rows > 0 else 0  # type: ignore

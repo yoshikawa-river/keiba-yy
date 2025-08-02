@@ -5,7 +5,7 @@
 """
 
 from datetime import datetime
-from typing import Any, Callable, Dict, List
+from typing import Any, Callable, Dict, List, Union
 
 from src.data.validators.schema_validator import Schema, SchemaField
 
@@ -32,7 +32,7 @@ class ValidationRules:
             return False
 
     @staticmethod
-    def jra_race_key_validator(value: Any) -> str:
+    def jra_race_key_validator(value: Any) -> Union[str, bool]:
         """JRAレースキーをバリデーション"""
         if not value:
             return "レースキーが空です"
@@ -65,7 +65,7 @@ class ValidationRules:
         return True
 
     @staticmethod
-    def horse_weight_validator(value: Any) -> str:
+    def horse_weight_validator(value: Any) -> Union[str, bool]:
         """馬体重をバリデーション"""
         if not value:
             return True
@@ -79,7 +79,7 @@ class ValidationRules:
             return "馬体重は数値である必要があります"
 
     @staticmethod
-    def time_format_validator(value: Any) -> str:
+    def time_format_validator(value: Any) -> Union[str, bool]:
         """タイムフォーマットをバリデーション"""
         if not value:
             return True
@@ -101,7 +101,7 @@ class ValidationRules:
     def odds_combination_validator(odds_type: str) -> Callable:
         """オッズ組み合わせバリデーターを生成"""
 
-        def validator(value: Any) -> str:
+        def validator(value: Any) -> Union[str, bool]:
             if not value:
                 return "組み合わせが空です"
 
