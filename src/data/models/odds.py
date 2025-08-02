@@ -61,7 +61,7 @@ class Prediction(BaseModel):
     )
     model_name = Column(String(50), nullable=False, comment="モデル名")
     model_version = Column(String(20), comment="モデルバージョン")
-    prediction_data = Column(JSON, nullable=False, comment="予測結果の詳細（JSON形式）")
+    prediction_data = Column(JSON, nullable=False, comment="予測結果の詳細(JSON形式)")
 
     # リレーション
     race = relationship("Race", back_populates="predictions")
@@ -88,7 +88,7 @@ class FeatureCache(BaseModel):
         comment="馬ID",
     )
     feature_type = Column(String(50), nullable=False, comment="特徴量タイプ")
-    feature_data = Column(JSON, nullable=False, comment="特徴量データ（JSON形式）")
+    feature_data = Column(JSON, nullable=False, comment="特徴量データ(JSON形式)")
     calculated_at = Column(
         DateTime, default=DateTime, nullable=False, comment="計算日時"
     )

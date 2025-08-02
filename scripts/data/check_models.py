@@ -4,13 +4,14 @@ SQLAlchemyモデルの動作確認スクリプト
 
 モデルの定義とリレーションが正しく機能するか確認
 """
+
 import sys
 from pathlib import Path
 
 # プロジェクトルートをPythonパスに追加
 sys.path.append(str(Path(__file__).parents[2]))
 
-from datetime import date, datetime
+from datetime import date
 from decimal import Decimal
 
 from sqlalchemy import create_engine
@@ -21,8 +22,8 @@ from src.data.models import (
     Horse,
     Jockey,
     Race,
-    RaceEntry,
     Racecourse,
+    RaceEntry,
     Trainer,
 )
 
@@ -115,7 +116,7 @@ def main():
         race_dict = race.to_dict()
         print(f"✓ レース辞書化: {list(race_dict.keys())[:5]}...")
 
-        print("\n✅ 全てのテストが正常に完了しました！")
+        print("\n✅ 全てのテストが正常に完了しました!")
 
     except Exception as e:
         print(f"\n❌ エラーが発生しました: {e}")

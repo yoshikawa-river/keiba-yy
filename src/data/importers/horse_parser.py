@@ -5,8 +5,8 @@ TARGET frontier JVから出力された馬情報CSVをパースし、
 データベースに保存する機能を提供
 """
 
-from datetime import datetime, date
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import date, datetime
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -14,13 +14,13 @@ from sqlalchemy.exc import IntegrityError
 from src.core.exceptions import ValidationError
 from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
-from src.data.models.horse import Horse, Jockey, Trainer
+from src.data.models.horse import Horse, Trainer
 
 
 class HorseCSVParser(BaseCSVParser):
     """馬情報CSVパーサー"""
 
-    def _get_column_mappings(self) -> Dict[str, str]:
+    def _get_column_mappings(self) -> dict[str, str]:
         """CSVカラムとDBカラムのマッピング"""
         return {
             "馬ID": "horse_key",
@@ -40,11 +40,11 @@ class HorseCSVParser(BaseCSVParser):
             "通算成績": "career_record",
         }
 
-    def _get_required_columns(self) -> List[str]:
+    def _get_required_columns(self) -> list[str]:
         """必須カラムのリスト"""
         return ["馬ID", "馬名", "性齢"]
 
-    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
         """
         行データを変換
 
@@ -109,9 +109,9 @@ class HorseCSVParser(BaseCSVParser):
             return transformed
 
         except Exception as e:
-            raise ValidationError(f"データ変換エラー: {e}")
+            raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         馬データのバリデーション
 
@@ -143,7 +143,7 @@ class HorseCSVParser(BaseCSVParser):
 
         return True, None
 
-    def _save_row(self, row_data: Dict[str, Any]) -> bool:
+    def _save_row(self, row_data: dict[str, Any]) -> bool:
         """
         馬データを保存
 
@@ -227,8 +227,8 @@ class HorseCSVParser(BaseCSVParser):
         try:
             age_str = sex_age[1:]
             return int(age_str)
-        except (IndexError, ValueError):
-            raise ValidationError(f"年齢の抽出に失敗: {sex_age}")
+        except (IndexError, ValueError) as e:
+            raise ValidationError(f"年齢の抽出に失敗: {sex_age}") from e
 
     def _parse_date(self, date_str: Any) -> date:
         """日付文字列をパース"""
@@ -282,7 +282,7 @@ class HorseCSVParser(BaseCSVParser):
         if color in color_map:
             return color_map[color]
 
-        # 部分一致で検索（長い文字列から順に）
+        # 部分一致で検索(長い文字列から順に)
         sorted_keys = sorted(color_map.keys(), key=len, reverse=True)
         for key in sorted_keys:
             if key in color:
@@ -321,6 +321,4 @@ class HorseCSVParser(BaseCSVParser):
         hash_obj = hashlib.md5(name.encode("utf-8"))
         hash_hex = hash_obj.hexdigest()
         # 16進数の最初の8文字を10進数に変換し、8桁にパディング
-        trainer_key = str(int(hash_hex[:8], 16))[:8].zfill(8)
-
-        return trainer_key
+        return str(int(hash_hex[:8], 16))[:8].zfill(8)

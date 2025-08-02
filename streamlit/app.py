@@ -1,6 +1,7 @@
 """
 Streamlit ダッシュボード
 """
+
 import streamlit as st
 
 # ページ設定

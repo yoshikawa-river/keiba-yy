@@ -5,8 +5,7 @@ CSVパーサーの基底クラス
 """
 
 from abc import ABC, abstractmethod
-from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -29,8 +28,8 @@ class BaseCSVParser(ABC):
         self.db_session = db_session
         self.column_mappings = self._get_column_mappings()
         self.required_columns = self._get_required_columns()
-        self.errors: List[Dict[str, Any]] = []
-        self.warnings: List[Dict[str, Any]] = []
+        self.errors: list[dict[str, Any]] = []
+        self.warnings: list[dict[str, Any]] = []
         self._init_statistics()
 
     def _init_statistics(self) -> None:
@@ -46,7 +45,7 @@ class BaseCSVParser(ABC):
         }
 
     @abstractmethod
-    def _get_column_mappings(self) -> Dict[str, str]:
+    def _get_column_mappings(self) -> dict[str, str]:
         """
         CSVカラムとDBカラムのマッピングを定義
 
@@ -56,17 +55,17 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _get_required_columns(self) -> List[str]:
+    def _get_required_columns(self) -> list[str]:
         """
         必須カラムのリストを定義
 
         Returns:
-            必須カラム名のリスト（CSV側のカラム名）
+            必須カラム名のリスト(CSV側のカラム名)
         """
         pass
 
     @abstractmethod
-    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
         """
         行データを変換
 
@@ -82,7 +81,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         行データをバリデーション
 
@@ -95,7 +94,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _save_row(self, row: Dict[str, Any]) -> bool:
+    def _save_row(self, row: dict[str, Any]) -> bool:
         """
         行データをデータベースに保存
 
@@ -110,14 +109,14 @@ class BaseCSVParser(ABC):
     @log_execution_time
     def parse_file(
         self, csv_file: CSVFile, batch_size: int = 1000, dry_run: bool = False
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         CSVファイルをパース
 
         Args:
             csv_file: CSVファイル情報
             batch_size: バッチサイズ
-            dry_run: ドライラン（DBに保存しない）
+            dry_run: ドライラン(DBに保存しない)
 
         Returns:
             パース結果の統計情報
@@ -151,7 +150,7 @@ class BaseCSVParser(ABC):
                     f"エラー: {self.statistics['error_count']}"
                 )
 
-            # コミット（ドライランでない場合）
+            # コミット(ドライランでない場合)
             if not dry_run:
                 self.db_session.commit()
                 logger.info("データベースへのコミット完了")
@@ -159,7 +158,7 @@ class BaseCSVParser(ABC):
         except Exception as e:
             self.db_session.rollback()
             logger.error(f"パースエラー: {e}")
-            raise DataImportError(f"ファイルパースに失敗: {csv_file.path.name}")
+            raise DataImportError(f"ファイルパースに失敗: {csv_file.path.name}") from e
 
         # 結果サマリー
         self._log_summary()
@@ -170,7 +169,7 @@ class BaseCSVParser(ABC):
             "warnings": self.warnings[:100],  # 最初の100件のみ
         }
 
-    def _validate_columns(self, headers: List[str]) -> None:
+    def _validate_columns(self, headers: list[str]) -> None:
         """
         必須カラムの存在確認
 
@@ -207,16 +206,14 @@ class BaseCSVParser(ABC):
             keep_default_na=True,
         )
 
-        # カラム名の正規化（前後の空白除去）
+        # カラム名の正規化(前後の空白除去)
         df.columns = df.columns.str.strip()
 
         # カラムマッピングの適用
         columns_to_rename = {
             k: v for k, v in self.column_mappings.items() if k in df.columns
         }
-        df = df.rename(columns=columns_to_rename)
-
-        return df
+        return df.rename(columns=columns_to_rename)
 
     def _process_batch(self, batch_df: pd.DataFrame, dry_run: bool) -> None:
         """
@@ -241,7 +238,7 @@ class BaseCSVParser(ABC):
                     self.statistics["error_count"] += 1
                     continue
 
-                # 保存（ドライランでない場合）
+                # 保存(ドライランでない場合)
                 if not dry_run:
                     if self._save_row(transformed_data):
                         self.statistics["success_count"] += 1
@@ -260,7 +257,7 @@ class BaseCSVParser(ABC):
                 self.statistics["error_count"] += 1
 
     def _add_error(
-        self, row_index: int, message: str, row_data: Dict[str, Any]
+        self, row_index: int, message: str, row_data: dict[str, Any]
     ) -> None:
         """エラー情報を追加"""
         self.errors.append(
@@ -272,7 +269,7 @@ class BaseCSVParser(ABC):
         )
 
     def _add_warning(
-        self, row_index: int, message: str, row_data: Dict[str, Any]
+        self, row_index: int, message: str, row_data: dict[str, Any]
     ) -> None:
         """警告情報を追加"""
         self.warnings.append(

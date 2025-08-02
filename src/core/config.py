@@ -8,7 +8,6 @@
 import os
 from functools import lru_cache
 from pathlib import Path
-from typing import Optional
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
@@ -46,7 +45,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = Field(default="redis", description="Redisホスト")
     REDIS_PORT: int = Field(default=6379, description="Redisポート")
     REDIS_DB: int = Field(default=0, description="Redis DB番号")
-    REDIS_PASSWORD: Optional[str] = Field(default=None, description="Redisパスワード")
+    REDIS_PASSWORD: str | None = Field(default=None, description="Redisパスワード")
 
     # === Celery設定 ===
     CELERY_BROKER_URL: str = Field(
@@ -68,7 +67,7 @@ class Settings(BaseSettings):
     )
     ALGORITHM: str = Field(default="HS256", description="JWT署名アルゴリズム")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
-        default=30, description="アクセストークン有効期限（分）"
+        default=30, description="アクセストークン有効期限(分)"
     )
 
     # === ログ設定 ===
@@ -77,7 +76,7 @@ class Settings(BaseSettings):
         default="[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
         description="ログフォーマット",
     )
-    LOG_FILE: Optional[str] = Field(default=None, description="ログファイルパス")
+    LOG_FILE: str | None = Field(default=None, description="ログファイルパス")
 
     # === MLflow設定 ===
     MLFLOW_TRACKING_URI: str = Field(
@@ -88,17 +87,15 @@ class Settings(BaseSettings):
     )
 
     # === JRA-VAN設定 ===
-    JRAVAN_USER_ID: Optional[str] = Field(default=None, description="JRA-VANユーザーID")
-    JRAVAN_PASSWORD: Optional[str] = Field(
-        default=None, description="JRA-VANパスワード"
-    )
+    JRAVAN_USER_ID: str | None = Field(default=None, description="JRA-VANユーザーID")
+    JRAVAN_PASSWORD: str | None = Field(default=None, description="JRA-VANパスワード")
 
     # === パス設定 ===
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
-    DATA_DIR: Optional[Path] = Field(default=None, description="データディレクトリ")
-    MODEL_DIR: Optional[Path] = Field(default=None, description="モデルディレクトリ")
-    LOG_DIR: Optional[Path] = Field(default=None, description="ログディレクトリ")
-    PREDICTION_DIR: Optional[Path] = Field(
+    DATA_DIR: Path | None = Field(default=None, description="データディレクトリ")
+    MODEL_DIR: Path | None = Field(default=None, description="モデルディレクトリ")
+    LOG_DIR: Path | None = Field(default=None, description="ログディレクトリ")
+    PREDICTION_DIR: Path | None = Field(
         default=None, description="予測結果ディレクトリ"
     )
 
@@ -182,11 +179,11 @@ class Settings(BaseSettings):
         "env_file_encoding": "utf-8",
         "case_sensitive": True,
         "extra": "ignore",  # 余分なフィールドを無視
-        # "env_prefix": "KEIBA_",  # 環境変数のプレフィックス（オプション）
+        # "env_prefix": "KEIBA_",  # 環境変数のプレフィックス(オプション)
     }
 
 
-@lru_cache()
+@lru_cache
 def get_settings() -> Settings:
     """
     設定のシングルトンインスタンスを取得

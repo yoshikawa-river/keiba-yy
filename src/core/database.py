@@ -5,15 +5,15 @@ SQLAlchemyを使用したデータベース接続の管理と
 セッション管理を提供する
 """
 
+from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Generator, Optional
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
-from sqlalchemy.pool import Pool
 
 from src.core.config import settings
+from src.core.logging import logger
 
 
 class DatabaseManager:
@@ -21,11 +21,11 @@ class DatabaseManager:
 
     def __init__(
         self,
-        database_url: Optional[str] = None,
-        pool_size: Optional[int] = None,
-        max_overflow: Optional[int] = None,
-        pool_pre_ping: Optional[bool] = None,
-        echo: Optional[bool] = None,
+        database_url: str | None = None,
+        pool_size: int | None = None,
+        max_overflow: int | None = None,
+        pool_pre_ping: bool | None = None,
+        echo: bool | None = None,
     ):
         """
         データベース接続マネージャーの初期化
@@ -43,8 +43,8 @@ class DatabaseManager:
         self.pool_pre_ping = pool_pre_ping or settings.DATABASE_POOL_PRE_PING
         self.echo = echo if echo is not None else settings.DEBUG
 
-        self._engine: Optional[Engine] = None
-        self._session_factory: Optional[sessionmaker] = None
+        self._engine: Engine | None = None
+        self._session_factory: sessionmaker | None = None
 
     @property
     def engine(self) -> Engine:
@@ -127,9 +127,9 @@ class DatabaseManager:
         # エンジンのイベント
         @event.listens_for(self.engine, "before_execute")
         def receive_before_execute(conn, clauseelement, multiparams, params):
-            """SQL実行前のログ（開発環境のみ）"""
+            """SQL実行前のログ(開発環境のみ)"""
             if settings.is_development and settings.LOG_LEVEL == "DEBUG":
-                print(f"[SQL] {clauseelement}")
+                logger.info(f"[SQL] {clauseelement}")
 
     def create_tables(self) -> None:
         """

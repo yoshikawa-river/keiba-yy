@@ -26,7 +26,7 @@ class Racecourse(BaseModel):
     id = Column(Integer, primary_key=True, autoincrement=True)
     jra_code = Column(String(2), unique=True, nullable=False, comment="JRAコード")
     name = Column(String(50), nullable=False, comment="競馬場名")
-    name_kana = Column(String(100), comment="競馬場名（カナ）")
+    name_kana = Column(String(100), comment="競馬場名(カナ)")
     location = Column(String(100), comment="所在地")
 
     # リレーション
@@ -46,14 +46,14 @@ class Race(BaseModel):
     racecourse_id = Column(Integer, ForeignKey("racecourses.id"), comment="競馬場ID")
     race_number = Column(Integer, nullable=False, comment="R数")
     race_name = Column(String(100), nullable=False, comment="レース名")
-    race_name_sub = Column(String(100), comment="レース名（サブ）")
+    race_name_sub = Column(String(100), comment="レース名(サブ)")
     grade = Column(String(10), comment="グレード (G1, G2, G3, OP, etc)")
     race_type = Column(String(10), nullable=False, comment="トラックタイプ (芝/ダート)")
-    distance = Column(Integer, nullable=False, comment="距離（メートル）")
+    distance = Column(Integer, nullable=False, comment="距離(メートル)")
     direction = Column(String(10), comment="回り (右/左/直線)")
     weather = Column(String(10), comment="天候")
     track_condition = Column(String(10), comment="馬場状態")
-    prize_money = Column(JSON, comment="賞金情報（JSON形式）")
+    prize_money = Column(JSON, comment="賞金情報(JSON形式)")
     entry_count = Column(Integer, comment="出走頭数")
 
     # リレーション

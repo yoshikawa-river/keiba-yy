@@ -6,7 +6,7 @@
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 @dataclass
@@ -24,9 +24,9 @@ class ValidationResult:
     """バリデーション結果"""
 
     is_valid: bool
-    errors: List[ValidationError] = field(default_factory=list)
-    warnings: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    errors: list[ValidationError] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def add_error(
         self, field: str, value: Any, message: str, error_type: str = "validation_error"
@@ -59,7 +59,7 @@ class BaseValidator(ABC):
         バリデーターの初期化
 
         Args:
-            strict_mode: 厳格モード（警告もエラーとして扱う）
+            strict_mode: 厳格モード(警告もエラーとして扱う)
         """
         self.strict_mode = strict_mode
 
@@ -76,7 +76,7 @@ class BaseValidator(ABC):
         """
         pass
 
-    def validate_batch(self, data_list: List[Any]) -> List[ValidationResult]:
+    def validate_batch(self, data_list: list[Any]) -> list[ValidationResult]:
         """
         複数データをバッチでバリデーション
 
@@ -92,7 +92,7 @@ class BaseValidator(ABC):
         return results
 
     def _check_required_fields(
-        self, data: Dict[str, Any], required_fields: List[str]
+        self, data: dict[str, Any], required_fields: list[str]
     ) -> ValidationResult:
         """
         必須フィールドをチェック
@@ -123,7 +123,7 @@ class BaseValidator(ABC):
 
     def _check_data_type(
         self, field: str, value: Any, expected_type: type
-    ) -> Optional[ValidationError]:
+    ) -> ValidationError | None:
         """
         データ型をチェック
 
@@ -152,9 +152,9 @@ class BaseValidator(ABC):
         self,
         field: str,
         value: Any,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
-    ) -> Optional[ValidationError]:
+        min_value: float | None = None,
+        max_value: float | None = None,
+    ) -> ValidationError | None:
         """
         数値の範囲をチェック
 
@@ -200,7 +200,7 @@ class BaseValidator(ABC):
 
     def _check_string_pattern(
         self, field: str, value: Any, pattern: str
-    ) -> Optional[ValidationError]:
+    ) -> ValidationError | None:
         """
         文字列パターンをチェック
 
@@ -231,8 +231,8 @@ class BaseValidator(ABC):
         return None
 
     def _check_enum_value(
-        self, field: str, value: Any, valid_values: List[Any]
-    ) -> Optional[ValidationError]:
+        self, field: str, value: Any, valid_values: list[Any]
+    ) -> ValidationError | None:
         """
         列挙値をチェック
 

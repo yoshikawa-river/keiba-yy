@@ -4,13 +4,11 @@
 大量データの効率的な処理を行うバッチ処理機能
 """
 
-import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Type
-
-from sqlalchemy.orm import Session
+from typing import Any, ClassVar
 
 from src.core.database import db_manager
 from src.core.exceptions import DataImportError
@@ -27,20 +25,20 @@ class BatchResult:
     """バッチ処理結果"""
 
     start_time: datetime
-    end_time: Optional[datetime] = None
+    end_time: datetime | None = None
     total_files: int = 0
     processed_files: int = 0
     failed_files: int = 0
     total_rows: int = 0
     success_rows: int = 0
     error_rows: int = 0
-    errors: List[Dict[str, Any]] = field(default_factory=list)
-    warnings: List[Dict[str, Any]] = field(default_factory=list)
-    file_results: Dict[str, Dict[str, Any]] = field(default_factory=dict)
+    errors: list[dict[str, Any]] = field(default_factory=list)
+    warnings: list[dict[str, Any]] = field(default_factory=list)
+    file_results: dict[str, dict[str, Any]] = field(default_factory=dict)
 
     @property
     def processing_time(self) -> float:
-        """処理時間（秒）"""
+        """処理時間(秒)"""
         if self.end_time:
             return (self.end_time - self.start_time).total_seconds()
         return 0
@@ -52,7 +50,7 @@ class BatchResult:
             return 0
         return self.success_rows / self.total_rows
 
-    def add_file_result(self, file_path: str, result: Dict[str, Any]):
+    def add_file_result(self, file_path: str, result: dict[str, Any]):
         """ファイル処理結果を追加"""
         self.file_results[file_path] = result
         self.processed_files += 1
@@ -81,7 +79,7 @@ class BatchProcessor:
     """バッチプロセッサー"""
 
     # ファイルタイプとパーサーのマッピング
-    PARSER_MAPPING: Dict[FileType, Type[BaseCSVParser]] = {
+    PARSER_MAPPING: ClassVar[dict[FileType, type[BaseCSVParser]]] = {
         FileType.RACE_INFO: RaceCSVParser,
         FileType.HORSE_INFO: HorseCSVParser,
         FileType.RACE_RESULT: ResultCSVParser,
@@ -104,7 +102,7 @@ class BatchProcessor:
             batch_size: バッチサイズ
             parallel: 並列処理を行うか
             validate: バリデーションを行うか
-            dry_run: ドライラン（実際の保存は行わない）
+            dry_run: ドライラン(実際の保存は行わない)
         """
         self.import_dir = import_dir
         self.batch_size = batch_size
@@ -115,15 +113,15 @@ class BatchProcessor:
 
     def process_all(
         self,
-        file_types: Optional[List[FileType]] = None,
+        file_types: list[FileType] | None = None,
         file_pattern: str = "*.csv",
-        progress_callback: Optional[Callable[[int, int], None]] = None,
+        progress_callback: Callable[[int, int], None] | None = None,
     ) -> BatchResult:
         """
         すべてのCSVファイルを処理
 
         Args:
-            file_types: 処理対象のファイルタイプ（Noneの場合はすべて）
+            file_types: 処理対象のファイルタイプ(Noneの場合はすべて)
             file_pattern: ファイルパターン
             progress_callback: 進捗コールバック関数
 
@@ -147,7 +145,7 @@ class BatchProcessor:
             # ファイルタイプ別にグループ化
             files_by_type = self._group_files_by_type(csv_files)
 
-            # 処理順序を決定（依存関係を考慮）
+            # 処理順序を決定(依存関係を考慮)
             processing_order = [
                 FileType.RACE_INFO,  # レース情報を最初に
                 FileType.HORSE_INFO,  # 馬情報
@@ -202,7 +200,7 @@ class BatchProcessor:
         except Exception as e:
             logger.error(f"バッチ処理エラー: {e}")
             result.end_time = datetime.now()
-            raise DataImportError(f"バッチ処理に失敗しました: {e}")
+            raise DataImportError(f"バッチ処理に失敗しました: {e}") from e
 
         return result
 
@@ -222,17 +220,17 @@ class BatchProcessor:
         return self.process_all(file_types=[file_type], file_pattern=file_pattern)
 
     def _group_files_by_type(
-        self, csv_files: List[CSVFile]
-    ) -> Dict[FileType, List[CSVFile]]:
+        self, csv_files: list[CSVFile]
+    ) -> dict[FileType, list[CSVFile]]:
         """ファイルをタイプ別にグループ化"""
-        grouped: Dict[FileType, List[CSVFile]] = {}
+        grouped: dict[FileType, list[CSVFile]] = {}
         for csv_file in csv_files:
             if csv_file.file_type not in grouped:
                 grouped[csv_file.file_type] = []
             grouped[csv_file.file_type].append(csv_file)
         return grouped
 
-    def _process_file(self, csv_file: CSVFile) -> Dict[str, Any]:
+    def _process_file(self, csv_file: CSVFile) -> dict[str, Any]:
         """
         単一ファイルを処理
 
@@ -273,11 +271,11 @@ class BatchProcessor:
 
                 return result  # type: ignore
 
-            except Exception as e:
+            except Exception:
                 session.rollback()
                 raise
 
-    def validate_data_quality(self, csv_files: List[CSVFile]) -> Dict[str, Any]:
+    def validate_data_quality(self, csv_files: list[CSVFile]) -> dict[str, Any]:
         """
         データ品質を検証
 

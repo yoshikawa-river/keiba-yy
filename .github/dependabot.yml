@@ -6,43 +6,39 @@ updates:
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
     open-pull-requests-limit: 5
-    reviewers:
-      - "yoshikawa-river"
     labels:
       - "dependencies"
       - "python"
-    groups:
-      dev-dependencies:
-        patterns:
-          - "pytest*"
-          - "ruff"
-          - "mypy"
-          - "coverage*"
-      
+    commit-message:
+      prefix: "chore"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "-"
+
   # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
-      time: "09:00"
-    reviewers:
-      - "yoshikawa-river"
+    open-pull-requests-limit: 3
     labels:
       - "dependencies"
-      - "github-actions"
-      
-  # Docker
+      - "ci"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Docker dependencies
   - package-ecosystem: "docker"
     directory: "/docker/python"
     schedule:
       interval: "weekly"
-      day: "monday"
-      time: "09:00"
-    reviewers:
-      - "yoshikawa-river"
+    open-pull-requests-limit: 2
     labels:
       - "dependencies"
       - "docker"
+    commit-message:
+      prefix: "build"
+      include: "scope"

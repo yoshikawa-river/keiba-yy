@@ -12,12 +12,12 @@ from src.data.importers.race_parser import RaceCSVParser
 from src.data.importers.result_parser import ResultCSVParser
 
 __all__ = [
-    "FileType",
+    "BaseCSVParser",
     "CSVFile",
     "CSVFileDetector",
-    "BaseCSVParser",
-    "RaceCSVParser",
+    "FileType",
     "HorseCSVParser",
-    "ResultCSVParser",
     "OddsCSVParser",
+    "RaceCSVParser",
+    "ResultCSVParser",
 ]

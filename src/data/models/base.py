@@ -19,7 +19,7 @@ else:
 
 
 class BaseModel(Base):
-    """ベースモデル（共通カラム）"""
+    """ベースモデル(共通カラム)"""
 
     __abstract__ = True
 
