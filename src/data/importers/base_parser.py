@@ -213,9 +213,7 @@ class BaseCSVParser(ABC):
         columns_to_rename = {
             k: v for k, v in self.column_mappings.items() if k in df.columns
         }
-        df = df.rename(columns=columns_to_rename)
-
-        return df
+        return df.rename(columns=columns_to_rename)
 
     def _process_batch(self, batch_df: pd.DataFrame, dry_run: bool) -> None:
         """
