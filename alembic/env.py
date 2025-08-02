@@ -50,6 +50,11 @@ target_metadata = Base.metadata
 
 def get_database_url():
     """環境変数からデータベースURLを構築"""
+    # DATABASE_URLが設定されている場合はそれを使用（CI環境など）
+    database_url = os.getenv("DATABASE_URL")
+    if database_url:
+        return database_url
+    
     # 環境変数から接続情報を取得
     host = os.getenv("DATABASE_HOST", "mysql")
     port = os.getenv("DATABASE_PORT", "3306")
