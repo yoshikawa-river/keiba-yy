@@ -226,9 +226,7 @@ class DataValidator(BaseValidator):
         if horse_key:
             horse = self.db_session.query(Horse).filter_by(horse_key=horse_key).first()
             if not horse:
-                result.add_warning(
-                    f"馬 '{horse_key}' が存在しません(自動作成されます)"
-                )
+                result.add_warning(f"馬 '{horse_key}' が存在しません(自動作成されます)")
 
         # 騎手の存在チェック
         jockey_key = data.get("jockey_key")
