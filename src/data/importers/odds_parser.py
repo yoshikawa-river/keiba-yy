@@ -4,6 +4,7 @@
 TARGET frontier JVから出力されたオッズCSVをパースし、
 データベースに保存する機能を提供
 """
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -271,11 +272,11 @@ class OddsCSVParser(BaseCSVParser):
         if odds_type == "win":
             # 単勝: 馬番1つ（例: "3"）
             return len(parts) == 1 and parts[0].isdigit()
-        
+
         elif odds_type == "place":
             # 複勝: 馬番1つ（例: "5"）
             return len(parts) == 1 and parts[0].isdigit()
-        
+
         elif odds_type in ["exacta", "quinella"]:
             # 馬連・馬単: 馬番2つ（例: "3-5"）
             return (
@@ -283,7 +284,7 @@ class OddsCSVParser(BaseCSVParser):
                 and all(p.isdigit() for p in parts)
                 and parts[0] != parts[1]
             )
-        
+
         elif odds_type == "wide":
             # ワイド: 馬番2つ（例: "3-5"）
             return (
@@ -291,7 +292,7 @@ class OddsCSVParser(BaseCSVParser):
                 and all(p.isdigit() for p in parts)
                 and parts[0] != parts[1]
             )
-        
+
         elif odds_type == "trio":
             # 3連複: 馬番3つ（例: "3-5-7"）
             return (
@@ -299,7 +300,7 @@ class OddsCSVParser(BaseCSVParser):
                 and all(p.isdigit() for p in parts)
                 and len(set(parts)) == 3  # 重複なし
             )
-        
+
         elif odds_type == "trifecta":
             # 3連単: 馬番3つ（例: "3-5-7"）
             return (
@@ -307,5 +308,5 @@ class OddsCSVParser(BaseCSVParser):
                 and all(p.isdigit() for p in parts)
                 and len(set(parts)) == 3  # 重複なし
             )
-        
+
         return False

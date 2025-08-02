@@ -4,6 +4,7 @@ CSVファイル検出・分類機能
 TARGET frontier JVから出力されたCSVファイルを検出し、
 ファイルタイプを自動判定する機能を提供
 """
+
 import csv
 from dataclasses import dataclass
 from enum import Enum
@@ -177,9 +178,7 @@ class CSVFileDetector:
 
         return normalized
 
-    def _detect_headers(
-        self, file_path: Path, encoding: str
-    ) -> Tuple[List[str], str]:
+    def _detect_headers(self, file_path: Path, encoding: str) -> Tuple[List[str], str]:
         """
         ヘッダーとデリミタを検出
 

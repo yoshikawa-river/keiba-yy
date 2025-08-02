@@ -3,6 +3,7 @@
 
 全てのモデルが継承する基底クラスを定義
 """
+
 from datetime import datetime
 
 from sqlalchemy import Column, DateTime

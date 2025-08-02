@@ -3,6 +3,7 @@
 
 バリデーション機能を統合したCSVパーサー
 """
+
 from typing import Any, Dict, List, Optional, Type
 
 import pandas as pd
@@ -16,7 +17,12 @@ from src.data.validators import DataValidator, Schema, SchemaValidator, Validati
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
 
-    def __init__(self, db_session: Session, schema: Optional[Schema] = None, validate_business_logic: bool = True):
+    def __init__(
+        self,
+        db_session: Session,
+        schema: Optional[Schema] = None,
+        validate_business_logic: bool = True,
+    ):
         """
         バリデーション統合パーサーの初期化
 
@@ -28,19 +34,21 @@ class ValidatedCSVParser(BaseCSVParser):
         super().__init__(db_session)
         self.schema = schema
         self.validate_business_logic = validate_business_logic
-        
+
         # バリデーターの初期化
         if self.schema:
             self.schema_validator = SchemaValidator(self.schema)
         else:
             self.schema_validator = None
-            
+
         if self.validate_business_logic:
             self.data_validator = DataValidator(db_session)
         else:
             self.data_validator = None
 
-    def _validate_row_with_validators(self, row_data: Dict[str, Any]) -> ValidationResult:
+    def _validate_row_with_validators(
+        self, row_data: Dict[str, Any]
+    ) -> ValidationResult:
         """
         バリデーターを使用して行データを検証
 
@@ -106,9 +114,7 @@ class ValidatedCSVParser(BaseCSVParser):
                             f"メッセージ: {val_error.message}"
                         )
                         self._add_error(
-                            idx,
-                            val_error.message,
-                            {val_error.field: val_error.value}
+                            idx, val_error.message, {val_error.field: val_error.value}
                         )
                     error += 1
                     continue
@@ -161,7 +167,7 @@ class ValidatedCSVParser(BaseCSVParser):
                 "total_warnings": len(self.warnings),
                 "error_types": self._count_error_types(),
                 "warning_types": self._count_warning_types(),
-            }
+            },
         }
 
         # エラー率の計算

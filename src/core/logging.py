@@ -3,6 +3,7 @@
 
 loguruを使用した統一的なロギング設定を提供
 """
+
 import logging
 import sys
 from functools import wraps

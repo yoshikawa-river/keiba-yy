@@ -3,6 +3,7 @@
 
 競走馬、騎手、調教師のマスタ情報モデルを定義
 """
+
 from sqlalchemy import (
     Column,
     Date,

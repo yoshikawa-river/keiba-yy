@@ -4,6 +4,7 @@
 アプリケーション全体で使用する例外クラスと
 エラーハンドリングのユーティリティを提供
 """
+
 from typing import Any, Dict, Optional
 
 from fastapi import HTTPException, Request, status
@@ -221,9 +222,7 @@ async def keiba_exception_handler(
     )
 
 
-async def http_exception_handler(
-    request: Request, exc: HTTPException
-) -> JSONResponse:
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
     """HTTPException用のエラーハンドラー"""
     logger.warning(
         f"HTTP {exc.status_code}: {exc.detail}",

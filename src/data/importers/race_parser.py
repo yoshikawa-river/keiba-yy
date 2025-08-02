@@ -4,6 +4,7 @@
 TARGET frontier JVから出力されたレース情報CSVをパースし、
 データベースに保存する機能を提供
 """
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -294,7 +295,18 @@ class RaceCSVParser(BaseCSVParser):
 
     def _get_valid_venues(self) -> List[str]:
         """有効な競馬場名のリスト"""
-        return ["東京", "中山", "阪神", "京都", "中京", "新潟", "福島", "小倉", "札幌", "函館"]
+        return [
+            "東京",
+            "中山",
+            "阪神",
+            "京都",
+            "中京",
+            "新潟",
+            "福島",
+            "小倉",
+            "札幌",
+            "函館",
+        ]
 
     def _get_or_create_racecourse(self, venue_name: str) -> Racecourse:
         """競馬場を取得または作成"""

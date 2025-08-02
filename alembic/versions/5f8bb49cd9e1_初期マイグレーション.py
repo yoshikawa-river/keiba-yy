@@ -28,39 +28,65 @@ def upgrade() -> None:
         op.drop_table('mlflow_experiments')
     except Exception:
         pass  # テーブルが存在しない場合は無視
-    op.add_column('feature_cache', sa.Column('created_at', sa.DateTime(), nullable=False))
-    op.add_column('feature_cache', sa.Column('updated_at', sa.DateTime(), nullable=False))
-    op.alter_column('feature_cache', 'race_id',
-               existing_type=mysql.INTEGER(),
-               nullable=False,
-               comment='レースID')
-    op.alter_column('feature_cache', 'horse_id',
-               existing_type=mysql.INTEGER(),
-               nullable=False,
-               comment='馬ID')
-    op.alter_column('feature_cache', 'feature_type',
-               existing_type=mysql.VARCHAR(collation='utf8mb4_unicode_ci', length=50),
-               comment='特徴量タイプ',
-               existing_nullable=False)
-    op.alter_column('feature_cache', 'feature_data',
-               existing_type=mysql.JSON(),
-               comment='特徴量データ（JSON形式）',
-               existing_nullable=False)
-    op.alter_column('feature_cache', 'calculated_at',
-               existing_type=mysql.TIMESTAMP(),
-               server_default=None,
-               type_=sa.DateTime(),
-               nullable=False,
-               comment='計算日時')
-    op.alter_column('feature_cache', 'expires_at',
-               existing_type=mysql.TIMESTAMP(),
-               type_=sa.DateTime(),
-               comment='有効期限',
-               existing_nullable=True)
-    op.drop_constraint('feature_cache_ibfk_2', 'feature_cache', type_='foreignkey')
-    op.drop_constraint('feature_cache_ibfk_1', 'feature_cache', type_='foreignkey')
-    op.create_foreign_key(None, 'feature_cache', 'races', ['race_id'], ['id'], ondelete='CASCADE')
-    op.create_foreign_key(None, 'feature_cache', 'horses', ['horse_id'], ['id'], ondelete='CASCADE')
+    
+    # feature_cacheテーブルの操作（存在しない場合はスキップ）
+    from sqlalchemy import inspect
+    from sqlalchemy.engine import reflection
+    
+    # コネクションを取得してテーブル存在確認
+    bind = op.get_bind()
+    inspector = reflection.Inspector.from_engine(bind)
+    tables = inspector.get_table_names()
+    
+    if 'feature_cache' in tables:
+        try:
+            op.add_column('feature_cache', sa.Column('created_at', sa.DateTime(), nullable=False))
+            op.add_column('feature_cache', sa.Column('updated_at', sa.DateTime(), nullable=False))
+        except Exception:
+            pass  # カラムが既に存在する場合は無視
+        
+        try:
+            op.alter_column('feature_cache', 'race_id',
+                       existing_type=mysql.INTEGER(),
+                       nullable=False,
+                       comment='レースID')
+            op.alter_column('feature_cache', 'horse_id',
+                       existing_type=mysql.INTEGER(),
+                       nullable=False,
+                       comment='馬ID')
+            op.alter_column('feature_cache', 'feature_type',
+                       existing_type=mysql.VARCHAR(collation='utf8mb4_unicode_ci', length=50),
+                       comment='特徴量タイプ',
+                       existing_nullable=False)
+            op.alter_column('feature_cache', 'feature_data',
+                       existing_type=mysql.JSON(),
+                       comment='特徴量データ（JSON形式）',
+                       existing_nullable=False)
+            op.alter_column('feature_cache', 'calculated_at',
+                       existing_type=mysql.TIMESTAMP(),
+                       server_default=None,
+                       type_=sa.DateTime(),
+                       nullable=False,
+                       comment='計算日時')
+            op.alter_column('feature_cache', 'expires_at',
+                       existing_type=mysql.TIMESTAMP(),
+                       type_=sa.DateTime(),
+                       comment='有効期限',
+                       existing_nullable=True)
+        except Exception:
+            pass  # エラーが発生した場合は無視
+        
+        try:
+            op.drop_constraint('feature_cache_ibfk_2', 'feature_cache', type_='foreignkey')
+            op.drop_constraint('feature_cache_ibfk_1', 'feature_cache', type_='foreignkey')
+        except Exception:
+            pass  # 制約が存在しない場合は無視
+            
+        try:
+            op.create_foreign_key(None, 'feature_cache', 'races', ['race_id'], ['id'], ondelete='CASCADE')
+            op.create_foreign_key(None, 'feature_cache', 'horses', ['horse_id'], ['id'], ondelete='CASCADE')
+        except Exception:
+            pass  # 外部キーの作成に失敗した場合は無視
     op.alter_column('horses', 'horse_id',
                existing_type=mysql.VARCHAR(collation='utf8mb4_unicode_ci', length=10),
                comment='馬ID',

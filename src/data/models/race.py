@@ -3,6 +3,7 @@
 
 レース情報と競馬場情報のモデルを定義
 """
+
 from sqlalchemy import (
     JSON,
     Column,
@@ -42,9 +43,7 @@ class Race(BaseModel):
         String(20), unique=True, nullable=False, comment="レースキー (YYYYMMDDRRNN)"
     )
     race_date = Column(Date, nullable=False, comment="開催日")
-    racecourse_id = Column(
-        Integer, ForeignKey("racecourses.id"), comment="競馬場ID"
-    )
+    racecourse_id = Column(Integer, ForeignKey("racecourses.id"), comment="競馬場ID")
     race_number = Column(Integer, nullable=False, comment="R数")
     race_name = Column(String(100), nullable=False, comment="レース名")
     race_name_sub = Column(String(100), comment="レース名（サブ）")
@@ -59,9 +58,15 @@ class Race(BaseModel):
 
     # リレーション
     racecourse = relationship("Racecourse", back_populates="races")
-    entries = relationship("RaceEntry", back_populates="race", cascade="all, delete-orphan")
-    predictions = relationship("Prediction", back_populates="race", cascade="all, delete-orphan")
-    odds_history = relationship("OddsHistory", back_populates="race", cascade="all, delete-orphan")
+    entries = relationship(
+        "RaceEntry", back_populates="race", cascade="all, delete-orphan"
+    )
+    predictions = relationship(
+        "Prediction", back_populates="race", cascade="all, delete-orphan"
+    )
+    odds_history = relationship(
+        "OddsHistory", back_populates="race", cascade="all, delete-orphan"
+    )
 
     __table_args__ = (
         Index("idx_race_date", "race_date"),

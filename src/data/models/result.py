@@ -3,6 +3,7 @@
 
 出走情報とレース結果のモデルを定義
 """
+
 from sqlalchemy import (
     Column,
     ForeignKey,
@@ -65,7 +66,10 @@ class RaceEntry(BaseModel):
     jockey = relationship("Jockey", back_populates="race_entries")
     trainer = relationship("Trainer", back_populates="race_entries")
     result = relationship(
-        "RaceResult", back_populates="entry", uselist=False, cascade="all, delete-orphan"
+        "RaceResult",
+        back_populates="entry",
+        uselist=False,
+        cascade="all, delete-orphan",
     )
 
     __table_args__ = (

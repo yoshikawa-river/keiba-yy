@@ -1,6 +1,7 @@
 """
 Celery アプリケーション設定
 """
+
 from celery import Celery
 import os
 
@@ -12,7 +13,7 @@ app = Celery(
     "keiba_ai",
     broker=redis_url,
     backend=redis_url,
-    include=["src.tasks.data_tasks", "src.tasks.ml_tasks"]
+    include=["src.tasks.data_tasks", "src.tasks.ml_tasks"],
 )
 
 # 設定
@@ -28,6 +29,7 @@ app.conf.update(
     worker_prefetch_multiplier=1,
     worker_max_tasks_per_child=100,
 )
+
 
 # タスク例
 @app.task

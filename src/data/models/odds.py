@@ -3,6 +3,7 @@
 
 オッズ履歴、予測結果、特徴量キャッシュのモデルを定義
 """
+
 from sqlalchemy import (
     JSON,
     Column,
@@ -60,9 +61,7 @@ class Prediction(BaseModel):
     )
     model_name = Column(String(50), nullable=False, comment="モデル名")
     model_version = Column(String(20), comment="モデルバージョン")
-    prediction_data = Column(
-        JSON, nullable=False, comment="予測結果の詳細（JSON形式）"
-    )
+    prediction_data = Column(JSON, nullable=False, comment="予測結果の詳細（JSON形式）")
 
     # リレーション
     race = relationship("Race", back_populates="predictions")
@@ -100,7 +99,5 @@ class FeatureCache(BaseModel):
     horse = relationship("Horse", back_populates="feature_cache")
 
     __table_args__ = (
-        UniqueConstraint(
-            "race_id", "horse_id", "feature_type", name="unique_feature"
-        ),
+        UniqueConstraint("race_id", "horse_id", "feature_type", name="unique_feature"),
     )

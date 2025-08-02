@@ -3,6 +3,7 @@
 
 全てのSQLAlchemyモデルのエクスポート
 """
+
 from .base import Base, BaseModel
 from .horse import Horse, Jockey, Trainer
 from .odds import FeatureCache, OddsHistory, Prediction

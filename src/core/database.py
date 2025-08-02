@@ -4,6 +4,7 @@
 SQLAlchemyを使用したデータベース接続の管理と
 セッション管理を提供する
 """
+
 from contextlib import contextmanager
 from typing import Generator, Optional
 
@@ -112,6 +113,7 @@ class DatabaseManager:
 
     def _setup_event_listeners(self) -> None:
         """イベントリスナーの設定"""
+
         # コネクションプールのイベント
         @event.listens_for(Pool, "connect")
         def set_mysql_charset(dbapi_conn, connection_record):
