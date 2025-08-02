@@ -60,6 +60,7 @@ jobs:
         DATABASE_NAME: keiba_ai_test
         DATABASE_USER: keiba_user
         DATABASE_PASSWORD: keiba_password
+        DATABASE_URL: mysql+pymysql://keiba_user:keiba_password@localhost:3306/keiba_ai_test?charset=utf8mb4
       run: |
         uv run alembic upgrade head
     

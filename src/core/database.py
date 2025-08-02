@@ -113,9 +113,10 @@ class DatabaseManager:
 
     def _setup_event_listeners(self) -> None:
         """イベントリスナーの設定"""
-        
+
         # MySQLの場合のみコネクションプールのイベントを設定
         if "mysql" in self.database_url.lower():
+
             @event.listens_for(self.engine, "connect")
             def set_mysql_charset(dbapi_conn, connection_record):
                 """MySQL接続時の文字コード設定"""
