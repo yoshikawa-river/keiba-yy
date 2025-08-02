@@ -118,6 +118,9 @@ class DatabaseManager:
         @event.listens_for(Pool, "connect")
         def set_mysql_charset(dbapi_conn, connection_record):
             """MySQL接続時の文字コード設定"""
+            # SQLiteの場合はスキップ
+            if "sqlite" in str(self.engine.url):
+                return
             cursor = dbapi_conn.cursor()
             cursor.execute("SET NAMES utf8mb4")
             cursor.close()
