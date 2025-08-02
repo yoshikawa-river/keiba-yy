@@ -181,13 +181,12 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # エラー率の計算
         if self.statistics["total_rows"] > 0:
+            total_rows = self.statistics["total_rows"]
             report["validation_summary"]["error_rate"] = (
-                self.statistics["error_count"] / self.statistics["total_rows"] * 100
+                self.statistics["error_count"] / total_rows * 100
             )
             report["validation_summary"]["success_rate"] = (
-                self.statistics["success_count"]
-                / self.statistics["total_rows"]
-                * 100
+                self.statistics["success_count"] / total_rows * 100
             )
 
         return report
