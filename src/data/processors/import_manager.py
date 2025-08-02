@@ -25,12 +25,12 @@ class ImportManager:
         Args:
             import_base_dir: インポート基底ディレクトリ
         """
-        self.import_base_dir = (
-            import_base_dir or (settings.DATA_DIR or Path("data")) / "imports"
-        )
+        self.import_base_dir = import_base_dir or (
+            settings.DATA_DIR or Path("data")
+        ) / "imports"
         self.history_file = (
-            (settings.DATA_DIR or Path("data")) / "import_history.json"
-        )
+            settings.DATA_DIR or Path("data")
+        ) / "import_history.json"
         self.import_history = self._load_history()
 
     def import_from_directory(

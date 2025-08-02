@@ -26,7 +26,8 @@ def upgrade() -> None:
     sa.Column('location', sa.String(length=100), nullable=True, comment='所在地'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('jra_code')
     )
     op.create_table('horses',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -44,7 +45,8 @@ def upgrade() -> None:
     sa.Column('breeding_farm', sa.String(length=100), nullable=True, comment='生産牧場'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('horse_id')
     )
     op.create_index('idx_name', 'horses', ['name'], unique=False)
     op.create_index('idx_name_fulltext', 'horses', ['name'], unique=False)
@@ -57,7 +59,8 @@ def upgrade() -> None:
     sa.Column('license_date', sa.Date(), nullable=True, comment='免許取得日'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('jockey_id')
     )
     op.create_table('trainers',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -67,7 +70,8 @@ def upgrade() -> None:
     sa.Column('belonging', sa.String(length=20), nullable=True, comment='所属 (美浦/栗東)'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('trainer_id')
     )
     op.create_table('races',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -87,8 +91,9 @@ def upgrade() -> None:
     sa.Column('entry_count', sa.Integer(), nullable=True, comment='出走頭数'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['racecourse_id'], ['racecourses.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['racecourse_id'], ['racecourses.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('race_key')
     )
     op.create_index('idx_grade', 'races', ['grade'], unique=False)
     op.create_index('idx_race_date', 'races', ['race_date'], unique=False)
@@ -103,9 +108,10 @@ def upgrade() -> None:
     sa.Column('expires_at', sa.DateTime(), nullable=True, comment='有効期限'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['horse_id'], ['horses.id'], ),
-    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['horse_id'], ['horses.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('race_id', 'horse_id', 'feature_type', name='unique_feature')
     )
     op.create_table('odds_history',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -116,7 +122,7 @@ def upgrade() -> None:
     sa.Column('recorded_at', sa.DateTime(), nullable=False, comment='記録日時'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ),
+    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('idx_race_time', 'odds_history', ['race_id', 'recorded_at'], unique=False)
@@ -128,7 +134,7 @@ def upgrade() -> None:
     sa.Column('prediction_data', sa.JSON(), nullable=False, comment='予測結果の詳細（JSON形式）'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ),
+    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index('idx_race_model', 'predictions', ['race_id', 'model_name'], unique=False)
@@ -150,11 +156,12 @@ def upgrade() -> None:
     sa.Column('popularity', sa.Integer(), nullable=True, comment='人気順位'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['horse_id'], ['horses.id'], ),
-    sa.ForeignKeyConstraint(['jockey_id'], ['jockeys.id'], ),
-    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ),
-    sa.ForeignKeyConstraint(['trainer_id'], ['trainers.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['horse_id'], ['horses.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['jockey_id'], ['jockeys.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['race_id'], ['races.id'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['trainer_id'], ['trainers.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('race_id', 'horse_number', name='unique_race_horse')
     )
     op.create_index('idx_horse_id', 'race_entries', ['horse_id'], unique=False)
     op.create_index('idx_jockey_id', 'race_entries', ['jockey_id'], unique=False)
@@ -169,8 +176,9 @@ def upgrade() -> None:
     sa.Column('prize_money', sa.Integer(), nullable=True, comment='獲得賞金'),
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
-    sa.ForeignKeyConstraint(['race_entry_id'], ['race_entries.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.ForeignKeyConstraint(['race_entry_id'], ['race_entries.id'], ondelete='CASCADE'),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('race_entry_id')
     )
     op.create_index('idx_finish_position', 'race_results', ['finish_position'], unique=False)
     # ### end Alembic commands ###

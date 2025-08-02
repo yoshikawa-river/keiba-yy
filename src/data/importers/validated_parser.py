@@ -45,7 +45,9 @@ class ValidatedCSVParser(BaseCSVParser):
             self.schema_validator: Optional[SchemaValidator] = None
 
         if self.validate_business_logic:
-            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
+            self.data_validator: Optional[DataValidator] = DataValidator(
+                db_session
+            )
         else:
             self.data_validator: Optional[DataValidator] = None
 
