@@ -109,7 +109,7 @@ class HorseCSVParser(BaseCSVParser):
             return transformed
 
         except Exception as e:
-            raise ValidationError(f"データ変換エラー: {e}")
+            raise ValidationError(f"データ変換エラー: {e}") from e
 
     def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
@@ -227,8 +227,8 @@ class HorseCSVParser(BaseCSVParser):
         try:
             age_str = sex_age[1:]
             return int(age_str)
-        except (IndexError, ValueError):
-            raise ValidationError(f"年齢の抽出に失敗: {sex_age}")
+        except (IndexError, ValueError) as e:
+            raise ValidationError(f"年齢の抽出に失敗: {sex_age}") from e
 
     def _parse_date(self, date_str: Any) -> date:
         """日付文字列をパース"""
@@ -282,7 +282,7 @@ class HorseCSVParser(BaseCSVParser):
         if color in color_map:
             return color_map[color]
 
-        # 部分一致で検索（長い文字列から順に）
+        # 部分一致で検索(長い文字列から順に)
         sorted_keys = sorted(color_map.keys(), key=len, reverse=True)
         for key in sorted_keys:
             if key in color:

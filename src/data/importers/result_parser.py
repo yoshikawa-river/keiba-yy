@@ -72,7 +72,7 @@ class ResultCSVParser(BaseCSVParser):
                 "weight_carried": self._parse_float(row.get("weight_carried")),
             }
 
-            # オプション項目（エントリー情報）
+            # オプション項目(エントリー情報)
             if pd.notna(row.get("bracket_number")):
                 transformed["bracket_number"] = self._parse_int(row["bracket_number"])
 
@@ -128,7 +128,7 @@ class ResultCSVParser(BaseCSVParser):
             return transformed
 
         except Exception as e:
-            raise ValidationError(f"データ変換エラー: {e}")
+            raise ValidationError(f"データ変換エラー: {e}") from e
 
     def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
@@ -199,7 +199,7 @@ class ResultCSVParser(BaseCSVParser):
                 .first()
             )
             if not horse:
-                # 馬が存在しない場合は作成（最小限の情報で）
+                # 馬が存在しない場合は作成(最小限の情報で)
                 horse_name = row_data.get(
                     "horse_name", f"Unknown_{row_data['horse_key']}"
                 )
@@ -248,7 +248,7 @@ class ResultCSVParser(BaseCSVParser):
                 self.db_session.add(entry)
                 self.db_session.flush()
 
-            # 結果情報の保存（存在する場合）
+            # 結果情報の保存(存在する場合)
             result_data = row_data.get("result_data")
             if result_data:
                 result = (
@@ -304,7 +304,7 @@ class ResultCSVParser(BaseCSVParser):
         return float(value)
 
     def _parse_finish_position(self, position: Any) -> int | None:
-        """着順をパース（中止・除外等に対応）"""
+        """着順をパース(中止・除外等に対応)"""
         if pd.isna(position):
             return None
 
@@ -326,14 +326,14 @@ class ResultCSVParser(BaseCSVParser):
         return special_cases.get(position)
 
     def _parse_time(self, time_str: Any) -> time | None:
-        """タイムをパース（分:秒.ミリ秒形式）"""
+        """タイムをパース(分:秒.ミリ秒形式)"""
         if pd.isna(time_str):
             return None
 
         time_str = str(time_str).strip()
 
         try:
-            # 分:秒.ミリ秒 形式（例: 1:23.4）
+            # 分:秒.ミリ秒 形式(例: 1:23.4)
             if ":" in time_str:
                 parts = time_str.split(":")
                 minutes = int(parts[0])
@@ -344,7 +344,7 @@ class ResultCSVParser(BaseCSVParser):
                 )
 
                 return time(0, minutes, seconds, milliseconds * 1000)
-            # 秒.ミリ秒 形式（例: 83.4）
+            # 秒.ミリ秒 形式(例: 83.4)
             parts = time_str.split(".")
             total_seconds = int(parts[0])
             minutes = total_seconds // 60
@@ -381,7 +381,7 @@ class ResultCSVParser(BaseCSVParser):
             if key in margin:
                 return value
 
-        # 数字のみの場合（馬身数）
+        # 数字のみの場合(馬身数)
         if margin.replace(".", "").isdigit():
             return str(margin)
 

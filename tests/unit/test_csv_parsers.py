@@ -71,8 +71,7 @@ class TestRaceCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):
@@ -207,8 +206,7 @@ class TestHorseCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):
@@ -259,8 +257,7 @@ class TestResultCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):
@@ -305,8 +302,7 @@ class TestOddsCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):

@@ -48,7 +48,7 @@ class DataQualityReporter:
 
         Args:
             df: 分析対象のデータフレーム
-            output_file: 出力ファイル名（Noneの場合は自動生成）
+            output_file: 出力ファイル名(Noneの場合は自動生成)
 
         Returns:
             欠損値統計の辞書
@@ -163,7 +163,7 @@ class DataQualityReporter:
             },
         }
 
-        # 欠損値の相関（どのカラムが同時に欠損しやすいか）
+        # 欠損値の相関(どのカラムが同時に欠損しやすいか)
         missing_corr = df.isnull().astype(int).corr()
         high_corr_pairs = []
 
@@ -243,7 +243,7 @@ class DataQualityReporter:
         fig, axes = plt.subplots(2, 2, figsize=(15, 10))
         fig.suptitle("欠損値分析レポート", fontsize=16)
 
-        # 1. 欠損率の棒グラフ（上位20カラム）
+        # 1. 欠損率の棒グラフ(上位20カラム)
         ax1 = axes[0, 0]
         top_missing = missing_df.head(20)
         ax1.barh(top_missing["column"], top_missing["missing_percentage"])
@@ -269,7 +269,7 @@ class DataQualityReporter:
         )
         ax3.set_xlabel("欠損率 (%)")
         ax3.set_ylabel("カラム数")
-        ax3.set_title("欠損率の分布（欠損があるカラムのみ）")
+        ax3.set_title("欠損率の分布(欠損があるカラムのみ)")
 
         # 4. データ型別の欠損値統計
         ax4 = axes[1, 1]
@@ -297,7 +297,7 @@ class DataQualityReporter:
 
         Args:
             df: 分析対象のデータフレーム
-            columns: 分析対象カラム（Noneの場合は数値カラム全て）
+            columns: 分析対象カラム(Noneの場合は数値カラム全て)
             output_file: 出力ファイル名
 
         Returns:
@@ -394,8 +394,7 @@ class DataQualityReporter:
         lower_bound = Q1 - threshold * IQR
         upper_bound = Q3 + threshold * IQR
 
-        outliers = (data < lower_bound) | (data > upper_bound)
-        return outliers.any()
+        return (data < lower_bound) | (data > upper_bound)
 
     def _generate_distribution_summary(self, stats: list[dict]) -> dict[str, Any]:
         """分布統計のサマリー生成
@@ -552,7 +551,7 @@ class DataQualityReporter:
                     stats["outlier_max"] = float(outlier_values.max())
                     stats["outlier_mean"] = float(outlier_values.mean())
 
-                    # 外れ値のサンプル（最大10個）
+                    # 外れ値のサンプル(最大10個)
                     sample_size = min(10, len(outlier_values))
                     stats["outlier_samples"] = outlier_values[:sample_size].tolist()
 
@@ -661,7 +660,7 @@ class DataQualityReporter:
         if len(stats_df[stats_df["outlier_count"] > 0]) > 0:
             recommendations.append(
                 "外れ値の処理方法として、以下を検討してください:\n"
-                "1. Winsorization（上下限でクリッピング）\n"
+                "1. Winsorization(上下限でクリッピング)\n"
                 "2. 対数変換やBox-Cox変換\n"
                 "3. ロバスト統計量の使用\n"
                 "4. 外れ値を別カテゴリとして扱う"

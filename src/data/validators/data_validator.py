@@ -15,7 +15,7 @@ from src.data.validators.base_validator import BaseValidator, ValidationResult
 
 
 class DataValidator(BaseValidator):
-    """データバリデーター（ビジネスロジック検証）"""
+    """データバリデーター(ビジネスロジック検証)"""
 
     def __init__(self, db_session: Session, strict_mode: bool = False):
         """
@@ -30,7 +30,7 @@ class DataValidator(BaseValidator):
 
     def validate(self, data: dict[str, Any]) -> ValidationResult:
         """
-        データをバリデーション（汎用メソッド）
+        データをバリデーション(汎用メソッド)
 
         Args:
             data: バリデーション対象データ
@@ -84,7 +84,7 @@ class DataValidator(BaseValidator):
                     )
                 else:
                     result.add_warning(
-                        f"レースキー '{race_key}' は既に存在します（更新されます）"
+                        f"レースキー '{race_key}' は既に存在します(更新されます)"
                     )
 
         # 競馬場の存在チェック
@@ -95,7 +95,7 @@ class DataValidator(BaseValidator):
             )
             if not racecourse:
                 result.add_warning(
-                    f"競馬場 '{venue_name}' がマスタに存在しません（自動作成されます）"
+                    f"競馬場 '{venue_name}' がマスタに存在しません(自動作成されます)"
                 )
 
         # 日付の論理チェック
@@ -106,12 +106,12 @@ class DataValidator(BaseValidator):
                 # 未来の日付チェック
                 if race_date > date.today():
                     result.add_warning(f"レース日 '{race_date}' は未来の日付です")
-                # 古すぎる日付チェック（1900年以前）
+                # 古すぎる日付チェック(1900年以前)
                 if race_date.year < 1900:
                     result.add_error(
                         field="race_date",
                         value=race_date_str,
-                        message=f"レース日 '{race_date}' は無効です（1900年以前）",
+                        message=f"レース日 '{race_date}' は無効です(1900年以前)",
                         error_type="invalid_date",
                     )
             except ValueError:
@@ -157,7 +157,7 @@ class DataValidator(BaseValidator):
                     )
                 else:
                     result.add_warning(
-                        f"馬キー '{horse_key}' は既に存在します（更新されます）"
+                        f"馬キー '{horse_key}' は既に存在します(更新されます)"
                     )
 
         # 年齢と生年月日の整合性チェック
@@ -169,7 +169,7 @@ class DataValidator(BaseValidator):
                 calculated_age = self._calculate_horse_age(birth_date)
                 if abs(calculated_age - age) > 1:  # 1歳の誤差は許容
                     result.add_warning(
-                        f"年齢 {age} と生年月日 {birth_date} が一致しません（計算上は {calculated_age} 歳）"
+                        f"年齢 {age} と生年月日 {birth_date} が一致しません(計算上は {calculated_age} 歳)"
                     )
             except ValueError:
                 pass
@@ -182,7 +182,7 @@ class DataValidator(BaseValidator):
             )
             if not trainer:
                 result.add_warning(
-                    f"調教師 '{trainer_name}' がマスタに存在しません（自動作成されます）"
+                    f"調教師 '{trainer_name}' がマスタに存在しません(自動作成されます)"
                 )
 
         # 獲得賞金の妥当性チェック
@@ -227,7 +227,7 @@ class DataValidator(BaseValidator):
             horse = self.db_session.query(Horse).filter_by(horse_key=horse_key).first()
             if not horse:
                 result.add_warning(
-                    f"馬 '{horse_key}' が存在しません（自動作成されます）"
+                    f"馬 '{horse_key}' が存在しません(自動作成されます)"
                 )
 
         # 騎手の存在チェック
@@ -238,7 +238,7 @@ class DataValidator(BaseValidator):
             )
             if not jockey:
                 result.add_warning(
-                    f"騎手 '{jockey_key}' が存在しません（自動作成されます）"
+                    f"騎手 '{jockey_key}' が存在しません(自動作成されます)"
                 )
 
         # 着順とタイムの整合性チェック
@@ -341,11 +341,10 @@ class DataValidator(BaseValidator):
         return min_prizes.get(grade)
 
     def _calculate_horse_age(self, birth_date: date) -> int:
-        """馬の年齢を計算（日本の競馬では1月1日で歳を取る）"""
+        """馬の年齢を計算(日本の競馬では1月1日で歳を取る)"""
         today = date.today()
         # 競馬の年齢は生まれ年を0歳として、1月1日に一斉に歳を取る
-        age = today.year - birth_date.year
-        return age
+        return today.year - birth_date.year
 
     def _validate_odds_combination(self, odds_type: str, combination: str) -> bool:
         """オッズの組み合わせを検証"""

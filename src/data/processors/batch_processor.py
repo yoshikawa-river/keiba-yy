@@ -38,7 +38,7 @@ class BatchResult:
 
     @property
     def processing_time(self) -> float:
-        """処理時間（秒）"""
+        """処理時間(秒)"""
         if self.end_time:
             return (self.end_time - self.start_time).total_seconds()
         return 0
@@ -102,7 +102,7 @@ class BatchProcessor:
             batch_size: バッチサイズ
             parallel: 並列処理を行うか
             validate: バリデーションを行うか
-            dry_run: ドライラン（実際の保存は行わない）
+            dry_run: ドライラン(実際の保存は行わない)
         """
         self.import_dir = import_dir
         self.batch_size = batch_size
@@ -121,7 +121,7 @@ class BatchProcessor:
         すべてのCSVファイルを処理
 
         Args:
-            file_types: 処理対象のファイルタイプ（Noneの場合はすべて）
+            file_types: 処理対象のファイルタイプ(Noneの場合はすべて)
             file_pattern: ファイルパターン
             progress_callback: 進捗コールバック関数
 
@@ -145,7 +145,7 @@ class BatchProcessor:
             # ファイルタイプ別にグループ化
             files_by_type = self._group_files_by_type(csv_files)
 
-            # 処理順序を決定（依存関係を考慮）
+            # 処理順序を決定(依存関係を考慮)
             processing_order = [
                 FileType.RACE_INFO,  # レース情報を最初に
                 FileType.HORSE_INFO,  # 馬情報
@@ -200,7 +200,7 @@ class BatchProcessor:
         except Exception as e:
             logger.error(f"バッチ処理エラー: {e}")
             result.end_time = datetime.now()
-            raise DataImportError(f"バッチ処理に失敗しました: {e}")
+            raise DataImportError(f"バッチ処理に失敗しました: {e}") from e
 
         return result
 

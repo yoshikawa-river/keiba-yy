@@ -116,7 +116,7 @@ def main():
         race_dict = race.to_dict()
         print(f"✓ レース辞書化: {list(race_dict.keys())[:5]}...")
 
-        print("\n✅ 全てのテストが正常に完了しました！")
+        print("\n✅ 全てのテストが正常に完了しました!")
 
     except Exception as e:
         print(f"\n❌ エラーが発生しました: {e}")

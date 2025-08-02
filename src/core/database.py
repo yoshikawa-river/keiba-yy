@@ -13,6 +13,7 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from src.core.config import settings
+from src.core.logging import logger
 
 
 class DatabaseManager:
@@ -126,9 +127,9 @@ class DatabaseManager:
         # エンジンのイベント
         @event.listens_for(self.engine, "before_execute")
         def receive_before_execute(conn, clauseelement, multiparams, params):
-            """SQL実行前のログ（開発環境のみ）"""
+            """SQL実行前のログ(開発環境のみ)"""
             if settings.is_development and settings.LOG_LEVEL == "DEBUG":
-                print(f"[SQL] {clauseelement}")
+                logger.info(f"[SQL] {clauseelement}")
 
     def create_tables(self) -> None:
         """

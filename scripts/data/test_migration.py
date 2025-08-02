@@ -45,10 +45,11 @@ def test_database_connection():
                 for table in sorted(tables):
                     print(f"  - {table}")
 
-        return engine
     except Exception as e:
         print(f"❌ データベース接続エラー: {e}")
         sys.exit(1)
+    else:
+        return engine
 
 
 def check_table_structure(engine):

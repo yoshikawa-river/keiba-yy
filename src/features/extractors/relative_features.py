@@ -21,7 +21,7 @@ class RelativeFeatureExtractor:
         """他馬との相対的な能力差特徴量
 
         Args:
-            df: 現在のレースデータ（同一レースの全馬データ）
+            df: 現在のレースデータ(同一レースの全馬データ)
 
         Returns:
             特徴量追加後のデータフレーム
@@ -183,7 +183,7 @@ class RelativeFeatureExtractor:
                     df_features["odds"] - df_features["mean"]
                 ) / df_features["std"]
 
-                # オッズの歪み（能力との乖離）
+                # オッズの歪み(能力との乖離)
                 if "career_win_rate" in df.columns:
                     # 実際の勝率とオッズから計算される期待勝率の差
                     df_features["odds_value_gap"] = (
@@ -198,7 +198,7 @@ class RelativeFeatureExtractor:
                         df_features["odds_value_gap"] < -0.05
                     ).astype(int)
 
-            # 複勝オッズ関連（もしあれば）
+            # 複勝オッズ関連(もしあれば)
             if "place_odds_min" in df.columns and "place_odds_max" in df.columns:
                 df_features["place_odds_range"] = (
                     df["place_odds_max"] - df["place_odds_min"]
@@ -345,7 +345,7 @@ class RelativeFeatureExtractor:
                     features = {}
                     position = race_group.loc[idx, "post_position"]
 
-                    # 相対的な枠順位置（0-1で正規化）
+                    # 相対的な枠順位置(0-1で正規化)
                     features["normalized_position"] = (
                         (position - 1) / (field_size - 1) if field_size > 1 else 0.5
                     )
@@ -493,7 +493,7 @@ class RelativeFeatureExtractor:
         """全ての相対特徴量を抽出
 
         Args:
-            df: 現在のレースデータ（同一レースの全馬データ）
+            df: 現在のレースデータ(同一レースの全馬データ)
 
         Returns:
             全特徴量追加後のデータフレーム

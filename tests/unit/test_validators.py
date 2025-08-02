@@ -252,8 +252,7 @@ class TestDataValidator:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def validator(self, mock_session):
@@ -337,7 +336,7 @@ class TestDataValidator:
         """オッズ組み合わせチェックのテスト"""
         mock_session.query().filter_by().first.return_value = Mock()
 
-        # 正常ケース（単勝）
+        # 正常ケース(単勝)
         data = {
             "race_key": "202401010101",
             "odds_type": "win",
@@ -346,7 +345,7 @@ class TestDataValidator:
         result = validator.validate_odds(data)
         assert result.is_valid
 
-        # エラーケース（単勝に複数馬番）
+        # エラーケース(単勝に複数馬番)
         data["combination"] = "3-5"
         result = validator.validate_odds(data)
         assert not result.is_valid

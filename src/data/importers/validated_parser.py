@@ -29,7 +29,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
         Args:
             db_session: データベースセッション
-            schema: スキーマ定義（指定しない場合は自動選択）
+            schema: スキーマ定義(指定しない場合は自動選択)
             validate_business_logic: ビジネスロジック検証を行うか
         """
         super().__init__(db_session)
@@ -76,7 +76,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
     def _process_batch(self, batch_df: pd.DataFrame, dry_run: bool = False) -> None:
         """
-        バッチデータを処理（バリデーション統合版）
+        バッチデータを処理(バリデーション統合版)
 
         Args:
             batch_df: バッチデータフレーム
@@ -127,7 +127,7 @@ class ValidatedCSVParser(BaseCSVParser):
                     logger.warning(f"行 {idx}: {warning}")
                     self._add_warning(idx, warning, row_dict)
 
-                # 従来のバリデーション（互換性のため）
+                # 従来のバリデーション(互換性のため)
                 is_valid, error_msg = self._validate_row(transformed)
                 if not is_valid:
                     logger.error(f"行 {idx}: {error_msg}")

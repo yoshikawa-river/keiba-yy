@@ -67,7 +67,7 @@ class Settings(BaseSettings):
     )
     ALGORITHM: str = Field(default="HS256", description="JWT署名アルゴリズム")
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
-        default=30, description="アクセストークン有効期限（分）"
+        default=30, description="アクセストークン有効期限(分)"
     )
 
     # === ログ設定 ===
@@ -179,7 +179,7 @@ class Settings(BaseSettings):
         "env_file_encoding": "utf-8",
         "case_sensitive": True,
         "extra": "ignore",  # 余分なフィールドを無視
-        # "env_prefix": "KEIBA_",  # 環境変数のプレフィックス（オプション）
+        # "env_prefix": "KEIBA_",  # 環境変数のプレフィックス(オプション)
     }
 
 

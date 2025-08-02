@@ -24,7 +24,7 @@ class Horse(BaseModel):
     id = Column(Integer, primary_key=True, autoincrement=True)
     horse_id = Column(String(10), unique=True, nullable=False, comment="馬ID")
     name = Column(String(50), nullable=False, comment="馬名")
-    name_kana = Column(String(100), comment="馬名（カナ）")
+    name_kana = Column(String(100), comment="馬名(カナ)")
     sex = Column(String(10), nullable=False, comment="性別 (牡/牝/セ)")
     birth_date = Column(Date, comment="生年月日")
     color = Column(String(20), comment="毛色")
@@ -53,7 +53,7 @@ class Jockey(BaseModel):
     id = Column(Integer, primary_key=True, autoincrement=True)
     jockey_id = Column(String(10), unique=True, nullable=False, comment="騎手ID")
     name = Column(String(50), nullable=False, comment="騎手名")
-    name_kana = Column(String(100), comment="騎手名（カナ）")
+    name_kana = Column(String(100), comment="騎手名(カナ)")
     birth_date = Column(Date, comment="生年月日")
     license_date = Column(Date, comment="免許取得日")
 
@@ -69,7 +69,7 @@ class Trainer(BaseModel):
     id = Column(Integer, primary_key=True, autoincrement=True)
     trainer_id = Column(String(10), unique=True, nullable=False, comment="調教師ID")
     name = Column(String(50), nullable=False, comment="調教師名")
-    name_kana = Column(String(100), comment="調教師名（カナ）")
+    name_kana = Column(String(100), comment="調教師名(カナ)")
     belonging = Column(String(20), comment="所属 (美浦/栗東)")
 
     # リレーション

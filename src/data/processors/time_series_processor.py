@@ -31,7 +31,7 @@ class TimeSeriesProcessor:
 
         Args:
             df: 処理対象のデータフレーム
-            date_columns: 日付カラムのリスト（Noneの場合は自動検出）
+            date_columns: 日付カラムのリスト(Noneの場合は自動検出)
             target_timezone: 目標タイムゾーン
             infer_format: 日付フォーマットを自動推定するか
 
@@ -111,7 +111,7 @@ class TimeSeriesProcessor:
                         ).notna().sum() / len(sample)
                         if success_rate > 0.8:
                             date_columns.append(col)
-                    except:
+                    except Exception:
                         pass
 
         # カラム名から推測
@@ -204,13 +204,13 @@ class TimeSeriesProcessor:
                     dt.is_quarter_end.astype(int)
                 )
 
-            # 時間帯特徴量（時刻情報がある場合）
+            # 時間帯特徴量(時刻情報がある場合)
             if "hour" in features and not pd.isnull(dt.hour).all():
                 df_processed[f"{date_column}_hour"] = dt.hour
             if "minute" in features and not pd.isnull(dt.minute).all():
                 df_processed[f"{date_column}_minute"] = dt.minute
 
-            # 周期的特徴量（サイン・コサイン変換）
+            # 周期的特徴量(サイン・コサイン変換)
             if "month_sin" in features:
                 df_processed[f"{date_column}_month_sin"] = np.sin(
                     2 * np.pi * dt.month / 12
@@ -262,9 +262,9 @@ class TimeSeriesProcessor:
         Args:
             df: 処理対象のデータフレーム
             target_columns: ラグ特徴量を作成する対象カラム
-            lag_periods: ラグ期間のリスト（例：[1, 7, 30]）
+            lag_periods: ラグ期間のリスト(例:[1, 7, 30])
             date_column: 時系列順序の基準となる日付カラム
-            group_columns: グループ化するカラム（例：馬ID）
+            group_columns: グループ化するカラム(例:馬ID)
 
         Returns:
             ラグ特徴量追加後のデータフレーム
@@ -332,7 +332,7 @@ class TimeSeriesProcessor:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"ラグ特徴量作成中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"ラグ特徴量作成中にエラーが発生しました: {e!s}") from e
 
     def create_time_diff_features(
         self,
@@ -346,8 +346,8 @@ class TimeSeriesProcessor:
         Args:
             df: 処理対象のデータフレーム
             date_column: 基準となる日付カラム
-            reference_dates: 参照日付の辞書（例：{'last_race': '2024-01-01'}）
-            group_column: グループ化するカラム（例：馬ID）
+            reference_dates: 参照日付の辞書(例:{'last_race': '2024-01-01'})
+            group_column: グループ化するカラム(例:馬ID)
 
         Returns:
             時間差特徴量追加後のデータフレーム
@@ -393,7 +393,7 @@ class TimeSeriesProcessor:
                         (df_processed[date_column] - ref_date).dt.days / 30.44
                     ).round(1)
 
-            # 統計的時間差特徴量（グループごと）
+            # 統計的時間差特徴量(グループごと)
             if group_column:
                 # 平均間隔
                 mean_diff = df_processed.groupby(group_column)[
@@ -428,7 +428,7 @@ class TimeSeriesProcessor:
         Args:
             df: 処理対象のデータフレーム
             date_column: 基準となる日付カラム
-            country: 国コード（祝日の判定用）
+            country: 国コード(祝日の判定用)
 
         Returns:
             季節性特徴量追加後のデータフレーム
@@ -444,7 +444,7 @@ class TimeSeriesProcessor:
 
             dt = df_processed[date_column].dt
 
-            # 季節の判定（日本の場合）
+            # 季節の判定(日本の場合)
             def get_season(month):
                 if month in [3, 4, 5]:
                     return "spring"
@@ -456,7 +456,7 @@ class TimeSeriesProcessor:
 
             df_processed[f"{date_column}_season"] = dt.month.apply(get_season)
 
-            # 祝日判定（簡易版）
+            # 祝日判定(簡易版)
             # 実際のプロジェクトではjpholidayなどのライブラリを使用
             df_processed[f"{date_column}_is_holiday"] = 0  # デフォルトは平日
 

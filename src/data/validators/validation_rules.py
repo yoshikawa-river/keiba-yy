@@ -40,7 +40,7 @@ class ValidationRules:
 
         value_str = str(value)
         if len(value_str) != 12:
-            return f"レースキーは12桁である必要があります（現在: {len(value_str)}桁）"
+            return f"レースキーは12桁である必要があります(現在: {len(value_str)}桁)"
 
         if not value_str.isdigit():
             return "レースキーは数字のみで構成される必要があります"
@@ -74,7 +74,7 @@ class ValidationRules:
         try:
             weight = int(value)
             if weight < 300 or weight > 700:
-                return f"馬体重が異常です: {weight}kg（通常300-700kg）"
+                return f"馬体重が異常です: {weight}kg(通常300-700kg)"
             return True
         except Exception:
             return "馬体重は数値である必要があります"
@@ -96,7 +96,7 @@ class ValidationRules:
         if re.match(pattern1, value_str) or re.match(pattern2, value_str):
             return True
 
-        return "タイムフォーマットが不正です（例: 1:23.4 または 83.4）"
+        return "タイムフォーマットが不正です(例: 1:23.4 または 83.4)"
 
     @staticmethod
     def odds_combination_validator(odds_type: str) -> Callable:

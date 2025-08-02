@@ -100,7 +100,7 @@ class PedigreeFeatureExtractor:
                                     same_category
                                 )
 
-                        # コース別成績（芝・ダート）
+                        # コース別成績(芝・ダート)
                         if "track_type" in row and "track_type" in sire_data.columns:
                             current_track = row["track_type"]
                             same_track = sire_data[
@@ -200,7 +200,7 @@ class PedigreeFeatureExtractor:
                             "finish_position"
                         ].mean()
 
-                        # スタミナ指標（長距離での成績）
+                        # スタミナ指標(長距離での成績)
                         if "distance" in dam_sire_data.columns:
                             long_distance = dam_sire_data[
                                 dam_sire_data["distance"] >= 2200
@@ -212,7 +212,7 @@ class PedigreeFeatureExtractor:
                             else:
                                 stats["dam_sire_stamina_index"] = 0
 
-                        # スピード指標（短距離での成績）
+                        # スピード指標(短距離での成績)
                         if "distance" in dam_sire_data.columns:
                             short_distance = dam_sire_data[
                                 dam_sire_data["distance"] <= 1400
@@ -256,7 +256,7 @@ class PedigreeFeatureExtractor:
         Args:
             df: 現在のレースデータ
             sibling_performance: 全馬の成績データ
-            horse_pedigree: 馬の血統情報（dam_id必須）
+            horse_pedigree: 馬の血統情報(dam_id必須)
 
         Returns:
             特徴量追加後のデータフレーム
@@ -285,7 +285,7 @@ class PedigreeFeatureExtractor:
                 stats = {}
 
                 if dam_id and not pd.isna(dam_id):
-                    # 同じ母馬の産駒を取得（自身を除く）
+                    # 同じ母馬の産駒を取得(自身を除く)
                     siblings = horse_pedigree[
                         (horse_pedigree["dam_id"] == dam_id)
                         & (horse_pedigree["horse_id"] != horse_id)
@@ -329,7 +329,7 @@ class PedigreeFeatureExtractor:
                         else:
                             stats = self._get_default_sibling_stats()
                     else:
-                        # 兄弟なし（初仔）
+                        # 兄弟なし(初仔)
                         stats = self._get_default_sibling_stats()
                         stats["is_first_foal"] = 1
                 else:
@@ -501,7 +501,7 @@ class PedigreeFeatureExtractor:
         }
 
     def _check_inbreeding(self, sire_id: any, dam_sire_id: any, row: pd.Series) -> int:
-        """インブリードのチェック（簡易版）
+        """インブリードのチェック(簡易版)
 
         Args:
             sire_id: 父馬ID
@@ -509,12 +509,12 @@ class PedigreeFeatureExtractor:
             row: レースデータの行
 
         Returns:
-            インブリードフラグ（0 or 1）
+            インブリードフラグ(0 or 1)
         """
-        # 簡易的な実装：父系と母系で同じ祖先がいるかのチェック
+        # 簡易的な実装:父系と母系で同じ祖先がいるかのチェック
         # 実際にはもっと詳細な血統表が必要
 
-        # 重要種牡馬の系統チェック（仮実装）
+        # 重要種牡馬の系統チェック(仮実装)
         major_bloodlines = {
             "sunday_silence": {"Sunday Silence", "Deep Impact", "Heart's Cry"},
             "northern_dancer": {"Northern Dancer", "Nijinsky", "Danzig"},

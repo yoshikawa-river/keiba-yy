@@ -83,7 +83,7 @@ class RaceFeatureExtractor:
                 )
                 self.feature_names.extend(["total_prize_log", "prize_level"])
 
-            # 過去の同レースの平均タイム（レースレベル指標）
+            # 過去の同レースの平均タイム(レースレベル指標)
             if historical_races is not None and "race_name" in df.columns:
                 race_time_stats = []
 
@@ -150,7 +150,7 @@ class RaceFeatureExtractor:
         """出走馬の競争レベル特徴量抽出
 
         Args:
-            df: 現在のレースデータ（同一レースの全馬データ）
+            df: 現在のレースデータ(同一レースの全馬データ)
 
         Returns:
             特徴量追加後のデータフレーム
@@ -190,7 +190,7 @@ class RaceFeatureExtractor:
                             horse_stats["stronger_horses_count"] = (
                                 race_group["career_win_rate"] > own_win_rate
                             ).sum()
-                            # 相対的な強さ（1が最強）
+                            # 相対的な強さ(1が最強)
                             horse_stats["relative_strength_rank"] = (
                                 race_group["career_win_rate"]
                                 .rank(ascending=False)
@@ -211,7 +211,7 @@ class RaceFeatureExtractor:
                     df_features = pd.concat([df_features, comp_df], axis=1)
                     self.feature_names.extend(comp_df.columns.tolist())
 
-            # 人気（オッズ）による競争レベル
+            # 人気(オッズ)による競争レベル
             if "odds" in df.columns:
                 # オッズの逆数を確率として扱う
                 df_features["implied_probability"] = 1 / (df["odds"] + 1)
@@ -337,7 +337,7 @@ class RaceFeatureExtractor:
 
             # 過去のラップタイムからのペース分析
             if historical_lap_times is not None and "race_id" in df.columns:
-                # 実装は省略（実際のデータ構造に依存）
+                # 実装は省略(実際のデータ構造に依存)
                 pass
 
             logger.info("ペース予想特徴量抽出完了")
@@ -394,7 +394,7 @@ class RaceFeatureExtractor:
                     if course in course_advantages:
                         inner_adv, outer_adv = course_advantages[course]
 
-                        # 相対的な枠順位置（0-1）
+                        # 相対的な枠順位置(0-1)
                         relative_position = (
                             (position - 1) / (field_size - 1) if field_size > 1 else 0.5
                         )
@@ -430,7 +430,7 @@ class RaceFeatureExtractor:
 
             # コース統計からの詳細な有利不利
             if course_statistics is not None:
-                # 実装は省略（実際のデータ構造に依存）
+                # 実装は省略(実際のデータ構造に依存)
                 pass
 
             logger.info("枠順有利不利特徴量抽出完了")

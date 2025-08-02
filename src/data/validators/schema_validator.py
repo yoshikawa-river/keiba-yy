@@ -190,7 +190,7 @@ class SchemaValidator(BaseValidator):
         self, field: str, value: Any, expected_type: type
     ) -> Any | None:
         """
-        フィールドの型をチェック（Union型対応）
+        フィールドの型をチェック(Union型対応)
 
         Args:
             field: フィールド名

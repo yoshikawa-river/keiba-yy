@@ -74,7 +74,7 @@ class OddsCSVParser(BaseCSVParser):
             return transformed
 
         except Exception as e:
-            raise ValidationError(f"データ変換エラー: {e}")
+            raise ValidationError(f"データ変換エラー: {e}") from e
 
     def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
@@ -107,12 +107,12 @@ class OddsCSVParser(BaseCSVParser):
         if odds_value < 1.0:
             return False, f"不正なオッズ値: {odds_value}"
 
-        # 人気順チェック（存在する場合）
+        # 人気順チェック(存在する場合)
         popularity = row.get("popularity")
         if popularity is not None and popularity < 1:
             return False, f"不正な人気順: {popularity}"
 
-        # 支持率チェック（存在する場合）
+        # 支持率チェック(存在する場合)
         support_rate = row.get("support_rate")
         if support_rate is not None and not 0 <= support_rate <= 100:
             return False, f"不正な支持率: {support_rate}"
@@ -148,7 +148,7 @@ class OddsCSVParser(BaseCSVParser):
             row_data["race_id"] = race.id
             del row_data["race_key"]
 
-            # 既存オッズのチェック（同一時刻・種別・組み合わせ）
+            # 既存オッズのチェック(同一時刻・種別・組み合わせ)
             existing = (
                 self.db_session.query(OddsHistory)
                 .filter_by(
@@ -207,7 +207,6 @@ class OddsCSVParser(BaseCSVParser):
                 return datetime.strptime(datetime_str, fmt)
             except ValueError:
                 continue
-
         raise ValidationError(f"日時の解析に失敗: {datetime_str}")
 
     def _parse_int(self, value: Any) -> int:
@@ -270,15 +269,15 @@ class OddsCSVParser(BaseCSVParser):
         parts = combination.split("-")
 
         if odds_type == "win":
-            # 単勝: 馬番1つ（例: "3"）
+            # 単勝: 馬番1つ(例: "3")
             return len(parts) == 1 and parts[0].isdigit()
 
         if odds_type == "place":
-            # 複勝: 馬番1つ（例: "5"）
+            # 複勝: 馬番1つ(例: "5")
             return len(parts) == 1 and parts[0].isdigit()
 
         if odds_type in ["exacta", "quinella"]:
-            # 馬連・馬単: 馬番2つ（例: "3-5"）
+            # 馬連・馬単: 馬番2つ(例: "3-5")
             return (
                 len(parts) == 2
                 and all(p.isdigit() for p in parts)
@@ -286,7 +285,7 @@ class OddsCSVParser(BaseCSVParser):
             )
 
         if odds_type == "wide":
-            # ワイド: 馬番2つ（例: "3-5"）
+            # ワイド: 馬番2つ(例: "3-5")
             return (
                 len(parts) == 2
                 and all(p.isdigit() for p in parts)
@@ -294,7 +293,7 @@ class OddsCSVParser(BaseCSVParser):
             )
 
         if odds_type == "trio":
-            # 3連複: 馬番3つ（例: "3-5-7"）
+            # 3連複: 馬番3つ(例: "3-5-7")
             return (
                 len(parts) == 3
                 and all(p.isdigit() for p in parts)
@@ -302,7 +301,7 @@ class OddsCSVParser(BaseCSVParser):
             )
 
         if odds_type == "trifecta":
-            # 3連単: 馬番3つ（例: "3-5-7"）
+            # 3連単: 馬番3つ(例: "3-5-7")
             return (
                 len(parts) == 3
                 and all(p.isdigit() for p in parts)

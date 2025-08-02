@@ -169,15 +169,15 @@ def test_relations():
         for entry in test_trainer.race_entries:
             print(f"    - {entry.horse.name} ({entry.race.race_name})")
 
-        # 出走データから結果取得（1対1）
+        # 出走データから結果取得(1対1)
         print(f"\n  📋 出走データの結果: {test_entry.result.finish_position}着")
 
-        print("\n✅ リレーションテスト成功！全てのリレーションが正常に動作しています。")
+        print("\n✅ リレーションテスト成功!全てのリレーションが正常に動作しています。")
 
-        # コミット（テストデータを保存する場合）
+        # コミット(テストデータを保存する場合)
         # session.commit()
 
-        # ロールバック（テストデータを削除する場合）
+        # ロールバック(テストデータを削除する場合)
         session.rollback()
         print("\n🔄 テストデータをロールバックしました。")
 
@@ -217,7 +217,7 @@ def check_cascade_delete():
 
         print(f"1. レース作成: {test_race.race_name} (ID: {test_race.id})")
 
-        # 出走データ作成（簡略化）
+        # 出走データ作成(簡略化)
         horse = session.query(Horse).first()
         jockey = session.query(Jockey).first()
 

@@ -33,7 +33,7 @@ class DataCleaner:
         Args:
             df: 処理対象のデータフレーム
             strategy: 処理戦略 ('mean', 'median', 'most_frequent', 'constant', 'drop', 'forward_fill')
-            columns: 処理対象カラム（Noneの場合は全カラム）
+            columns: 処理対象カラム(Noneの場合は全カラム)
             custom_values: カスタム値での補完用辞書
 
         Returns:
@@ -101,7 +101,7 @@ class DataCleaner:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"欠損値処理中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"欠損値処理中にエラーが発生しました: {e!s}") from e
 
     def detect_outliers(
         self,
@@ -114,9 +114,9 @@ class DataCleaner:
 
         Args:
             df: 処理対象のデータフレーム
-            columns: 処理対象カラム（Noneの場合は数値カラム全て）
+            columns: 処理対象カラム(Noneの場合は数値カラム全て)
             method: 検出方法 ('iqr', 'zscore', 'isolation_forest')
-            threshold: 閾値（IQRの場合は倍率、z-scoreの場合は標準偏差）
+            threshold: 閾値(IQRの場合は倍率、z-scoreの場合は標準偏差)
 
         Returns:
             (外れ値フラグのデータフレーム, 外れ値統計情報)
@@ -180,7 +180,7 @@ class DataCleaner:
             return outlier_flags, stats_df
 
         except Exception as e:
-            raise DataProcessingError(f"外れ値検出中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"外れ値検出中にエラーが発生しました: {e!s}") from e
 
     def handle_outliers(
         self,
@@ -239,7 +239,7 @@ class DataCleaner:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"外れ値処理中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"外れ値処理中にエラーが発生しました: {e!s}") from e
 
     def normalize_data(
         self,
@@ -252,7 +252,7 @@ class DataCleaner:
 
         Args:
             df: 処理対象のデータフレーム
-            columns: 処理対象カラム（Noneの場合は数値カラム全て）
+            columns: 処理対象カラム(Noneの場合は数値カラム全て)
             method: 正規化方法 ('standard', 'minmax', 'robust')
             feature_range: MinMaxScalerの範囲
 
@@ -268,7 +268,7 @@ class DataCleaner:
 
         try:
             if method == "standard":
-                # 標準化（平均0、標準偏差1）
+                # 標準化(平均0、標準偏差1)
                 scaler = StandardScaler()
 
             elif method == "minmax":
@@ -276,7 +276,7 @@ class DataCleaner:
                 scaler = MinMaxScaler(feature_range=feature_range)
 
             elif method == "robust":
-                # ロバストスケーリング（中央値と四分位範囲を使用）
+                # ロバストスケーリング(中央値と四分位範囲を使用)
                 from sklearn.preprocessing import RobustScaler
 
                 scaler = RobustScaler()
@@ -293,7 +293,7 @@ class DataCleaner:
             return df_processed
 
         except Exception as e:
-            raise DataProcessingError(f"データ正規化中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"データ正規化中にエラーが発生しました: {e!s}") from e
 
     def encode_categorical(
         self,
@@ -306,7 +306,7 @@ class DataCleaner:
 
         Args:
             df: 処理対象のデータフレーム
-            columns: 処理対象カラム（Noneの場合はobject型カラム全て）
+            columns: 処理対象カラム(Noneの場合はobject型カラム全て)
             method: エンコーディング方法 ('label', 'onehot', 'target')
             handle_unknown: 未知のカテゴリの処理方法
 
@@ -337,7 +337,7 @@ class DataCleaner:
                 )
 
             elif method == "target":
-                # ターゲットエンコーディング（実装は簡略版）
+                # ターゲットエンコーディング(実装は簡略版)
                 logger.warning(
                     "ターゲットエンコーディングは未実装です。ラベルエンコーディングを使用します。"
                 )

@@ -95,7 +95,7 @@ class RaceCSVParser(BaseCSVParser):
             return transformed
 
         except Exception as e:
-            raise ValidationError(f"データ変換エラー: {e}")
+            raise ValidationError(f"データ変換エラー: {e}") from e
 
     def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
@@ -107,7 +107,7 @@ class RaceCSVParser(BaseCSVParser):
         Returns:
             (バリデーション成功フラグ, エラーメッセージ)
         """
-        # レースキーのフォーマットチェック（YYYYMMDDRRNN）
+        # レースキーのフォーマットチェック(YYYYMMDDRRNN)
         race_key = row.get("race_key", "")
         if len(race_key) != 12 or not race_key.isdigit():
             return False, f"不正なレースIDフォーマット: {race_key}"
@@ -194,7 +194,6 @@ class RaceCSVParser(BaseCSVParser):
                 return datetime.strptime(date_str, fmt).date()
             except ValueError:
                 continue
-
         raise ValidationError(f"日付の解析に失敗: {date_str}")
 
     def _parse_int(self, value: Any) -> int:

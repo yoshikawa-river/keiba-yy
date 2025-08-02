@@ -56,8 +56,8 @@ class RaceEntry(BaseModel):
     horse_weight_diff = Column(Integer, comment="馬体重増減")
     age = Column(Integer, nullable=False, comment="年齢")
     odds_win = Column(Numeric(6, 1), comment="単勝オッズ")
-    odds_place_min = Column(Numeric(6, 1), comment="複勝オッズ（最小）")
-    odds_place_max = Column(Numeric(6, 1), comment="複勝オッズ（最大）")
+    odds_place_min = Column(Numeric(6, 1), comment="複勝オッズ(最小)")
+    odds_place_max = Column(Numeric(6, 1), comment="複勝オッズ(最大)")
     popularity = Column(Integer, comment="人気順位")
 
     # リレーション

@@ -20,7 +20,7 @@ class DataAggregator:
         """初期化
 
         Args:
-            session: SQLAlchemyセッション（DBから直接集計する場合）
+            session: SQLAlchemyセッション(DBから直接集計する場合)
         """
         self.session = session
         self.aggregation_cache = {}
@@ -38,7 +38,7 @@ class DataAggregator:
             df: レース結果データフレーム
             horse_id_column: 馬IDカラム名
             result_columns: 集計対象カラムの辞書
-            group_by: 追加のグループ化カラム（コース、距離など）
+            group_by: 追加のグループ化カラム(コース、距離など)
 
         Returns:
             馬別成績集計結果
@@ -98,7 +98,7 @@ class DataAggregator:
                     horse_stats[f"{col}_show"] / horse_stats[f"{col}_count"]
                 )
 
-                # ROI（回収率）の計算（簡易版：賞金/出走回数）
+                # ROI(回収率)の計算(簡易版:賞金/出走回数)
                 if "prize_money" in result_columns:
                     prize_col = result_columns["prize_money"]
                     horse_stats["roi"] = horse_stats[f"{prize_col}_sum"] / (
@@ -114,7 +114,7 @@ class DataAggregator:
             return horse_stats
 
         except Exception as e:
-            raise DataProcessingError(f"馬別成績集計中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"馬別成績集計中にエラーが発生しました: {e!s}") from e
 
     def aggregate_jockey_performance(
         self,
@@ -182,7 +182,7 @@ class DataAggregator:
             return jockey_stats
 
         except Exception as e:
-            raise DataProcessingError(f"騎手別成績集計中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"騎手別成績集計中にエラーが発生しました: {e!s}") from e
 
     def aggregate_trainer_performance(
         self,
@@ -265,7 +265,7 @@ class DataAggregator:
 
         Args:
             df: レース結果データフレーム
-            course_columns: コース関連カラムの辞書（場所、距離、馬場など）
+            course_columns: コース関連カラムの辞書(場所、距離、馬場など)
             result_columns: 集計対象カラムの辞書
             group_by: 追加のグループ化カラム
 
@@ -307,7 +307,7 @@ class DataAggregator:
             # レースレベル指標の計算
             if "race_time" in result_columns:
                 col = result_columns["race_time"]
-                # 標準タイムからの偏差を計算（コース別の相対的な速さ）
+                # 標準タイムからの偏差を計算(コース別の相対的な速さ)
                 course_stats[f"{col}_performance"] = (
                     course_stats[f"{col}_min"] / course_stats[f"{col}_avg"]
                 )
@@ -334,11 +334,11 @@ class DataAggregator:
 
         Args:
             df: レース結果データフレーム
-            entity_id_column: エンティティIDカラム（馬、騎手など）
+            entity_id_column: エンティティIDカラム(馬、騎手など)
             date_column: 日付カラム
             result_columns: 集計対象カラムの辞書
             n_recent: 直近N走
-            days_window: 日数ウィンドウ（指定した日数以内の成績）
+            days_window: 日数ウィンドウ(指定した日数以内の成績)
 
         Returns:
             直近成績集計結果
@@ -385,7 +385,7 @@ class DataAggregator:
                 df_filtered.groupby(entity_id_column).agg(**aggregations).reset_index()
             )
 
-            # 連続性指標の計算（連勝・連敗など）
+            # 連続性指標の計算(連勝・連敗など)
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
 
@@ -415,7 +415,7 @@ class DataAggregator:
             return recent_stats
 
         except Exception as e:
-            raise DataProcessingError(f"直近成績集計中にエラーが発生しました: {e!s}")
+            raise DataProcessingError(f"直近成績集計中にエラーが発生しました: {e!s}") from e
 
     def create_performance_trends(
         self,
@@ -431,7 +431,7 @@ class DataAggregator:
             df: レース結果データフレーム
             entity_id_column: エンティティIDカラム
             date_column: 日付カラム
-            metric_column: 指標カラム（着順、タイムなど）
+            metric_column: 指標カラム(着順、タイムなど)
             window_size: 移動平均のウィンドウサイズ
 
         Returns:
@@ -456,13 +456,12 @@ class DataAggregator:
                 lambda x: x.rolling(window=window_size, min_periods=1).std()
             )
 
-            # トレンド（線形回帰の傾き）
+            # トレンド(線形回帰の傾き)
             def calc_trend(x):
                 if len(x) < 2:
                     return 0
                 indices = np.arange(len(x))
-                coeffs = np.polyfit(indices, x, 1)
-                return coeffs[0]
+                return np.polyfit(indices, x, 1)
 
             df_sorted[f"{metric_column}_trend_{window_size}"] = df_sorted.groupby(
                 entity_id_column

@@ -106,7 +106,7 @@ def test_exceptions():
 
 
 def test_database_connection():
-    """データベース接続のテスト（簡易版）"""
+    """データベース接続のテスト(簡易版)"""
     print("\n=== データベース接続のテスト ===")
 
     try:
@@ -138,13 +138,14 @@ def main():
         test_exceptions()
         test_database_connection()
 
-        print("\n✅ すべてのテストが正常に完了しました！")
-        return 0
+        print("\n✅ すべてのテストが正常に完了しました!")
 
     except Exception as e:
         logger.exception("テスト中にエラーが発生しました")
         print(f"\n❌ エラーが発生しました: {e}")
         return 1
+    else:
+        return 0
 
 
 if __name__ == "__main__":

@@ -205,7 +205,7 @@ class CSVFileDetector:
             reader = csv.reader(f, delimiter=delimiter)
             headers = next(reader, [])
 
-        # ヘッダーの正規化（前後の空白除去）
+        # ヘッダーの正規化(前後の空白除去)
         headers = [h.strip() for h in headers]
 
         return headers, delimiter
@@ -241,7 +241,7 @@ class CSVFileDetector:
         best_type = max(match_scores, key=lambda x: match_scores[x])
         best_score = match_scores[best_type]
 
-        # 閾値（70%）以上でないと判定しない
+        # 閾値(70%)以上でないと判定しない
         if best_score >= 0.7:
             return best_type
 
@@ -249,7 +249,7 @@ class CSVFileDetector:
 
     def _count_rows(self, file_path: Path, encoding: str) -> int:
         """
-        行数をカウント（ヘッダー除外）
+        行数をカウント(ヘッダー除外)
 
         Args:
             file_path: 対象ファイルパス
@@ -272,7 +272,7 @@ class CSVFileDetector:
 
         Args:
             file_type: 取得したいファイルタイプ
-            csv_files: フィルタ対象のファイルリスト（Noneの場合は再検出）
+            csv_files: フィルタ対象のファイルリスト(Noneの場合は再検出)
 
         Returns:
             指定タイプのファイルリスト

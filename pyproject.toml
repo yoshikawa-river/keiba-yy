@@ -137,6 +137,18 @@ ignore = [
     "TRY003", # long exception messages
     "PLR0913", # too many arguments
     "PLR2004", # magic value comparison
+    "TRY300", # try-consider-else (not always necessary)
+    "B007",   # unused-loop-control-variable (sometimes intentional)
+    "ARG001", # unused-function-argument (may be required by interface)
+    "ARG002", # unused-method-argument (may be required by interface)
+    "PLR0912", # too-many-branches (complexity may be necessary)
+    "PLR0911", # too-many-return-statements (may be clearer)
+    "PLR0915", # too-many-statements (sometimes unavoidable)
+    "SIM102", # collapsible-if (may hurt readability)
+    "TRY301", # raise-within-try (sometimes necessary)
+    "C408",   # unnecessary-collection-call (dict() is sometimes clearer)
+    "RUF022", # unsorted-dunder-all (not critical)
+    "PLW2901", # redefined-loop-name (sometimes intentional)
 ]
 
 [tool.ruff.lint.per-file-ignores]

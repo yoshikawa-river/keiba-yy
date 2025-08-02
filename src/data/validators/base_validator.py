@@ -59,7 +59,7 @@ class BaseValidator(ABC):
         バリデーターの初期化
 
         Args:
-            strict_mode: 厳格モード（警告もエラーとして扱う）
+            strict_mode: 厳格モード(警告もエラーとして扱う)
         """
         self.strict_mode = strict_mode
 

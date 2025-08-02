@@ -30,7 +30,7 @@ class PerformanceFeatureExtractor:
         Args:
             df: 現在のレースデータ
             performance_history: 過去の成績データ
-            entity_column: エンティティカラム（馬、騎手など）
+            entity_column: エンティティカラム(馬、騎手など)
             date_column: 日付カラム
 
         Returns:
@@ -48,7 +48,7 @@ class PerformanceFeatureExtractor:
                 entity_id = row[entity_column]
                 current_date = row[date_column]
 
-                # 過去の成績を取得（現在のレースより前）
+                # 過去の成績を取得(現在のレースより前)
                 past_results = performance_history[
                     (performance_history[entity_column] == entity_id)
                     & (performance_history[date_column] < current_date)
@@ -173,7 +173,7 @@ class PerformanceFeatureExtractor:
                         wins = (past_results["finish_position"] == 1).sum()
                         positions = past_results["finish_position"].values
 
-                        # トレンド計算（改善=正、悪化=負）
+                        # トレンド計算(改善=正、悪化=負)
                         if len(positions) > 1:
                             trend = (
                                 np.polyfit(range(len(positions)), positions, 1)[0] * -1
@@ -516,10 +516,10 @@ class PerformanceFeatureExtractor:
         """連勝・連敗の計算
 
         Args:
-            positions: 着順の配列（新しい順）
+            positions: 着順の配列(新しい順)
 
         Returns:
-            連勝数（正）または連敗数（負）
+            連勝数(正)または連敗数(負)
         """
         if len(positions) == 0:
             return 0
@@ -535,7 +535,7 @@ class PerformanceFeatureExtractor:
                 else:
                     break
         elif positions[0] > 3:
-            # 連敗をカウント（4着以下）
+            # 連敗をカウント(4着以下)
             for pos in positions:
                 if pos > 3:
                     streak -= 1
@@ -553,8 +553,7 @@ class PerformanceFeatureExtractor:
         Returns:
             カテゴリ名
         """
-        names = ["sprint", "mile", "intermediate", "long"]
-        return names[index] if index < len(names) else f"category_{index}"
+        return ["sprint", "mile", "intermediate", "long"]
 
     def extract_all_performance_features(
         self,

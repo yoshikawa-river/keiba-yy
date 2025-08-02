@@ -82,7 +82,7 @@ class LoggerManager:
                 encoding="utf-8",
             )
 
-        # エラーログ専用ファイル（エラー以上のみ）
+        # エラーログ専用ファイル(エラー以上のみ)
         if settings.LOG_DIR:
             error_log_path = settings.LOG_DIR / "error.log"
             logger.add(

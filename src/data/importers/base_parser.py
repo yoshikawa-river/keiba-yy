@@ -60,7 +60,7 @@ class BaseCSVParser(ABC):
         必須カラムのリストを定義
 
         Returns:
-            必須カラム名のリスト（CSV側のカラム名）
+            必須カラム名のリスト(CSV側のカラム名)
         """
         pass
 
@@ -116,7 +116,7 @@ class BaseCSVParser(ABC):
         Args:
             csv_file: CSVファイル情報
             batch_size: バッチサイズ
-            dry_run: ドライラン（DBに保存しない）
+            dry_run: ドライラン(DBに保存しない)
 
         Returns:
             パース結果の統計情報
@@ -150,7 +150,7 @@ class BaseCSVParser(ABC):
                     f"エラー: {self.statistics['error_count']}"
                 )
 
-            # コミット（ドライランでない場合）
+            # コミット(ドライランでない場合)
             if not dry_run:
                 self.db_session.commit()
                 logger.info("データベースへのコミット完了")
@@ -158,7 +158,7 @@ class BaseCSVParser(ABC):
         except Exception as e:
             self.db_session.rollback()
             logger.error(f"パースエラー: {e}")
-            raise DataImportError(f"ファイルパースに失敗: {csv_file.path.name}")
+            raise DataImportError(f"ファイルパースに失敗: {csv_file.path.name}") from e
 
         # 結果サマリー
         self._log_summary()
@@ -206,7 +206,7 @@ class BaseCSVParser(ABC):
             keep_default_na=True,
         )
 
-        # カラム名の正規化（前後の空白除去）
+        # カラム名の正規化(前後の空白除去)
         df.columns = df.columns.str.strip()
 
         # カラムマッピングの適用
@@ -240,7 +240,7 @@ class BaseCSVParser(ABC):
                     self.statistics["error_count"] += 1
                     continue
 
-                # 保存（ドライランでない場合）
+                # 保存(ドライランでない場合)
                 if not dry_run:
                     if self._save_row(transformed_data):
                         self.statistics["success_count"] += 1

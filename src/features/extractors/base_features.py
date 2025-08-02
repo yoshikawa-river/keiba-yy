@@ -25,7 +25,7 @@ class BaseFeatureExtractor:
 
         Args:
             df: レースデータフレーム
-            horse_info: 馬情報データフレーム（追加情報がある場合）
+            horse_info: 馬情報データフレーム(追加情報がある場合)
 
         Returns:
             特徴量追加後のデータフレーム
@@ -38,7 +38,7 @@ class BaseFeatureExtractor:
             # 馬齢
             if "horse_age" in df.columns:
                 df_features["horse_age"] = df["horse_age"].astype(float)
-                # 馬齢カテゴリ（若馬、成馬、高齢馬）
+                # 馬齢カテゴリ(若馬、成馬、高齢馬)
                 df_features["horse_age_category"] = pd.cut(
                     df["horse_age"],
                     bins=[0, 3, 6, 100],
@@ -56,10 +56,10 @@ class BaseFeatureExtractor:
                 self.categorical_features.append("horse_sex_encoded")
                 self.categorical_features.extend(sex_dummies.columns.tolist())
 
-            # 斤量（負担重量）
+            # 斤量(負担重量)
             if "weight_carried" in df.columns:
                 df_features["weight_carried"] = df["weight_carried"].astype(float)
-                # 斤量の標準化（平均との差）
+                # 斤量の標準化(平均との差)
                 mean_weight = df["weight_carried"].mean()
                 df_features["weight_carried_diff"] = df["weight_carried"] - mean_weight
                 # 斤量カテゴリ
@@ -187,7 +187,7 @@ class BaseFeatureExtractor:
 
             # 騎手ID
             if "jockey_id" in df.columns:
-                # 騎手の経験値（仮の実装）
+                # 騎手の経験値(仮の実装)
                 if jockey_stats is not None and "jockey_id" in jockey_stats.columns:
                     # 騎手統計をマージ
                     jockey_cols = [
@@ -206,7 +206,7 @@ class BaseFeatureExtractor:
                         )
                         self.numerical_features.extend(jockey_cols[1:])
 
-                # 騎手カテゴリ（簡易版：IDベース）
+                # 騎手カテゴリ(簡易版:IDベース)
                 df_features["jockey_category"] = pd.qcut(
                     df["jockey_id"].fillna(0),
                     q=5,
@@ -217,7 +217,7 @@ class BaseFeatureExtractor:
 
             # 調教師ID
             if "trainer_id" in df.columns:
-                # 調教師の経験値（仮の実装）
+                # 調教師の経験値(仮の実装)
                 if trainer_stats is not None and "trainer_id" in trainer_stats.columns:
                     # 調教師統計をマージ
                     trainer_cols = [
@@ -238,7 +238,7 @@ class BaseFeatureExtractor:
                         )
                         self.numerical_features.extend(trainer_cols[1:])
 
-                # 調教師カテゴリ（簡易版：IDベース）
+                # 調教師カテゴリ(簡易版:IDベース)
                 df_features["trainer_category"] = pd.qcut(
                     df["trainer_id"].fillna(0),
                     q=5,
@@ -252,7 +252,7 @@ class BaseFeatureExtractor:
                 df_features["jockey_trainer_combo"] = (
                     df["jockey_id"].astype(str) + "_" + df["trainer_id"].astype(str)
                 )
-                # コンビネーションの頻度（同一レース内）
+                # コンビネーションの頻度(同一レース内)
                 combo_counts = df_features.groupby(
                     ["race_id", "jockey_trainer_combo"]
                 ).size()
@@ -299,12 +299,12 @@ class BaseFeatureExtractor:
                     bins=[0, 1400, 1800, 2200, 4000],
                     labels=["sprint", "mile", "intermediate", "long"],
                 )
-                # 距離の2乗（非線形効果）
+                # 距離の2乗(非線形効果)
                 df_features["distance_squared"] = df["distance"] ** 2
                 self.numerical_features.extend(["distance", "distance_squared"])
                 self.categorical_features.append("distance_category")
 
-            # コース種別（芝・ダート）
+            # コース種別(芝・ダート)
             if "track_type" in df.columns:
                 df_features["track_type_encoded"] = df["track_type"].map(
                     {"turf": 0, "dirt": 1}
@@ -341,7 +341,7 @@ class BaseFeatureExtractor:
 
             # レースクラス
             if "race_class" in df.columns:
-                # クラスのランク付け（簡易版）
+                # クラスのランク付け(簡易版)
                 class_rank = {
                     "G1": 8,
                     "G2": 7,
@@ -362,7 +362,7 @@ class BaseFeatureExtractor:
                 )
                 self.numerical_features.append("race_class_rank")
 
-            # レース時刻（午前・午後）
+            # レース時刻(午前・午後)
             if "race_time" in df.columns:
                 # 時刻から時間帯を抽出
                 df_features["race_hour"] = pd.to_datetime(df["race_time"]).dt.hour

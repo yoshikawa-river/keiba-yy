@@ -102,11 +102,11 @@ class ImportManager:
         file_types: list[FileType] | None = None,
     ) -> BatchResult:
         """
-        増分インポート（前回インポート以降の新規ファイルのみ）
+        増分インポート(前回インポート以降の新規ファイルのみ)
 
         Args:
             directory_name: ディレクトリ名
-            since: この日時以降のファイルをインポート（Noneの場合は前回インポート日時）
+            since: この日時以降のファイルをインポート(Noneの場合は前回インポート日時)
             file_types: インポート対象のファイルタイプ
 
         Returns:
@@ -158,7 +158,7 @@ class ImportManager:
         失敗したインポートをリトライ
 
         Args:
-            directory_name: 特定のディレクトリのみリトライ（Noneの場合はすべて）
+            directory_name: 特定のディレクトリのみリトライ(Noneの場合はすべて)
 
         Returns:
             バッチ処理結果
@@ -210,7 +210,7 @@ class ImportManager:
         インポート状況を取得
 
         Args:
-            directory_name: 特定のディレクトリの状況（Noneの場合はすべて）
+            directory_name: 特定のディレクトリの状況(Noneの場合はすべて)
 
         Returns:
             インポート状況
@@ -302,8 +302,7 @@ class ImportManager:
 
     def _get_last_import(self, directory_name: str) -> dict[str, Any] | None:
         """最後のインポート情報を取得"""
-        imports = self.import_history.get(directory_name, [])
-        return imports[-1] if imports else None
+        return self.import_history.get(directory_name, [])
 
     def _calculate_success_rate(self, imports: list[dict[str, Any]]) -> float:
         """成功率を計算"""
