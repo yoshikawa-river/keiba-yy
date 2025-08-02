@@ -35,8 +35,12 @@ def upgrade() -> None:
     
     # コネクションを取得してテーブル存在確認
     bind = op.get_bind()
-    inspector = reflection.Inspector.from_engine(bind)
-    tables = inspector.get_table_names()
+    try:
+        inspector = reflection.Inspector.from_engine(bind)
+        tables = inspector.get_table_names()
+    except Exception:
+        # テーブル一覧取得に失敗した場合は空として扱う
+        tables = []
     
     if 'feature_cache' in tables:
         try:
