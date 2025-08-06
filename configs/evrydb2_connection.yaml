@@ -1,0 +1,53 @@
+# EvryDB2 Connection Configuration
+# EvryDB2からDocker環境のMySQLサーバーへの接続設定
+
+database:
+  # 接続先設定
+  host: "${MYSQL_HOST:-host.docker.internal}"  # DockerからホストMacへの接続
+  port: ${MYSQL_PORT:-3306}
+  database: ${DATABASE_NAME:-keiba_db}
+  user: ${DATABASE_USER:-keiba_user}
+  password: ${DATABASE_PASSWORD:-keiba_password}
+  
+  # 接続オプション
+  charset: utf8mb4
+  connect_timeout: 10
+  read_timeout: 30
+  write_timeout: 30
+  
+  # コネクションプール設定
+  pool:
+    min_size: 1
+    max_size: 10
+    max_idle_time: 300  # seconds
+    
+# 外部接続設定（EvryDB2から接続する場合）
+external_connection:
+  # MacのIPアドレスまたはホスト名
+  # 実際の値は環境変数で設定
+  host: "${EXTERNAL_MYSQL_HOST}"  # 例: 192.168.1.100 or macbook.local
+  port: ${EXTERNAL_MYSQL_PORT:-3306}
+  
+  # SSL/TLS設定（本番環境推奨）
+  ssl:
+    enabled: ${SSL_ENABLED:-false}
+    ca_cert: "${SSL_CA_CERT_PATH:-}"
+    client_cert: "${SSL_CLIENT_CERT_PATH:-}"
+    client_key: "${SSL_CLIENT_KEY_PATH:-}"
+    
+# 接続テスト設定
+connection_test:
+  # テスト実行間隔（秒）
+  interval: 60
+  # 再接続試行回数
+  retry_count: 3
+  # 再接続待機時間（秒）
+  retry_delay: 5
+  
+# ログ設定
+logging:
+  level: "${LOG_LEVEL:-INFO}"
+  # SQLクエリのログ出力
+  log_queries: ${LOG_QUERIES:-false}
+  # 接続エラーの詳細ログ
+  detailed_errors: ${DETAILED_ERRORS:-true}
