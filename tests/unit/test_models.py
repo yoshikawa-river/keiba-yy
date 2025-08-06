@@ -4,7 +4,6 @@ SQLAlchemyモデルのユニットテスト
 モデルの基本的な動作とリレーションのテスト
 """
 
-import json
 from datetime import date, datetime, time
 from decimal import Decimal
 
@@ -14,15 +13,14 @@ from sqlalchemy.orm import sessionmaker
 
 from src.data.models import (
     Base,
-    FeatureCache,
     Horse,
     Jockey,
     OddsHistory,
     Prediction,
     Race,
+    Racecourse,
     RaceEntry,
     RaceResult,
-    Racecourse,
     Trainer,
 )
 
