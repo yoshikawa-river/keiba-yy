@@ -521,4 +521,3 @@ class TimeFeatureExtractor:
             "feature_count": self.feature_count,
             "categories": {"race_time": 10, "last_3f": 10},
         }
-

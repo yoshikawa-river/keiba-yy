@@ -20,39 +20,41 @@ class TestHorsePerformanceExtractor(unittest.TestCase):
         self.extractor = HorsePerformanceExtractor()
 
         # テスト用レースデータ
-        self.df = pd.DataFrame({
-            "race_id": ["R001", "R001", "R001"],
-            "horse_id": ["H001", "H002", "H003"],
-            "distance": [1600, 1600, 1600],
-            "track_type": ["turf", "turf", "turf"],
-            "track_condition": ["good", "good", "good"],
-            "venue": ["東京", "東京", "東京"],
-            "race_class": ["G1", "G1", "G1"],
-            "race_date": ["2024-01-01", "2024-01-01", "2024-01-01"],
-            "post_position": [1, 5, 10],
-            "weight_carried": [55, 56, 57]
-        })
+        self.df = pd.DataFrame(
+            {
+                "race_id": ["R001", "R001", "R001"],
+                "horse_id": ["H001", "H002", "H003"],
+                "distance": [1600, 1600, 1600],
+                "track_type": ["turf", "turf", "turf"],
+                "track_condition": ["good", "good", "good"],
+                "venue": ["東京", "東京", "東京"],
+                "race_class": ["G1", "G1", "G1"],
+                "race_date": ["2024-01-01", "2024-01-01", "2024-01-01"],
+                "post_position": [1, 5, 10],
+                "weight_carried": [55, 56, 57],
+            }
+        )
 
         # テスト用過去成績データ
-        self.history_df = pd.DataFrame({
-            "horse_id": ["H001"] * 10 + ["H002"] * 10 + ["H003"] * 10,
-            "race_date": pd.date_range("2023-01-01", periods=10).tolist() * 3,
-            "finish_position": [1, 2, 3, 1, 5, 2, 3, 4, 1, 2] * 3,
-            "distance": [1600] * 30,
-            "track_condition": ["good"] * 30,
-            "venue": ["東京"] * 30,
-            "race_class": ["G1"] * 30,
-            "post_position": list(range(1, 11)) * 3,
-            "weight_carried": [55] * 30,
-            "prize_money": [10000000] * 30,
-            "race_grade": ["G1"] * 15 + ["G2"] * 15
-        })
+        self.history_df = pd.DataFrame(
+            {
+                "horse_id": ["H001"] * 10 + ["H002"] * 10 + ["H003"] * 10,
+                "race_date": pd.date_range("2023-01-01", periods=10).tolist() * 3,
+                "finish_position": [1, 2, 3, 1, 5, 2, 3, 4, 1, 2] * 3,
+                "distance": [1600] * 30,
+                "track_condition": ["good"] * 30,
+                "venue": ["東京"] * 30,
+                "race_class": ["G1"] * 30,
+                "post_position": list(range(1, 11)) * 3,
+                "weight_carried": [55] * 30,
+                "prize_money": [10000000] * 30,
+                "race_grade": ["G1"] * 15 + ["G2"] * 15,
+            }
+        )
 
     def test_extract_past_performance_stats(self):
         """過去成績統計特徴量の抽出テスト"""
-        result = self.extractor.extract_past_performance_stats(
-            self.df, self.history_df
-        )
+        result = self.extractor.extract_past_performance_stats(self.df, self.history_df)
 
         # 特徴量が追加されていることを確認
         self.assertIn("avg_finish_position_last3", result.columns)
@@ -65,16 +67,16 @@ class TestHorsePerformanceExtractor(unittest.TestCase):
         self.assertIn("recent_form_trend", result.columns)
 
         # 値が数値であることを確認
-        self.assertTrue(pd.api.types.is_numeric_dtype(result["avg_finish_position_last3"]))
+        self.assertTrue(
+            pd.api.types.is_numeric_dtype(result["avg_finish_position_last3"])
+        )
 
         # 特徴量数の確認
         self.assertEqual(self.extractor.feature_count, 15)
 
     def test_extract_career_performance(self):
         """生涯成績特徴量の抽出テスト"""
-        result = self.extractor.extract_career_performance(
-            self.df, self.history_df
-        )
+        result = self.extractor.extract_career_performance(self.df, self.history_df)
 
         # 特徴量が追加されていることを確認
         self.assertIn("career_win_rate", result.columns)
@@ -130,26 +132,30 @@ class TestTimeFeatureExtractor(unittest.TestCase):
         self.extractor = TimeFeatureExtractor()
 
         # テスト用レースデータ
-        self.df = pd.DataFrame({
-            "race_id": ["R001", "R001", "R001"],
-            "horse_id": ["H001", "H002", "H003"],
-            "distance": [1600, 1600, 1600],
-            "track_type": ["turf", "turf", "turf"],
-            "track_condition": ["good", "good", "good"]
-        })
+        self.df = pd.DataFrame(
+            {
+                "race_id": ["R001", "R001", "R001"],
+                "horse_id": ["H001", "H002", "H003"],
+                "distance": [1600, 1600, 1600],
+                "track_type": ["turf", "turf", "turf"],
+                "track_condition": ["good", "good", "good"],
+            }
+        )
 
         # テスト用過去成績データ（タイム情報含む）
-        self.history_df = pd.DataFrame({
-            "horse_id": ["H001"] * 5 + ["H002"] * 5 + ["H003"] * 5,
-            "race_id": ["R" + str(i) for i in range(15)],
-            "race_date": pd.date_range("2023-01-01", periods=5).tolist() * 3,
-            "race_time": ["1:33.5", "1:34.0", "1:33.8", "1:34.2", "1:33.6"] * 3,
-            "last_3f": [33.5, 34.0, 33.8, 34.2, 33.6] * 3,
-            "last_3f_rank": [1, 3, 2, 4, 1] * 3,
-            "distance": [1600] * 15,
-            "track_type": ["turf"] * 15,
-            "track_condition": ["good"] * 15
-        })
+        self.history_df = pd.DataFrame(
+            {
+                "horse_id": ["H001"] * 5 + ["H002"] * 5 + ["H003"] * 5,
+                "race_id": ["R" + str(i) for i in range(15)],
+                "race_date": pd.date_range("2023-01-01", periods=5).tolist() * 3,
+                "race_time": ["1:33.5", "1:34.0", "1:33.8", "1:34.2", "1:33.6"] * 3,
+                "last_3f": [33.5, 34.0, 33.8, 34.2, 33.6] * 3,
+                "last_3f_rank": [1, 3, 2, 4, 1] * 3,
+                "distance": [1600] * 15,
+                "track_type": ["turf"] * 15,
+                "track_condition": ["good"] * 15,
+            }
+        )
 
     def test_time_to_seconds_conversion(self):
         """タイム文字列の秒変換テスト"""
@@ -163,9 +169,7 @@ class TestTimeFeatureExtractor(unittest.TestCase):
 
     def test_extract_race_time_features(self):
         """走破タイム特徴量の抽出テスト"""
-        result = self.extractor.extract_race_time_features(
-            self.df, self.history_df
-        )
+        result = self.extractor.extract_race_time_features(self.df, self.history_df)
 
         # 特徴量が追加されていることを確認
         self.assertIn("last_race_time", result.columns)
@@ -180,9 +184,7 @@ class TestTimeFeatureExtractor(unittest.TestCase):
 
     def test_extract_last3f_features(self):
         """上がり3F特徴量の抽出テスト"""
-        result = self.extractor.extract_last3f_features(
-            self.df, self.history_df
-        )
+        result = self.extractor.extract_last3f_features(self.df, self.history_df)
 
         # 特徴量が追加されていることを確認
         self.assertIn("last_3f_time", result.columns)
@@ -217,46 +219,50 @@ class TestJockeyTrainerFeatureExtractor(unittest.TestCase):
         self.extractor = JockeyTrainerFeatureExtractor()
 
         # テスト用レースデータ
-        self.df = pd.DataFrame({
-            "race_id": ["R001", "R001", "R001"],
-            "horse_id": ["H001", "H002", "H003"],
-            "jockey_id": ["J001", "J002", "J003"],
-            "trainer_id": ["T001", "T002", "T003"],
-            "distance": [1600, 1600, 1600],
-            "venue": ["東京", "東京", "東京"],
-            "race_class": ["G1", "G1", "G1"]
-        })
+        self.df = pd.DataFrame(
+            {
+                "race_id": ["R001", "R001", "R001"],
+                "horse_id": ["H001", "H002", "H003"],
+                "jockey_id": ["J001", "J002", "J003"],
+                "trainer_id": ["T001", "T002", "T003"],
+                "distance": [1600, 1600, 1600],
+                "venue": ["東京", "東京", "東京"],
+                "race_class": ["G1", "G1", "G1"],
+            }
+        )
 
         # テスト用騎手統計データ
-        self.jockey_stats = pd.DataFrame({
-            "jockey_id": ["J001"] * 20 + ["J002"] * 20 + ["J003"] * 20,
-            "race_date": pd.date_range("2023-01-01", periods=20).tolist() * 3,
-            "finish_position": ([1, 2, 3, 4, 5] * 4) * 3,
-            "distance": [1600] * 60,
-            "venue": ["東京"] * 60,
-            "race_class": ["G1"] * 60,
-            "horse_id": ["H" + str(i % 10) for i in range(60)],
-            "prize_money": [1000000] * 60
-        })
+        self.jockey_stats = pd.DataFrame(
+            {
+                "jockey_id": ["J001"] * 20 + ["J002"] * 20 + ["J003"] * 20,
+                "race_date": pd.date_range("2023-01-01", periods=20).tolist() * 3,
+                "finish_position": ([1, 2, 3, 4, 5] * 4) * 3,
+                "distance": [1600] * 60,
+                "venue": ["東京"] * 60,
+                "race_class": ["G1"] * 60,
+                "horse_id": ["H" + str(i % 10) for i in range(60)],
+                "prize_money": [1000000] * 60,
+            }
+        )
 
         # テスト用調教師統計データ
-        self.trainer_stats = pd.DataFrame({
-            "trainer_id": ["T001"] * 20 + ["T002"] * 20 + ["T003"] * 20,
-            "race_date": pd.date_range("2023-01-01", periods=20).tolist() * 3,
-            "finish_position": ([1, 2, 3, 4, 5] * 4) * 3,
-            "distance": [1600] * 60,
-            "venue": ["東京"] * 60,
-            "race_class": ["G1"] * 60,
-            "jockey_id": ["J" + str(i % 10) for i in range(60)],
-            "horse_id": ["H" + str(i % 10) for i in range(60)],
-            "race_grade": ["G1"] * 30 + ["G2"] * 30
-        })
+        self.trainer_stats = pd.DataFrame(
+            {
+                "trainer_id": ["T001"] * 20 + ["T002"] * 20 + ["T003"] * 20,
+                "race_date": pd.date_range("2023-01-01", periods=20).tolist() * 3,
+                "finish_position": ([1, 2, 3, 4, 5] * 4) * 3,
+                "distance": [1600] * 60,
+                "venue": ["東京"] * 60,
+                "race_class": ["G1"] * 60,
+                "jockey_id": ["J" + str(i % 10) for i in range(60)],
+                "horse_id": ["H" + str(i % 10) for i in range(60)],
+                "race_grade": ["G1"] * 30 + ["G2"] * 30,
+            }
+        )
 
     def test_extract_jockey_features(self):
         """騎手特徴量の抽出テスト"""
-        result = self.extractor.extract_jockey_features(
-            self.df, self.jockey_stats
-        )
+        result = self.extractor.extract_jockey_features(self.df, self.jockey_stats)
 
         # 特徴量が追加されていることを確認
         self.assertIn("jockey_win_rate", result.columns)
@@ -275,9 +281,7 @@ class TestJockeyTrainerFeatureExtractor(unittest.TestCase):
 
     def test_extract_trainer_features(self):
         """調教師特徴量の抽出テスト"""
-        result = self.extractor.extract_trainer_features(
-            self.df, self.trainer_stats
-        )
+        result = self.extractor.extract_trainer_features(self.df, self.trainer_stats)
 
         # 特徴量が追加されていることを確認
         self.assertIn("trainer_win_rate", result.columns)
@@ -309,7 +313,7 @@ class TestJockeyTrainerFeatureExtractor(unittest.TestCase):
         bad_positions = pd.Series([10, 12, 15])
         self.assertGreater(
             self.extractor._calculate_compatibility_score(good_positions),
-            self.extractor._calculate_compatibility_score(bad_positions)
+            self.extractor._calculate_compatibility_score(bad_positions),
         )
 
 
@@ -324,14 +328,16 @@ class TestFeatureIntegration(unittest.TestCase):
         jt_extractor = JockeyTrainerFeatureExtractor()
 
         # テストデータ作成
-        df = pd.DataFrame({
-            "race_id": ["R001"],
-            "horse_id": ["H001"],
-            "jockey_id": ["J001"],
-            "trainer_id": ["T001"],
-            "distance": [1600],
-            "track_type": ["turf"]
-        })
+        df = pd.DataFrame(
+            {
+                "race_id": ["R001"],
+                "horse_id": ["H001"],
+                "jockey_id": ["J001"],
+                "trainer_id": ["T001"],
+                "distance": [1600],
+                "track_type": ["turf"],
+            }
+        )
 
         # 各特徴量抽出
         df = perf_extractor.extract_all_performance_features(df)
@@ -340,9 +346,9 @@ class TestFeatureIntegration(unittest.TestCase):
 
         # 合計70個の特徴量が生成されることを確認
         total_features = (
-            perf_extractor.feature_count +
-            time_extractor.feature_count +
-            jt_extractor.feature_count
+            perf_extractor.feature_count
+            + time_extractor.feature_count
+            + jt_extractor.feature_count
         )
         self.assertEqual(total_features, 70)
 

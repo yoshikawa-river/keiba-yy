@@ -515,4 +515,3 @@ class JockeyTrainerFeatureExtractor:
             "feature_count": self.feature_count,
             "categories": {"jockey": 10, "trainer": 10},
         }
-

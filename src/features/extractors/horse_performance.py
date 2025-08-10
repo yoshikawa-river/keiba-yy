@@ -510,4 +510,3 @@ class HorsePerformanceExtractor:
                 "conditional_performance": 7,
             },
         }
-
