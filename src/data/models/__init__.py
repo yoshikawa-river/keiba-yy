@@ -15,11 +15,11 @@ from .mykeibadb_models import (
 )
 
 __all__ = [
-    'Base',
-    'RaceShosai',
-    'KyosobaMaster2',
-    'UmagotoRaceJoho',
-    'KishuMaster',
-    'ChokyoshiMaster',
-    'BanushiMaster'
+    "Base",
+    "RaceShosai",
+    "KyosobaMaster2",
+    "UmagotoRaceJoho",
+    "KishuMaster",
+    "ChokyoshiMaster",
+    "BanushiMaster",
 ]

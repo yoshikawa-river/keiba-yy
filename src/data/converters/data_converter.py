@@ -48,7 +48,7 @@ class RaceKey:
             jyo_cd=data.get("JyoCD", ""),
             kaiji=data.get("Kaiji", ""),
             nichiji=data.get("Nichiji", ""),
-            race_num=data.get("RaceNum", "")
+            race_num=data.get("RaceNum", ""),
         )
 
     def to_dict(self):
@@ -58,7 +58,7 @@ class RaceKey:
             "JyoCD": self.jyo_cd,
             "Kaiji": self.kaiji,
             "Nichiji": self.nichiji,
-            "RaceNum": self.race_num
+            "RaceNum": self.race_num,
         }
 
     def to_race_id(self, month_day: str = ""):
@@ -134,8 +134,9 @@ class DataConverter:
         return {
             # 識別情報
             "race_id": f"{nrace.Year}{nrace.MonthDay}{nrace.JyoCD}{nrace.Kaiji}{nrace.Nichiji}{nrace.RaceNum}",
-            "race_key": RaceKey(nrace.Year, nrace.JyoCD, nrace.Kaiji, nrace.Nichiji, nrace.RaceNum),
-
+            "race_key": RaceKey(
+                nrace.Year, nrace.JyoCD, nrace.Kaiji, nrace.Nichiji, nrace.RaceNum
+            ),
             # 基本情報
             "race_date": race_date,
             "year": int(nrace.Year) if nrace.Year else None,
@@ -146,47 +147,38 @@ class DataConverter:
             "nichiji": int(nrace.Nichiji) if nrace.Nichiji else None,
             "race_number": int(nrace.RaceNum) if nrace.RaceNum else None,
             "youbi": CodeMaster.get_youbi(nrace.YoubiCD),
-
             # レース名
             "race_name": nrace.Hondai,
             "race_name_sub": nrace.Fukudai,
             "race_name_kakko": nrace.Kakko,
             "race_name_short": nrace.Ryakusyo10,
-
             # グレード・条件
             "grade": CodeMaster.get_grade(nrace.GradeCD),
             "grade_code": nrace.GradeCD,
             "syubetu": CodeMaster.get_syubetu(nrace.SyubetuCD),
             "jyuryo": CodeMaster.get_jyuryo(nrace.JyuryoCD),
-
             # コース情報
             "track_type": track_type,
             "track_detail": CodeMaster.get_track_detail(nrace.TrackCD),
             "track_code": nrace.TrackCD,
             "distance": CodeMaster.convert_distance(nrace.Kyori),
             "course_kubun": nrace.CourseKubunCD,
-
             # 天候・馬場
             "weather": CodeMaster.get_tenko(nrace.TenkoCD),
             "weather_code": nrace.TenkoCD,
             "track_condition": track_condition,
             "track_condition_code": nrace.SibaBabaCD or nrace.DirtBabaCD,
-
             # 頭数
             "entry_count": int(nrace.SyussoTosu) if nrace.SyussoTosu else 0,
             "toroku_count": int(nrace.TorokuTosu) if nrace.TorokuTosu else 0,
-
             # 時刻
             "start_time": DataConverter.parse_time(nrace.HassoTime),
-
             # 賞金
             "prize_money": prize_money,
-
             # ラップタイム
             "lap_times": lap_times,
             "pace_s3": CodeMaster.convert_time(nrace.HaronTimeS3),
             "pace_l3": CodeMaster.convert_time(nrace.HaronTimeL3),
-
             # メタ情報
             "data_kubun": nrace.DataKubun,
             "make_date": nrace.MakeDate,
@@ -202,28 +194,28 @@ class DataConverter:
         pedigree = {
             "father": {
                 "id": numa.Ketto3InfoHansyokuNum1,
-                "name": numa.Ketto3InfoBamei1
+                "name": numa.Ketto3InfoBamei1,
             },
             "mother": {
                 "id": numa.Ketto3InfoHansyokuNum2,
-                "name": numa.Ketto3InfoBamei2
+                "name": numa.Ketto3InfoBamei2,
             },
             "father_father": {
                 "id": numa.Ketto3InfoHansyokuNum3,
-                "name": numa.Ketto3InfoBamei3
+                "name": numa.Ketto3InfoBamei3,
             },
             "father_mother": {
                 "id": numa.Ketto3InfoHansyokuNum4,
-                "name": numa.Ketto3InfoBamei4
+                "name": numa.Ketto3InfoBamei4,
             },
             "mother_father": {
                 "id": numa.Ketto3InfoHansyokuNum5,
-                "name": numa.Ketto3InfoBamei5
+                "name": numa.Ketto3InfoBamei5,
             },
             "mother_mother": {
                 "id": numa.Ketto3InfoHansyokuNum6,
-                "name": numa.Ketto3InfoBamei6
-            }
+                "name": numa.Ketto3InfoBamei6,
+            },
         }
 
         # 成績統計
@@ -232,18 +224,16 @@ class DataConverter:
             "wins": int(numa.ChakuSogo1) if numa.ChakuSogo1 else 0,
             "seconds": int(numa.ChakuSogo2) if numa.ChakuSogo2 else 0,
             "thirds": int(numa.ChakuSogo3) if numa.ChakuSogo3 else 0,
-            "total_prize_money": CodeMaster.convert_money(numa.RuikeiHonsyoHeiti)
+            "total_prize_money": CodeMaster.convert_money(numa.RuikeiHonsyoHeiti),
         }
 
         return {
             # 識別情報
             "horse_id": numa.KettoNum,
-
             # 基本情報
             "name": numa.Bamei,
             "name_kana": numa.BameiKana,
             "name_eng": numa.BameiEng,
-
             # 属性
             "birth_date": birth_date,
             "sex": CodeMaster.get_sex_name(numa.SexCD),
@@ -252,30 +242,24 @@ class DataConverter:
             "keiro_code": numa.KeiroCD,
             "hinsyu": CodeMaster.get_hinsyu(numa.HinsyuCD),
             "uma_kigo": CodeMaster.get_uma_kigo(numa.UmaKigoCD),
-
             # 血統
             "pedigree": pedigree,
-
             # 所属
             "tozai": CodeMaster.get_tozai(numa.TozaiCD),
             "trainer_code": numa.ChokyosiCode,
             "trainer_name": numa.ChokyosiRyakusyo,
-
             # 生産・馬主
             "breeder_code": numa.BreederCode,
             "breeder_name": numa.BreederName,
             "sanchi": numa.SanchiName,
             "owner_code": numa.BanusiCode,
             "owner_name": numa.BanusiName,
-
             # 成績
             "performance": performance,
-
             # ステータス
             "del_kubun": numa.DelKubun,
             "del_date": DataConverter.parse_date(numa.DelDate),
             "reg_date": DataConverter.parse_date(numa.RegDate),
-
             # メタ情報
             "data_kubun": numa.DataKubun,
             "make_date": numa.MakeDate,
@@ -299,7 +283,12 @@ class DataConverter:
 
         # 通過順位の収集
         corner_positions = []
-        for pos in [numarace.Jyuni1c, numarace.Jyuni2c, numarace.Jyuni3c, numarace.Jyuni4c]:
+        for pos in [
+            numarace.Jyuni1c,
+            numarace.Jyuni2c,
+            numarace.Jyuni3c,
+            numarace.Jyuni4c,
+        ]:
             if pos:
                 try:
                     corner_positions.append(int(pos))
@@ -316,13 +305,17 @@ class DataConverter:
         return {
             # 識別情報
             "race_id": f"{numarace.Year}{numarace.MonthDay}{numarace.JyoCD}{numarace.Kaiji}{numarace.Nichiji}{numarace.RaceNum}",
-            "race_key": RaceKey(numarace.Year, numarace.JyoCD, numarace.Kaiji, numarace.Nichiji, numarace.RaceNum),
+            "race_key": RaceKey(
+                numarace.Year,
+                numarace.JyoCD,
+                numarace.Kaiji,
+                numarace.Nichiji,
+                numarace.RaceNum,
+            ),
             "horse_id": numarace.KettoNum,
-
             # レース情報
             "race_date": race_date,
             "racecourse": CodeMaster.get_jyo_name(numarace.JyoCD),
-
             # 馬情報
             "horse_name": numarace.Bamei,
             "horse_number": int(numarace.Umaban) if numarace.Umaban else None,
@@ -331,50 +324,41 @@ class DataConverter:
             "age": int(numarace.Barei) if numarace.Barei else None,
             "keiro": CodeMaster.get_keiro_name(numarace.KeiroCD),
             "uma_kigo": CodeMaster.get_uma_kigo(numarace.UmaKigoCD),
-
             # 騎手・調教師
             "jockey_code": numarace.KisyuCode,
             "jockey_name": numarace.KisyuRyakusyo,
             "jockey_minarai": CodeMaster.get_minarai(numarace.MinaraiCD),
             "trainer_code": numarace.ChokyosiCode,
             "trainer_name": numarace.ChokyosiRyakusyo,
-
             # 馬主
             "owner_code": numarace.BanusiCode,
             "owner_name": numarace.BanusiName,
-
             # 重量
             "weight_carried": CodeMaster.convert_weight(numarace.Futan),
             "horse_weight": horse_weight,
             "weight_diff": weight_diff,
             "blinker": numarace.Blinker == "1",
-
             # レース結果
             "finish_position": finish_position,
             "finish_time": CodeMaster.convert_time(numarace.Time),
             "odds_win": CodeMaster.convert_odds(numarace.Odds),
             "popularity": int(numarace.Ninki) if numarace.Ninki else None,
             "prize_money": CodeMaster.convert_money(numarace.Honsyokin),
-
             # 詳細結果
             "corner_positions": corner_positions,
             "last_3f": CodeMaster.convert_time(numarace.HaronTimeL3),
             "last_4f": CodeMaster.convert_time(numarace.HaronTimeL4),
             "time_diff": CodeMaster.convert_time(numarace.TimeDiff),
-
             # 着差
             "chakusa": CodeMaster.get_chakusa_text(numarace.ChakusaCD),
             "chakusa_code": numarace.ChakusaCD,
-
             # 異常
             "ijyo": CodeMaster.get_ijyo(numarace.IJyoCD),
             "ijyo_code": numarace.IJyoCD,
             "is_normal": is_normal,
-
             # その他
             "tozai": CodeMaster.get_tozai(numarace.TozaiCD),
             "kyakusitu": numarace.KyakusituKubun,
-
             # メタ情報
             "data_kubun": numarace.DataKubun,
             "make_date": numarace.MakeDate,
@@ -386,32 +370,26 @@ class DataConverter:
         return {
             # 識別情報
             "jockey_id": nkisyu.KisyuCode,
-
             # 基本情報
             "name": nkisyu.KisyuName,
             "name_kana": nkisyu.KisyuNameKana,
             "name_eng": nkisyu.KisyuNameEng,
             "ryakusyo": nkisyu.KisyuRyakusyo,
-
             # 属性
             "birth_date": DataConverter.parse_date(nkisyu.BirthDate),
             "sex": CodeMaster.get_sex_name(nkisyu.SexCD),
-
             # 資格・所属
             "sikaku": nkisyu.SikakuCD,
             "minarai": CodeMaster.get_minarai(nkisyu.MinaraiCD),
             "tozai": CodeMaster.get_tozai(nkisyu.TozaiCD),
             "syotai": nkisyu.Syotai,
-
             # 調教師
             "trainer_code": nkisyu.ChokyosiCode,
             "trainer_name": nkisyu.ChokyosiRyakusyo,
-
             # ステータス
             "del_kubun": nkisyu.DelKubun,
             "issue_date": DataConverter.parse_date(nkisyu.IssueDate),
             "del_date": DataConverter.parse_date(nkisyu.DelDate),
-
             # メタ情報
             "data_kubun": nkisyu.DataKubun,
             "make_date": nkisyu.MakeDate,
@@ -423,26 +401,21 @@ class DataConverter:
         return {
             # 識別情報
             "trainer_id": nchokyo.ChokyosiCode,
-
             # 基本情報
             "name": nchokyo.ChokyosiName,
             "name_kana": nchokyo.ChokyosiNameKana,
             "name_eng": nchokyo.ChokyosiNameEng,
             "ryakusyo": nchokyo.ChokyosiRyakusyo,
-
             # 属性
             "birth_date": DataConverter.parse_date(nchokyo.BirthDate),
             "sex": CodeMaster.get_sex_name(nchokyo.SexCD),
-
             # 所属
             "tozai": CodeMaster.get_tozai(nchokyo.TozaiCD),
             "syotai": nchokyo.Syotai,
-
             # ステータス
             "del_kubun": nchokyo.DelKubun,
             "issue_date": DataConverter.parse_date(nchokyo.IssueDate),
             "del_date": DataConverter.parse_date(nchokyo.DelDate),
-
             # メタ情報
             "data_kubun": nchokyo.DataKubun,
             "make_date": nchokyo.MakeDate,

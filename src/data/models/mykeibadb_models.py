@@ -84,9 +84,9 @@ class RaceShosai(Base):
 
     # テーブル設定
     __table_args__ = (
-        Index('idx_race_shosai_date', 'KAISAI_NEN', 'KAISAI_GAPPI'),
-        Index('idx_race_shosai_keibajo', 'KEIBAJO_CODE'),
-        Index('idx_race_shosai_grade', 'GRADE_CODE'),
+        Index("idx_race_shosai_date", "KAISAI_NEN", "KAISAI_GAPPI"),
+        Index("idx_race_shosai_keibajo", "KEIBAJO_CODE"),
+        Index("idx_race_shosai_grade", "GRADE_CODE"),
     )
 
     @property
@@ -99,7 +99,9 @@ class RaceShosai(Base):
         """日付オブジェクトを返す"""
         if self.KAISAI_NEN and self.KAISAI_GAPPI:
             try:
-                return datetime.strptime(f"{self.KAISAI_NEN}{self.KAISAI_GAPPI}", "%Y%m%d").date()
+                return datetime.strptime(
+                    f"{self.KAISAI_NEN}{self.KAISAI_GAPPI}", "%Y%m%d"
+                ).date()
             except:
                 return None
         return None
@@ -188,8 +190,8 @@ class KyosobaMaster2(Base):
 
     # テーブル設定
     __table_args__ = (
-        Index('idx_kyosoba_bamei', 'BAMEI'),
-        Index('idx_kyosoba_birth', 'SEINENGAPPI'),
+        Index("idx_kyosoba_bamei", "BAMEI"),
+        Index("idx_kyosoba_birth", "SEINENGAPPI"),
     )
 
 
@@ -282,10 +284,10 @@ class UmagotoRaceJoho(Base):
 
     # テーブル設定
     __table_args__ = (
-        PrimaryKeyConstraint('RACE_CODE', 'KETTO_TOROKU_BANGO'),
-        Index('idx_umagoto_ketto', 'KETTO_TOROKU_BANGO'),
-        Index('idx_umagoto_kishu', 'KISHU_CODE'),
-        Index('idx_umagoto_chokyo', 'CHOKYOSHI_CODE'),
+        PrimaryKeyConstraint("RACE_CODE", "KETTO_TOROKU_BANGO"),
+        Index("idx_umagoto_ketto", "KETTO_TOROKU_BANGO"),
+        Index("idx_umagoto_kishu", "KISHU_CODE"),
+        Index("idx_umagoto_chokyo", "CHOKYOSHI_CODE"),
     )
 
     @property
@@ -298,7 +300,9 @@ class UmagotoRaceJoho(Base):
         """日付オブジェクトを返す"""
         if self.KAISAI_NEN and self.KAISAI_GAPPI:
             try:
-                return datetime.strptime(f"{self.KAISAI_NEN}{self.KAISAI_GAPPI}", "%Y%m%d").date()
+                return datetime.strptime(
+                    f"{self.KAISAI_NEN}{self.KAISAI_GAPPI}", "%Y%m%d"
+                ).date()
             except:
                 return None
         return None
@@ -339,8 +343,8 @@ class KishuMaster(Base):
 
     # テーブル設定
     __table_args__ = (
-        Index('idx_kishu_name', 'KISHUMEI'),
-        Index('idx_kishu_tozai', 'TOZAI_SHOZOKU_CODE'),
+        Index("idx_kishu_name", "KISHUMEI"),
+        Index("idx_kishu_tozai", "TOZAI_SHOZOKU_CODE"),
     )
 
 
@@ -377,8 +381,8 @@ class ChokyoshiMaster(Base):
 
     # テーブル設定
     __table_args__ = (
-        Index('idx_chokyo_name', 'CHOKYOSHIMEI'),
-        Index('idx_chokyo_tozai', 'TOZAI_SHOZOKU_CODE'),
+        Index("idx_chokyo_name", "CHOKYOSHIMEI"),
+        Index("idx_chokyo_tozai", "TOZAI_SHOZOKU_CODE"),
     )
 
 
@@ -404,9 +408,7 @@ class BanushiMaster(Base):
     HOJIN_KUBUN = Column(String(1))  # 法人区分
 
     # テーブル設定
-    __table_args__ = (
-        Index('idx_banushi_name', 'BANUSHIMEI'),
-    )
+    __table_args__ = (Index("idx_banushi_name", "BANUSHIMEI"),)
 
 
 # 互換性のためのエイリアス（段階的移行用）
