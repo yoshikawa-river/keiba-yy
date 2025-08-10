@@ -3,17 +3,17 @@
 [![CI](https://github.com/yoshikawa-river/keiba-yy/actions/workflows/ci.yml/badge.svg)](https://github.com/yoshikawa-river/keiba-yy/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/yoshikawa-river/keiba-yy/branch/main/graph/badge.svg)](https://codecov.io/gh/yoshikawa-river/keiba-yy)
 
-JRA-VAN DataLabのデータを活用した個人用競馬予想AIシステム
+JRA-VAN DataLab mykeibaDBを活用した個人用競馬予想AIシステム
 
 ## 概要
 
 このプロジェクトは、機械学習を用いて競馬レースの予測を行うシステムです。
-JRA-VAN DataLabから取得したデータを基に、LightGBMやXGBoostなどの
-アルゴリズムを使用して予測モデルを構築します。
+JRA-VAN DataLab mykeibaDB（MySQL/PostgreSQLサービス）から取得したデータを基に、
+LightGBMやXGBoostなどのアルゴリズムを使用して予測モデルを構築します。
 
 ## 主な機能
 
-- JRA-VANデータのインポートと管理
+- mykeibaDBからのデータ同期と管理
 - 特徴量エンジニアリング
 - 複数の機械学習モデルによる予測
 - 予測結果の可視化とダッシュボード
@@ -24,7 +24,7 @@ JRA-VAN DataLabから取得したデータを基に、LightGBMやXGBoostなど�
 - **言語**: Python 3.10+
 - **フレームワーク**: FastAPI, Streamlit
 - **機械学習**: LightGBM, XGBoost, scikit-learn
-- **データベース**: PostgreSQL, Redis
+- **データベース**: MySQL 8.0, Redis
 - **コンテナ**: Docker, Docker Compose
 - **実験管理**: MLflow
 
@@ -35,7 +35,7 @@ JRA-VAN DataLabから取得したデータを基に、LightGBMやXGBoostなど�
 - Docker Desktop for Mac
 - Git
 - Make
-- JRA-VAN DataLab契約
+- JRA-VAN DataLab mykeibaDB契約
 
 ### インストール手順
 
@@ -58,10 +58,13 @@ make build
 make up
 ```
 
-4. データのインポート
+4. データの同期
 ```bash
-# CSVファイルを volumes/csv_import/ に配置後
-make csv-import
+# mykeibaDBから全データを同期
+python scripts/sync_mykeibadb.py full
+
+# 最近7日間のデータのみ同期
+python scripts/sync_mykeibadb.py recent
 ```
 
 ## 使用方法
