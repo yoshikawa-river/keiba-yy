@@ -4,8 +4,6 @@
 基本的な騎手・調教師特徴量20個を実装。
 """
 
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -32,7 +30,7 @@ class JockeyTrainerFeatureExtractor:
         self.feature_count = 0
 
     def extract_jockey_features(
-        self, df: pd.DataFrame, jockey_stats: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, jockey_stats: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """騎手特徴量（10個）
 
@@ -202,7 +200,7 @@ class JockeyTrainerFeatureExtractor:
         return df_features
 
     def extract_trainer_features(
-        self, df: pd.DataFrame, trainer_stats: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, trainer_stats: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """調教師特徴量（10個）
 
@@ -376,8 +374,8 @@ class JockeyTrainerFeatureExtractor:
     def extract_all_jockey_trainer_features(
         self,
         df: pd.DataFrame,
-        jockey_stats: Optional[pd.DataFrame] = None,
-        trainer_stats: Optional[pd.DataFrame] = None,
+        jockey_stats: pd.DataFrame | None = None,
+        trainer_stats: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """全騎手・調教師特徴量を抽出（20個）
 

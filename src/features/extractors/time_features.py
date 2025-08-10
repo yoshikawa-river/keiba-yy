@@ -4,8 +4,6 @@
 基本タイム特徴量20個を実装。
 """
 
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -63,7 +61,7 @@ class TimeFeatureExtractor:
         }
 
     def extract_race_time_features(
-        self, df: pd.DataFrame, history_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, history_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """走破タイム特徴量（10個）
 
@@ -258,7 +256,7 @@ class TimeFeatureExtractor:
         return df_features
 
     def extract_last3f_features(
-        self, df: pd.DataFrame, history_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, history_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """上がり3Fタイム特徴量（10個）
 
@@ -389,7 +387,7 @@ class TimeFeatureExtractor:
         return df_features
 
     def extract_all_time_features(
-        self, df: pd.DataFrame, history_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, history_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """全タイム特徴量を抽出（20個）
 

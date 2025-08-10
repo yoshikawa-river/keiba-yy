@@ -4,8 +4,6 @@
 過去N走の着順、勝率、連対率、複勝率、成績トレンドなど30個の特徴量を抽出。
 """
 
-from typing import Optional
-
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -32,7 +30,7 @@ class HorsePerformanceExtractor:
         self.feature_count = 0
 
     def extract_past_performance_stats(
-        self, df: pd.DataFrame, history_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, history_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """過去N走成績統計（15個）
 
@@ -164,7 +162,7 @@ class HorsePerformanceExtractor:
         return df_features
 
     def extract_career_performance(
-        self, df: pd.DataFrame, career_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, career_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """生涯成績特徴量（8個）
 
@@ -263,7 +261,7 @@ class HorsePerformanceExtractor:
         return df_features
 
     def extract_conditional_performance(
-        self, df: pd.DataFrame, history_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, history_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """条件別成績特徴量（7個）
 
@@ -460,8 +458,8 @@ class HorsePerformanceExtractor:
     def extract_all_performance_features(
         self,
         df: pd.DataFrame,
-        history_df: Optional[pd.DataFrame] = None,
-        career_df: Optional[pd.DataFrame] = None,
+        history_df: pd.DataFrame | None = None,
+        career_df: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """全成績特徴量を抽出（30個）
 
