@@ -1,18 +1,19 @@
-import asyncio
-import random
-import uuid
-from datetime import date, datetime
-from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
-from src.api.dependencies.auth import rate_limit_100, require_api_key
-from src.api.schemas.common import PaginatedResponse, PaginationParams, ResponseBase
-from src.api.schemas.prediction import (
-from loguru import logger
 """
 予測関連のAPIエンドポイント
 """
 
+import asyncio
+import random
+import uuid
+from datetime import date, datetime
+from typing import Any
 
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
+from loguru import logger
 
+from src.api.dependencies.auth import rate_limit_100, require_api_key
+from src.api.schemas.common import PaginatedResponse, PaginationParams, ResponseBase
+from src.api.schemas.prediction import (
     BatchPredictionRequest,
     BatchPredictionResponse,
     HorseInfo,

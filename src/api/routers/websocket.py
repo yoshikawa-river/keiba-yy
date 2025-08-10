@@ -107,7 +107,7 @@ async def websocket_endpoint(
 
     except Exception as e:
         # その他のエラー
-        logger.error(f"WebSocket error: {e}")
+        logger.exception(f"WebSocket error: {e}")
         await manager.disconnect(client_id)
 
 @router.websocket("/ws/predictions/{race_id}")
@@ -166,5 +166,5 @@ async def prediction_updates(
     except WebSocketDisconnect:
         await manager.disconnect(client_id)
     except Exception as e:
-        logger.error(f"Prediction WebSocket error: {e}")
+        logger.exception(f"Prediction WebSocket error: {e}")
         await manager.disconnect(client_id)
