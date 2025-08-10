@@ -1,248 +1,403 @@
--- MySQL初期化スクリプト
--- 競馬予想AIシステム用データベーススキーマ
+-- mykeibaDB互換スキーマ初期化スクリプト
+-- 競馬予想AIシステム用データベーススキーマ（実際のmykeibaDB形式）
 
 -- データベース作成（docker-composeで作成済みの場合はスキップ）
 -- CREATE DATABASE IF NOT EXISTS keiba_db DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 -- USE keiba_db;
 
 -- ========================================
--- 基本テーブル
+-- mykeibaDB標準テーブル（実際のスキーマ）
 -- ========================================
 
--- 競馬場マスタ
-CREATE TABLE IF NOT EXISTS racecourses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    jra_code VARCHAR(2) UNIQUE NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    name_kana VARCHAR(100),
-    location VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- RACE_SHOSAI（レース詳細）
+CREATE TABLE IF NOT EXISTS RACE_SHOSAI (
+    INSERT_TIMESTAMP CHAR(19),
+    UPDATE_TIMESTAMP CHAR(19),
+    RECORD_SHUBETSU_ID CHAR(2),
+    DATA_KUBUN CHAR(1),
+    DATA_SAKUSEI_NENGAPPI CHAR(8),
+    RACE_CODE CHAR(16) PRIMARY KEY,
+    KAISAI_NEN CHAR(4),
+    KAISAI_GAPPI CHAR(4),
+    KEIBAJO_CODE CHAR(2),
+    KAISAI_KAI CHAR(2),
+    KAISAI_NICHIME CHAR(2),
+    RACE_BANGO CHAR(2),
+    YOBI_CODE CHAR(1),
+    TOKUBETSU_KYOSO_BANGO CHAR(4),
+    KYOSOMEI_HONDAI VARCHAR(60),
+    KYOSOMEI_FUKUDAI VARCHAR(60),
+    KYOSOMEI_KAKKONAI VARCHAR(60),
+    KYOSOMEI_HONDAI_ENG VARCHAR(120),
+    KYOSOMEI_FUKUDAI_ENG VARCHAR(120),
+    KYOSOMEI_KAKKONAI_ENG VARCHAR(120),
+    KYOSOMEI_RYAKUSHO_10 VARCHAR(20),
+    KYOSOMEI_RYAKUSHO_6 VARCHAR(12),
+    KYOSOMEI_RYAKUSHO_3 VARCHAR(6),
+    KYOSOMEI_KUBUN CHAR(1),
+    JUSHO_KAIJI CHAR(3),
+    GRADE_CODE CHAR(1),
+    HENKOMAE_GRADE_CODE CHAR(1),
+    KYOSO_SHUBETSU_CODE CHAR(2),
+    KYOSO_KIGO_CODE CHAR(3),
+    JURYO_SHUBETSU_CODE CHAR(1),
+    KYOSO_JOKEN_CODE_2SAI CHAR(3),
+    KYOSO_JOKEN_CODE_3SAI CHAR(3),
+    KYOSO_JOKEN_CODE_4SAI CHAR(3),
+    KYOSO_JOKEN_CODE_5SAI_IJO CHAR(3),
+    KYOSO_JOKEN_CODE_SAIJAKUNEN CHAR(3),
+    KYOSO_JOKEN_MEISHO VARCHAR(60),
+    KYORI CHAR(4),
+    HENKOMAE_KYORI CHAR(4),
+    TRACK_CODE CHAR(2),
+    HENKOMAE_TRACK_CODE CHAR(2),
+    COURSE_KUBUN CHAR(2),
+    HENKOMAE_COURSE_KUBUN CHAR(2),
+    HONSHOKIN1 CHAR(8),
+    HONSHOKIN2 CHAR(8),
+    HONSHOKIN3 CHAR(8),
+    HONSHOKIN4 CHAR(8),
+    HONSHOKIN5 CHAR(8),
+    HONSHOKIN6 CHAR(8),
+    HONSHOKIN7 CHAR(8),
+    INDEX idx_race_shosai_date (KAISAI_NEN, KAISAI_GAPPI),
+    INDEX idx_race_shosai_keibajo (KEIBAJO_CODE),
+    INDEX idx_race_shosai_grade (GRADE_CODE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- レース情報
-CREATE TABLE IF NOT EXISTS races (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    race_key VARCHAR(20) UNIQUE NOT NULL, -- YYYYMMDDRRNN形式
-    race_date DATE NOT NULL,
-    racecourse_id INT,
-    race_number INT NOT NULL,
-    race_name VARCHAR(100) NOT NULL,
-    race_name_sub VARCHAR(100),
-    grade VARCHAR(10), -- G1, G2, G3, OP, etc
-    race_type VARCHAR(10) NOT NULL, -- 芝, ダート
-    distance INT NOT NULL, -- メートル単位
-    direction VARCHAR(10), -- 右, 左, 直線
-    weather VARCHAR(10), -- 晴, 曇, 雨, 雪
-    track_condition VARCHAR(10), -- 良, 稍重, 重, 不良
-    prize_money JSON, -- 賞金情報をJSON形式で保存
-    entry_count INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (racecourse_id) REFERENCES racecourses(id),
-    INDEX idx_race_date (race_date),
-    INDEX idx_racecourse_id (racecourse_id),
-    INDEX idx_grade (grade)
+-- KYOSOBA_MASTER2（競走馬マスター）
+CREATE TABLE IF NOT EXISTS KYOSOBA_MASTER2 (
+    INSERT_TIMESTAMP CHAR(19),
+    UPDATE_TIMESTAMP CHAR(19),
+    RECORD_SHUBETSU_ID CHAR(2),
+    DATA_KUBUN CHAR(1),
+    DATA_SAKUSEI_NENGAPPI CHAR(8),
+    KETTO_TOROKU_BANGO CHAR(10) PRIMARY KEY,
+    MASSHO_KUBUN CHAR(1),
+    TOROKU_NENGAPPI CHAR(8),
+    MASSHO_NENGAPPI CHAR(8),
+    SEINENGAPPI CHAR(8),
+    BAMEI VARCHAR(36),
+    BAMEI_HANKAKU_KANA VARCHAR(36),
+    BAMEI_ENG VARCHAR(60),
+    JRA_SHISETSU_ZAIKYU_FLAG CHAR(1),
+    UMAKIGO_CODE CHAR(2),
+    SEIBETSU_CODE CHAR(1),
+    HINSHU_CODE CHAR(1),
+    MOSHOKU_CODE CHAR(2),
+    KETTO1_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO1_BAMEI VARCHAR(36),
+    KETTO2_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO2_BAMEI VARCHAR(36),
+    KETTO3_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO3_BAMEI VARCHAR(36),
+    KETTO4_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO4_BAMEI VARCHAR(36),
+    KETTO5_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO5_BAMEI VARCHAR(36),
+    KETTO6_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO6_BAMEI VARCHAR(36),
+    KETTO7_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO7_BAMEI VARCHAR(36),
+    KETTO8_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO8_BAMEI VARCHAR(36),
+    KETTO9_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO9_BAMEI VARCHAR(36),
+    KETTO10_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO10_BAMEI VARCHAR(36),
+    KETTO11_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO11_BAMEI VARCHAR(36),
+    KETTO12_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO12_BAMEI VARCHAR(36),
+    KETTO13_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO13_BAMEI VARCHAR(36),
+    KETTO14_HANSHOKU_TOROKU_BANGO CHAR(10),
+    KETTO14_BAMEI VARCHAR(36),
+    TOZAI_SHOZOKU_CODE CHAR(1),
+    CHOKYOSHI_CODE CHAR(5),
+    CHOKYOSHIMEI_RYAKUSHO VARCHAR(8),
+    INDEX idx_kyosoba_bamei (BAMEI),
+    INDEX idx_kyosoba_birth (SEINENGAPPI)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 馬情報
-CREATE TABLE IF NOT EXISTS horses (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    horse_id VARCHAR(10) UNIQUE NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    name_kana VARCHAR(100),
-    sex VARCHAR(10) NOT NULL, -- 牡, 牝, セ
-    birth_date DATE,
-    color VARCHAR(20), -- 毛色
-    father_name VARCHAR(50),
-    mother_name VARCHAR(50),
-    mother_father_name VARCHAR(50),
-    owner_name VARCHAR(100),
-    trainer_name VARCHAR(50),
-    breeding_farm VARCHAR(100),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    INDEX idx_name (name),
-    FULLTEXT INDEX idx_name_fulltext (name)
+-- UMAGOTO_RACE_JOHO（馬ごとレース情報）
+CREATE TABLE IF NOT EXISTS UMAGOTO_RACE_JOHO (
+    INSERT_TIMESTAMP CHAR(19),
+    UPDATE_TIMESTAMP CHAR(19),
+    RECORD_SHUBETSU_ID CHAR(2),
+    DATA_KUBUN CHAR(1),
+    DATA_SAKUSEI_NENGAPPI CHAR(8),
+    RACE_CODE CHAR(16) NOT NULL,
+    KAISAI_NEN CHAR(4),
+    KAISAI_GAPPI CHAR(4),
+    KEIBAJO_CODE CHAR(2),
+    KAISAI_KAIJI CHAR(2),
+    KAISAI_NICHIJI CHAR(2),
+    RACE_BANGO CHAR(2),
+    WAKUBAN CHAR(1),
+    UMABAN CHAR(2),
+    KETTO_TOROKU_BANGO CHAR(10) NOT NULL,
+    BAMEI VARCHAR(36),
+    UMAKIGO_CODE CHAR(2),
+    SEIBETSU_CODE CHAR(1),
+    HINSHU_CODE CHAR(1),
+    MOSHOKU_CODE CHAR(2),
+    BAREI CHAR(2),
+    TOZAI_SHOZOKU_CODE CHAR(1),
+    CHOKYOSHI_CODE CHAR(5),
+    CHOKYOSHIMEI_RYAKUSHO VARCHAR(8),
+    BANUSHI_CODE CHAR(6),
+    BANUSHIMEI_HOJINKAKU_NASHI VARCHAR(64),
+    FUKUSHOKU_HYOJI VARCHAR(60),
+    FUTAN_JURYO CHAR(3),
+    HENKOMAE_FUTAN_JURYO CHAR(3),
+    BLINKER_SHIYO_KUBUN CHAR(1),
+    KISHU_CODE CHAR(5),
+    HENKOMAE_KISHU_CODE CHAR(5),
+    KISHUMEI_RYAKUSHO VARCHAR(8),
+    HENKOMAE_KISHUMEI_RYAKUSHO VARCHAR(8),
+    KISHU_MINARAI_CODE CHAR(1),
+    HENKOMAE_KISHU_MINARAI_CODE CHAR(1),
+    BATAIJU CHAR(3),
+    ZOGEN_FUGO CHAR(1),
+    ZOGEN_SA CHAR(3),
+    IJO_KUBUN_CODE CHAR(1),
+    NYUSEN_JUNI CHAR(2),
+    KAKUTEI_CHAKUJUN CHAR(2),
+    DOCHAKU_KUBUN CHAR(1),
+    DOCHAKU_TOSU CHAR(1),
+    SOHA_TIME CHAR(4),
+    CHAKUSA_CODE1 CHAR(3),
+    CHAKUSA_CODE2 CHAR(3),
+    CHAKUSA_CODE3 CHAR(3),
+    CORNER1_JUNI CHAR(2),
+    CORNER2_JUNI CHAR(2),
+    CORNER3_JUNI CHAR(2),
+    CORNER4_JUNI CHAR(2),
+    PRIMARY KEY (RACE_CODE, KETTO_TOROKU_BANGO),
+    INDEX idx_umagoto_ketto (KETTO_TOROKU_BANGO),
+    INDEX idx_umagoto_kishu (KISHU_CODE),
+    INDEX idx_umagoto_chokyo (CHOKYOSHI_CODE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 騎手マスタ
-CREATE TABLE IF NOT EXISTS jockeys (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    jockey_id VARCHAR(10) UNIQUE NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    name_kana VARCHAR(100),
-    birth_date DATE,
-    license_date DATE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- KISHU_MASTER（騎手マスター）
+CREATE TABLE IF NOT EXISTS KISHU_MASTER (
+    INSERT_TIMESTAMP CHAR(19),
+    UPDATE_TIMESTAMP CHAR(19),
+    RECORD_SHUBETSU_ID CHAR(2),
+    DATA_KUBUN CHAR(1),
+    DATA_SAKUSEI_NENGAPPI CHAR(8),
+    KISHU_CODE CHAR(5) PRIMARY KEY,
+    MASSHO_KUBUN CHAR(1),
+    MENKYOKOFU_NENGAPPI CHAR(8),
+    MASSHO_NENGAPPI CHAR(8),
+    SEINENGAPPI CHAR(8),
+    KISHUMEI VARCHAR(34),
+    KISHUMEI_KANA VARCHAR(30),
+    KISHUMEI_RYAKUSHO VARCHAR(8),
+    KISHUMEI_ENG VARCHAR(80),
+    SEIBETSU_CODE CHAR(1),
+    KIJO_SHIKAKU_CODE CHAR(1),
+    KISHU_MINARAI_CODE CHAR(1),
+    TOZAI_SHOZOKU_CODE CHAR(1),
+    INDEX idx_kishu_name (KISHUMEI),
+    INDEX idx_kishu_tozai (TOZAI_SHOZOKU_CODE)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 調教師マスタ
-CREATE TABLE IF NOT EXISTS trainers (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    trainer_id VARCHAR(10) UNIQUE NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    name_kana VARCHAR(100),
-    belonging VARCHAR(20), -- 美浦, 栗東
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+-- CHOKYOSHI_MASTER（調教師マスター）
+CREATE TABLE IF NOT EXISTS CHOKYOSHI_MASTER (
+    INSERT_TIMESTAMP CHAR(19),
+    UPDATE_TIMESTAMP CHAR(19),
+    RECORD_SHUBETSU_ID CHAR(2),
+    DATA_KUBUN CHAR(1),
+    DATA_SAKUSEI_NENGAPPI CHAR(8),
+    CHOKYOSHI_CODE CHAR(5) PRIMARY KEY,
+    MASSHO_KUBUN CHAR(1),
+    MENKYOKOFU_NENGAPPI CHAR(8),
+    MASSHO_NENGAPPI CHAR(8),
+    SEINENGAPPI CHAR(8),
+    CHOKYOSHIMEI VARCHAR(34),
+    CHOKYOSHIMEI_KANA VARCHAR(30),
+    CHOKYOSHIMEI_RYAKUSHO VARCHAR(8),
+    CHOKYOSHIMEI_ENG VARCHAR(80),
+    SEIBETSU_CODE CHAR(1),
+    TOZAI_SHOZOKU_CODE CHAR(1),
+    INDEX idx_chokyo_name (CHOKYOSHIMEI),
+    INDEX idx_chokyo_tozai (TOZAI_SHOZOKU_CODE)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- BANUSHI_MASTER（馬主マスター）
+CREATE TABLE IF NOT EXISTS BANUSHI_MASTER (
+    INSERT_TIMESTAMP CHAR(19),
+    UPDATE_TIMESTAMP CHAR(19),
+    RECORD_SHUBETSU_ID CHAR(2),
+    DATA_KUBUN CHAR(1),
+    DATA_SAKUSEI_NENGAPPI CHAR(8),
+    BANUSHI_CODE CHAR(6) PRIMARY KEY,
+    BANUSHIMEI VARCHAR(64),
+    BANUSHIMEI_KANA VARCHAR(100),
+    BANUSHIMEI_ENG VARCHAR(100),
+    HOJIN_KUBUN CHAR(1),
+    INDEX idx_banushi_name (BANUSHIMEI)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ========================================
--- レース関連テーブル
+-- コードマスターテーブル（mykeibaDB標準）
 -- ========================================
 
--- 出走情報
-CREATE TABLE IF NOT EXISTS race_entries (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    race_id INT,
-    horse_id INT,
-    post_position INT NOT NULL, -- 枠番
-    horse_number INT NOT NULL, -- 馬番
-    jockey_id INT,
-    trainer_id INT,
-    weight_carried DECIMAL(4,1) NOT NULL, -- 斤量
-    horse_weight INT, -- 馬体重
-    horse_weight_diff INT, -- 馬体重増減
-    age INT NOT NULL,
-    odds_win DECIMAL(6,1), -- 単勝オッズ
-    odds_place_min DECIMAL(6,1), -- 複勝オッズ（最小）
-    odds_place_max DECIMAL(6,1), -- 複勝オッズ（最大）
-    popularity INT, -- 人気順位
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UNIQUE KEY unique_race_horse (race_id, horse_number),
-    FOREIGN KEY (race_id) REFERENCES races(id),
-    FOREIGN KEY (horse_id) REFERENCES horses(id),
-    FOREIGN KEY (jockey_id) REFERENCES jockeys(id),
-    FOREIGN KEY (trainer_id) REFERENCES trainers(id),
-    INDEX idx_horse_id (horse_id),
-    INDEX idx_jockey_id (jockey_id)
+-- 競馬場コードマスター
+CREATE TABLE IF NOT EXISTS KEIBAJO_CODE (
+    CODE CHAR(2) PRIMARY KEY,
+    NAME VARCHAR(20),
+    NAME_KANA VARCHAR(40)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- レース結果
-CREATE TABLE IF NOT EXISTS race_results (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    race_entry_id INT UNIQUE,
-    finish_position INT, -- 着順
-    finish_time TIME, -- タイム
-    last_3f_time DECIMAL(4,1), -- 上がり3ハロン
-    corner_positions VARCHAR(20), -- 通過順位
-    remarks TEXT, -- 備考
-    prize_money INT, -- 獲得賞金
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (race_entry_id) REFERENCES race_entries(id),
-    INDEX idx_finish_position (finish_position)
+-- グレードコードマスター
+CREATE TABLE IF NOT EXISTS GRADE_CODE (
+    CODE CHAR(1) PRIMARY KEY,
+    NAME VARCHAR(20),
+    DESCRIPTION VARCHAR(100)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- オッズ履歴（時系列データ）
-CREATE TABLE IF NOT EXISTS odds_history (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    race_id INT,
-    horse_number INT NOT NULL,
-    odds_type VARCHAR(20) NOT NULL, -- win, place, quinella, etc
-    odds_value DECIMAL(8,1) NOT NULL,
-    recorded_at TIMESTAMP NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (race_id) REFERENCES races(id),
-    INDEX idx_race_time (race_id, recorded_at)
+-- トラックコードマスター
+CREATE TABLE IF NOT EXISTS TRACK_CODE (
+    CODE CHAR(2) PRIMARY KEY,
+    NAME VARCHAR(20),
+    DESCRIPTION VARCHAR(100)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 天候コードマスター
+CREATE TABLE IF NOT EXISTS TENKO_CODE (
+    CODE CHAR(1) PRIMARY KEY,
+    NAME VARCHAR(10),
+    DESCRIPTION VARCHAR(50)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 性別コードマスター
+CREATE TABLE IF NOT EXISTS SEIBETSU_CODE (
+    CODE CHAR(1) PRIMARY KEY,
+    NAME VARCHAR(10),
+    DESCRIPTION VARCHAR(50)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ========================================
--- 予測・分析関連テーブル
+-- オッズ・払戻テーブル（mykeibaDB標準）
 -- ========================================
 
--- 予測結果
-CREATE TABLE IF NOT EXISTS predictions (
+-- 単勝オッズ
+CREATE TABLE IF NOT EXISTS ODDS1_TANSHO (
+    RACE_CODE CHAR(16) NOT NULL,
+    UMABAN CHAR(2) NOT NULL,
+    ODDS_VALUE DECIMAL(6,1),
+    NINKI_JUNI CHAR(2),
+    UPDATE_TIME CHAR(19),
+    PRIMARY KEY (RACE_CODE, UMABAN),
+    FOREIGN KEY (RACE_CODE) REFERENCES RACE_SHOSAI(RACE_CODE)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 複勝オッズ
+CREATE TABLE IF NOT EXISTS ODDS1_FUKUSHO (
+    RACE_CODE CHAR(16) NOT NULL,
+    UMABAN CHAR(2) NOT NULL,
+    ODDS_MIN DECIMAL(6,1),
+    ODDS_MAX DECIMAL(6,1),
+    UPDATE_TIME CHAR(19),
+    PRIMARY KEY (RACE_CODE, UMABAN),
+    FOREIGN KEY (RACE_CODE) REFERENCES RACE_SHOSAI(RACE_CODE)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- 払戻情報
+CREATE TABLE IF NOT EXISTS HARAIMODOSHI (
+    RACE_CODE CHAR(16) NOT NULL,
+    BAKENSHI_KUBUN CHAR(2) NOT NULL,
+    KUMIBAN VARCHAR(20) NOT NULL,
+    HARAIMODOSHI_KIN INT,
+    NINKI_JUNI CHAR(2),
+    PRIMARY KEY (RACE_CODE, BAKENSHI_KUBUN, KUMIBAN),
+    FOREIGN KEY (RACE_CODE) REFERENCES RACE_SHOSAI(RACE_CODE)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ========================================
+-- 追加分析用テーブル
+-- ========================================
+
+-- 予測結果保存用
+CREATE TABLE IF NOT EXISTS PREDICTIONS (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    race_id INT,
+    RACE_CODE CHAR(16) NOT NULL,
     model_name VARCHAR(50) NOT NULL,
     model_version VARCHAR(20),
-    prediction_data JSON NOT NULL, -- 予測結果の詳細
+    prediction_data JSON NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (race_id) REFERENCES races(id),
-    INDEX idx_race_model (race_id, model_name)
+    FOREIGN KEY (RACE_CODE) REFERENCES RACE_SHOSAI(RACE_CODE),
+    INDEX idx_prediction_race_model (RACE_CODE, model_name)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- 特徴量キャッシュ
-CREATE TABLE IF NOT EXISTS feature_cache (
+CREATE TABLE IF NOT EXISTS FEATURE_CACHE (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    race_id INT,
-    horse_id INT,
+    RACE_CODE CHAR(16) NOT NULL,
+    KETTO_TOROKU_BANGO CHAR(10) NOT NULL,
     feature_type VARCHAR(50) NOT NULL,
     feature_data JSON NOT NULL,
     calculated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     expires_at TIMESTAMP NULL,
-    UNIQUE KEY unique_feature (race_id, horse_id, feature_type),
-    FOREIGN KEY (race_id) REFERENCES races(id),
-    FOREIGN KEY (horse_id) REFERENCES horses(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- MLflow実験結果保存用（オプション）
-CREATE TABLE IF NOT EXISTS mlflow_experiments (
-    experiment_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(256) UNIQUE NOT NULL,
-    artifact_location VARCHAR(256),
-    lifecycle_stage VARCHAR(32),
-    creation_time BIGINT,
-    last_update_time BIGINT
+    UNIQUE KEY unique_feature (RACE_CODE, KETTO_TOROKU_BANGO, feature_type),
+    FOREIGN KEY (RACE_CODE) REFERENCES RACE_SHOSAI(RACE_CODE),
+    FOREIGN KEY (KETTO_TOROKU_BANGO) REFERENCES KYOSOBA_MASTER2(KETTO_TOROKU_BANGO)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ========================================
--- ビュー
+-- 初期データ投入（コードマスター）
 -- ========================================
 
--- レース出走表ビュー
-CREATE OR REPLACE VIEW v_race_cards AS
-SELECT 
-    r.id as race_id,
-    r.race_date,
-    r.race_number,
-    r.race_name,
-    r.grade,
-    r.distance,
-    r.race_type,
-    rc.name as racecourse_name,
-    re.horse_number,
-    re.post_position,
-    h.name as horse_name,
-    h.sex,
-    re.age,
-    j.name as jockey_name,
-    re.weight_carried,
-    re.odds_win,
-    re.popularity
-FROM races r
-JOIN racecourses rc ON r.racecourse_id = rc.id
-JOIN race_entries re ON r.id = re.race_id
-JOIN horses h ON re.horse_id = h.id
-JOIN jockeys j ON re.jockey_id = j.id
-ORDER BY r.race_date DESC, r.race_number, re.horse_number;
+-- 競馬場マスターデータ
+INSERT INTO KEIBAJO_CODE (CODE, NAME, NAME_KANA) VALUES
+    ('01', '札幌', 'サッポロ'),
+    ('02', '函館', 'ハコダテ'),
+    ('03', '福島', 'フクシマ'),
+    ('04', '新潟', 'ニイガタ'),
+    ('05', '東京', 'トウキョウ'),
+    ('06', '中山', 'ナカヤマ'),
+    ('07', '中京', 'チュウキョウ'),
+    ('08', '京都', 'キョウト'),
+    ('09', '阪神', 'ハンシン'),
+    ('10', '小倉', 'コクラ')
+ON DUPLICATE KEY UPDATE NAME=VALUES(NAME);
 
--- ========================================
--- 初期データ投入
--- ========================================
+-- グレードコード
+INSERT INTO GRADE_CODE (CODE, NAME, DESCRIPTION) VALUES
+    ('0', '一般', '一般競走'),
+    ('1', 'G1', 'グレード1'),
+    ('2', 'G2', 'グレード2'),
+    ('3', 'G3', 'グレード3'),
+    ('4', 'オープン', 'オープン競走'),
+    ('5', 'リステッド', 'リステッド競走')
+ON DUPLICATE KEY UPDATE NAME=VALUES(NAME);
 
--- 競馬場マスタデータ
-INSERT INTO racecourses (jra_code, name, name_kana, location) VALUES
-    ('01', '札幌', 'サッポロ', '北海道札幌市'),
-    ('02', '函館', 'ハコダテ', '北海道函館市'),
-    ('03', '福島', 'フクシマ', '福島県福島市'),
-    ('04', '新潟', 'ニイガタ', '新潟県新潟市'),
-    ('05', '東京', 'トウキョウ', '東京都府中市'),
-    ('06', '中山', 'ナカヤマ', '千葉県船橋市'),
-    ('07', '中京', 'チュウキョウ', '愛知県豊明市'),
-    ('08', '京都', 'キョウト', '京都府京都市'),
-    ('09', '阪神', 'ハンシン', '兵庫県宝塚市'),
-    ('10', '小倉', 'コクラ', '福岡県北九州市')
-ON DUPLICATE KEY UPDATE name=VALUES(name);
+-- トラックコード
+INSERT INTO TRACK_CODE (CODE, NAME, DESCRIPTION) VALUES
+    ('11', '芝・左', '芝コース左回り'),
+    ('12', '芝・右', '芝コース右回り'),
+    ('13', '芝・直線', '芝コース直線'),
+    ('21', 'ダート・左', 'ダートコース左回り'),
+    ('22', 'ダート・右', 'ダートコース右回り'),
+    ('23', 'ダート・直線', 'ダートコース直線')
+ON DUPLICATE KEY UPDATE NAME=VALUES(NAME);
 
--- ========================================
--- 権限設定（MySQLでは異なる方法で設定）
--- ========================================
+-- 天候コード
+INSERT INTO TENKO_CODE (CODE, NAME, DESCRIPTION) VALUES
+    ('1', '晴', '晴天'),
+    ('2', '曇', '曇天'),
+    ('3', '雨', '雨天'),
+    ('4', '小雨', '小雨'),
+    ('5', '雪', '雪'),
+    ('6', '小雪', '小雪')
+ON DUPLICATE KEY UPDATE NAME=VALUES(NAME);
 
--- アプリケーション用ユーザーに必要な権限を付与
--- GRANT ALL PRIVILEGES ON keiba_db.* TO 'keiba_user'@'%';
--- FLUSH PRIVILEGES;
+-- 性別コード
+INSERT INTO SEIBETSU_CODE (CODE, NAME, DESCRIPTION) VALUES
+    ('1', '牡', '牡馬'),
+    ('2', '牝', '牝馬'),
+    ('3', 'セ', 'セン馬')
+ON DUPLICATE KEY UPDATE NAME=VALUES(NAME);
