@@ -2,18 +2,15 @@
 CSVパーサーのユニットテスト
 """
 
-import io
-from datetime import datetime, date, time
+from datetime import date, time
 from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, Mock
 
 import pandas as pd
 import pytest
 from sqlalchemy.orm import Session
 
-from src.core.exceptions import DataImportError, ValidationError
 from src.data.importers import (
-    CSVFile,
     CSVFileDetector,
     FileType,
     HorseCSVParser,
@@ -21,10 +18,7 @@ from src.data.importers import (
     RaceCSVParser,
     ResultCSVParser,
 )
-from src.data.models.horse import Horse, Jockey, Trainer
-from src.data.models.odds import OddsHistory
-from src.data.models.race import Race, Racecourse
-from src.data.models.result import RaceEntry, RaceResult
+from src.data.models.race import Racecourse
 
 
 class TestCSVFileDetector:
@@ -77,8 +71,7 @@ class TestRaceCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):
@@ -213,8 +206,7 @@ class TestHorseCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):
@@ -265,8 +257,7 @@ class TestResultCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):
@@ -311,8 +302,7 @@ class TestOddsCSVParser:
     @pytest.fixture
     def mock_session(self):
         """モックのDBセッション"""
-        session = MagicMock(spec=Session)
-        return session
+        return MagicMock(spec=Session)
 
     @pytest.fixture
     def parser(self, mock_session):

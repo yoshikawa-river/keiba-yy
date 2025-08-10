@@ -3,30 +3,22 @@ Alembic環境設定ファイル
 
 データベースマイグレーションの環境設定
 """
+
 import os
 import sys
 from logging.config import fileConfig
 from pathlib import Path
 
-from alembic import context
 from sqlalchemy import engine_from_config, pool
+
+from alembic import context
 
 # プロジェクトのルートディレクトリをPythonパスに追加
 sys.path.append(str(Path(__file__).parents[1]))
 
-# モデルのインポート（全てのモデルをインポートすることで、Base.metadataに登録される）
+# モデルのインポート(全てのモデルをインポートすることで、Base.metadataに登録される)
 from src.data.models import (
     Base,
-    FeatureCache,
-    Horse,
-    Jockey,
-    OddsHistory,
-    Prediction,
-    Race,
-    RaceEntry,
-    RaceResult,
-    Racecourse,
-    Trainer,
 )
 
 # this is the Alembic Config object, which provides
@@ -50,18 +42,18 @@ target_metadata = Base.metadata
 
 def get_database_url():
     """環境変数からデータベースURLを構築"""
-    # DATABASE_URLが設定されている場合はそれを使用（CI環境など）
+    # DATABASE_URLが設定されている場合はそれを使用(CI環境など)
     database_url = os.getenv("DATABASE_URL")
     if database_url:
         return database_url
-    
+
     # 環境変数から接続情報を取得
     host = os.getenv("DATABASE_HOST", "mysql")
     port = os.getenv("DATABASE_PORT", "3306")
     user = os.getenv("DATABASE_USER", "keiba_user")
     password = os.getenv("DATABASE_PASSWORD", "keiba_password")
     database = os.getenv("DATABASE_NAME", "keiba_db")
-    
+
     return f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}?charset=utf8mb4"
 
 
@@ -101,7 +93,7 @@ def run_migrations_online() -> None:
     # 設定を上書きしてデータベースURLを設定
     configuration = config.get_section(config.config_ini_section)
     configuration["sqlalchemy.url"] = get_database_url()
-    
+
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",
