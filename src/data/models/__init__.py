@@ -5,13 +5,13 @@ mykeibaDBテーブルモデル
 """
 
 from .mykeibadb_models import (
+    BanushiMaster,
     Base,
-    RaceShosai,
-    KyosobaMaster2,
-    UmagotoRaceJoho,
-    KishuMaster,
     ChokyoshiMaster,
-    BanushiMaster
+    KishuMaster,
+    KyosobaMaster2,
+    RaceShosai,
+    UmagotoRaceJoho,
 )
 
 __all__ = [
