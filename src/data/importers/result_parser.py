@@ -5,8 +5,8 @@ TARGET frontier JVから出力されたレース結果CSVをパースし、
 データベースに保存する機能を提供
 """
 
-from datetime import datetime, time
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import time
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -22,7 +22,7 @@ from src.data.models.result import RaceEntry, RaceResult
 class ResultCSVParser(BaseCSVParser):
     """レース結果CSVパーサー"""
 
-    def _get_column_mappings(self) -> Dict[str, str]:
+    def _get_column_mappings(self) -> dict[str, str]:
         """CSVカラムとDBカラムのマッピング"""
         return {
             "レースID": "race_key",
@@ -45,11 +45,11 @@ class ResultCSVParser(BaseCSVParser):
             "コメント": "comment",
         }
 
-    def _get_required_columns(self) -> List[str]:
+    def _get_required_columns(self) -> list[str]:
         """必須カラムのリスト"""
         return ["レースID", "馬番", "馬ID", "騎手ID", "斤量"]
 
-    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
         """
         行データを変換
 
@@ -72,7 +72,7 @@ class ResultCSVParser(BaseCSVParser):
                 "weight_carried": self._parse_float(row.get("weight_carried")),
             }
 
-            # オプション項目（エントリー情報）
+            # オプション項目(エントリー情報)
             if pd.notna(row.get("bracket_number")):
                 transformed["bracket_number"] = self._parse_int(row["bracket_number"])
 
@@ -128,9 +128,9 @@ class ResultCSVParser(BaseCSVParser):
             return transformed
 
         except Exception as e:
-            raise ValidationError(f"データ変換エラー: {e}")
+            raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         レース結果データのバリデーション
 
@@ -167,7 +167,7 @@ class ResultCSVParser(BaseCSVParser):
 
         return True, None
 
-    def _save_row(self, row_data: Dict[str, Any]) -> bool:
+    def _save_row(self, row_data: dict[str, Any]) -> bool:
         """
         レース結果データを保存
 
@@ -199,7 +199,7 @@ class ResultCSVParser(BaseCSVParser):
                 .first()
             )
             if not horse:
-                # 馬が存在しない場合は作成（最小限の情報で）
+                # 馬が存在しない場合は作成(最小限の情報で)
                 horse_name = row_data.get(
                     "horse_name", f"Unknown_{row_data['horse_key']}"
                 )
@@ -248,7 +248,7 @@ class ResultCSVParser(BaseCSVParser):
                 self.db_session.add(entry)
                 self.db_session.flush()
 
-            # 結果情報の保存（存在する場合）
+            # 結果情報の保存(存在する場合)
             result_data = row_data.get("result_data")
             if result_data:
                 result = (
@@ -303,8 +303,8 @@ class ResultCSVParser(BaseCSVParser):
 
         return float(value)
 
-    def _parse_finish_position(self, position: Any) -> Optional[int]:
-        """着順をパース（中止・除外等に対応）"""
+    def _parse_finish_position(self, position: Any) -> int | None:
+        """着順をパース(中止・除外等に対応)"""
         if pd.isna(position):
             return None
 
@@ -323,17 +323,17 @@ class ResultCSVParser(BaseCSVParser):
             "降着": None,  # 降着は別途処理が必要
         }
 
-        return special_cases.get(position, None)
+        return special_cases.get(position)
 
-    def _parse_time(self, time_str: Any) -> Optional[time]:
-        """タイムをパース（分:秒.ミリ秒形式）"""
+    def _parse_time(self, time_str: Any) -> time | None:
+        """タイムをパース(分:秒.ミリ秒形式)"""
         if pd.isna(time_str):
             return None
 
         time_str = str(time_str).strip()
 
         try:
-            # 分:秒.ミリ秒 形式（例: 1:23.4）
+            # 分:秒.ミリ秒 形式(例: 1:23.4)
             if ":" in time_str:
                 parts = time_str.split(":")
                 minutes = int(parts[0])
@@ -344,19 +344,18 @@ class ResultCSVParser(BaseCSVParser):
                 )
 
                 return time(0, minutes, seconds, milliseconds * 1000)
-            # 秒.ミリ秒 形式（例: 83.4）
-            else:
-                parts = time_str.split(".")
-                total_seconds = int(parts[0])
-                minutes = total_seconds // 60
-                seconds = total_seconds % 60
-                milliseconds = int(parts[1]) * 100 if len(parts) > 1 else 0
+            # 秒.ミリ秒 形式(例: 83.4)
+            parts = time_str.split(".")
+            total_seconds = int(parts[0])
+            minutes = total_seconds // 60
+            seconds = total_seconds % 60
+            milliseconds = int(parts[1]) * 100 if len(parts) > 1 else 0
 
-                return time(0, minutes, seconds, milliseconds * 1000)
+            return time(0, minutes, seconds, milliseconds * 1000)
         except Exception:
             return None
 
-    def _parse_margin(self, margin: Any) -> Optional[str]:
+    def _parse_margin(self, margin: Any) -> str | None:
         """着差をパース"""
         if pd.isna(margin):
             return None
@@ -382,13 +381,13 @@ class ResultCSVParser(BaseCSVParser):
             if key in margin:
                 return value
 
-        # 数字のみの場合（馬身数）
+        # 数字のみの場合(馬身数)
         if margin.replace(".", "").isdigit():
             return str(margin)
 
         return str(margin)
 
-    def _parse_weight_change(self, change: Any) -> Optional[int]:
+    def _parse_weight_change(self, change: Any) -> int | None:
         """体重増減をパース"""
         if pd.isna(change):
             return None
@@ -398,10 +397,9 @@ class ResultCSVParser(BaseCSVParser):
         # プラスマイナスの処理
         if change.startswith("+"):
             return int(change[1:])
-        elif change.startswith("-"):
+        if change.startswith("-"):
             return -int(change[1:])
-        else:
-            return int(change)
+        return int(change)
 
     def _get_or_create_jockey(self, jockey_key: str, name: str) -> Jockey:
         """騎手を取得または作成"""
