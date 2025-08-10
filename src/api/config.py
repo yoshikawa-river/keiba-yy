@@ -2,11 +2,10 @@
 API設定管理
 """
 
-from typing import List, Optional
 from functools import lru_cache
 
-from pydantic_settings import BaseSettings
 from pydantic import Field
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -31,13 +30,13 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
 
     # CORS設定
-    backend_cors_origins: List[str] = Field(
+    backend_cors_origins: list[str] = Field(
         default=["http://localhost:3000", "http://localhost:8501"],
         env="BACKEND_CORS_ORIGINS"
     )
 
     # データベース設定（将来の接続用）
-    database_url: Optional[str] = Field(default=None, env="DATABASE_URL")
+    database_url: str | None = Field(default=None, env="DATABASE_URL")
 
     # Redis設定（キャッシュ・レート制限用）
     redis_url: str = Field(

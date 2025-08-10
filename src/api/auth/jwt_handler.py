@@ -5,7 +5,7 @@ JWT認証ハンドラー
 import hashlib
 import secrets
 from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
+from typing import Any
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -36,8 +36,8 @@ class JWTHandler:
 
     def create_access_token(
         self,
-        data: Dict[str, Any],
-        expires_delta: Optional[timedelta] = None
+        data: dict[str, Any],
+        expires_delta: timedelta | None = None
     ) -> str:
         """アクセストークン作成"""
         to_encode = data.copy()
@@ -53,13 +53,12 @@ class JWTHandler:
             "iat": datetime.utcnow()
         })
 
-        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
-        return encoded_jwt
+        return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
     def create_refresh_token(
         self,
-        data: Dict[str, Any],
-        expires_delta: Optional[timedelta] = None
+        data: dict[str, Any],
+        expires_delta: timedelta | None = None
     ) -> str:
         """リフレッシュトークン作成"""
         to_encode = data.copy()
@@ -76,10 +75,9 @@ class JWTHandler:
             "jti": secrets.token_urlsafe(32)  # JWT ID for refresh token tracking
         })
 
-        encoded_jwt = jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
-        return encoded_jwt
+        return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
-    def decode_token(self, token: str) -> Optional[TokenData]:
+    def decode_token(self, token: str) -> TokenData | None:
         """トークンデコード"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
@@ -98,7 +96,7 @@ class JWTHandler:
         except JWTError:
             return None
 
-    def verify_token(self, token: str, token_type: str = "access") -> Optional[Dict[str, Any]]:
+    def verify_token(self, token: str, token_type: str = "access") -> dict[str, Any] | None:
         """トークン検証"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
