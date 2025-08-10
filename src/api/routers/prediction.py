@@ -158,7 +158,7 @@ async def predict_race(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"予測処理中にエラーが発生しました: {e!s}"
-        )
+        ) from e
 
 @router.post("/batch", response_model=ResponseBase[BatchPredictionResponse])
 async def predict_batch(

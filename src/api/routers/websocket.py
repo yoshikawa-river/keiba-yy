@@ -91,7 +91,7 @@ async def websocket_endpoint(
                     client_id
                 )
             except Exception as e:
-                logger.error(f"Message processing error: {e}")
+                logger.exception(f"Message processing error: {e}")
                 await manager.send_personal_message(
                     WebSocketMessage(
                         type="error",

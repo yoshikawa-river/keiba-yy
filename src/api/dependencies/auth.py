@@ -2,6 +2,8 @@
 認証関連の依存関数
 """
 
+from datetime import datetime
+
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 
@@ -142,12 +144,12 @@ class RateLimitChecker:
         # ユーザーまたはAPIキーで識別
         identifier = None
         if user:
-            identifier = f"user:{user.id}"
+            _ = f"user:{user.id}"  # identifier for future Redis implementation
         elif api_key:
-            identifier = f"api_key:{api_key[:10]}"
+            _ = f"api_key:{api_key[:10]}"  # identifier for future Redis implementation
         else:
             # 認証なしの場合はIPアドレスで制限（実装省略）
-            identifier = "anonymous"
+            _ = "anonymous"  # identifier for future Redis implementation
 
         # TODO: Redisでカウントチェック
         # if count > self.requests:
@@ -159,4 +161,3 @@ class RateLimitChecker:
 rate_limit_100 = RateLimitChecker(requests=100, window=60)
 rate_limit_1000 = RateLimitChecker(requests=1000, window=3600)
 
-from datetime import datetime  # インポート追加
