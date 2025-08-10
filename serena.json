@@ -1,0 +1,15 @@
+{
+  "dashboard": {
+    "enabled": true,
+    "auto_open": false,
+    "port": 24284
+  },
+  "browser": {
+    "open_on_start": false,
+    "headless": true
+  },
+  "server": {
+    "no_browser": true,
+    "disable_auto_launch": false
+  }
+}
