@@ -14,7 +14,20 @@ from sqlalchemy.exc import IntegrityError
 from src.core.exceptions import ValidationError
 from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
-from src.data.models.horse import Horse, Trainer
+# from src.data.models.horse import Horse, Trainer  # TODO: モデルの実装が必要
+
+# TODO: 一時的なダミークラス（将来的にはmykeibadb_modelsに統合）
+class Horse:
+    """ダミーHorseクラス"""
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
+
+class Trainer:
+    """ダミーTrainerクラス"""
+    def __init__(self, **kwargs):
+        for k, v in kwargs.items():
+            setattr(self, k, v)
 
 
 class HorseCSVParser(BaseCSVParser):
