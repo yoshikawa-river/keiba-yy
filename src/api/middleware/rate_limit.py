@@ -17,6 +17,7 @@ from src.api.exceptions.custom_exceptions import RateLimitException
 
 logger = logging.getLogger(__name__)
 
+
 class InMemoryRateLimiter:
     """インメモリレート制限実装（開発用）"""
 
@@ -25,10 +26,7 @@ class InMemoryRateLimiter:
         self.lock = asyncio.Lock()
 
     async def check_rate_limit(
-        self,
-        key: str,
-        limit: int,
-        window: int
+        self, key: str, limit: int, window: int
     ) -> tuple[bool, int]:
         """
         レート制限チェック
@@ -42,8 +40,7 @@ class InMemoryRateLimiter:
 
             # 古いリクエストを削除
             self.requests[key] = [
-                req_time for req_time in self.requests[key]
-                if req_time > window_start
+                req_time for req_time in self.requests[key] if req_time > window_start
             ]
 
             # 現在のリクエスト数
@@ -66,6 +63,7 @@ class InMemoryRateLimiter:
                 reset_time = int(oldest_request + window - time.time())
                 return max(reset_time, 0)
             return 0
+
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
@@ -142,9 +140,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         # レート制限チェック
         allowed, remaining = await self.limiter.check_rate_limit(
-            client_id,
-            limit,
-            window
+            client_id, limit, window
         )
 
         if not allowed:
@@ -170,6 +166,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         return response
 
+
 class APIKeyRateLimiter:
     """APIキー別のレート制限"""
 
@@ -181,10 +178,7 @@ class APIKeyRateLimiter:
         }
         self.limiter = InMemoryRateLimiter()
 
-    async def check_api_key_limit(
-        self,
-        api_key: str
-    ) -> tuple[bool, int | None]:
+    async def check_api_key_limit(self, api_key: str) -> tuple[bool, int | None]:
         """
         APIキーのレート制限チェック
 
@@ -201,15 +195,12 @@ class APIKeyRateLimiter:
 
         # レート制限チェック
         allowed, remaining = await self.limiter.check_rate_limit(
-            f"api_key:{api_key}",
-            limit,
-            window
+            f"api_key:{api_key}", limit, window
         )
 
         if not allowed:
             reset_after = await self.limiter.get_reset_time(
-                f"api_key:{api_key}",
-                window
+                f"api_key:{api_key}", window
             )
             return False, reset_after
 

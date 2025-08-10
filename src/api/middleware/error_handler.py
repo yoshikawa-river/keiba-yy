@@ -16,9 +16,9 @@ from src.api.schemas.common import ErrorDetail, ErrorResponse
 
 logger = logging.getLogger(__name__)
 
+
 async def http_exception_handler(
-    request: Request,
-    exc: StarletteHTTPException | KeibaAPIException
+    request: Request, exc: StarletteHTTPException | KeibaAPIException
 ) -> JSONResponse:
     """HTTPException用のエラーハンドラー"""
 
@@ -35,20 +35,18 @@ async def http_exception_handler(
 
     # エラーレスポンスの作成
     error_response = ErrorResponse(
-        error=f"HTTP_{exc.status_code}",
-        message=str(exc.detail),
-        request_id=request_id
+        error=f"HTTP_{exc.status_code}", message=str(exc.detail), request_id=request_id
     )
 
     return JSONResponse(
         status_code=exc.status_code,
-        content=error_response.model_dump(mode='json'),
-        headers=getattr(exc, "headers", None)
+        content=error_response.model_dump(mode="json"),
+        headers=getattr(exc, "headers", None),
     )
 
+
 async def validation_exception_handler(
-    request: Request,
-    exc: RequestValidationError
+    request: Request, exc: RequestValidationError
 ) -> JSONResponse:
     """バリデーションエラー用のハンドラー"""
 
@@ -62,7 +60,7 @@ async def validation_exception_handler(
             ErrorDetail(
                 field=field_path if field_path else None,
                 message=error["msg"],
-                code=error["type"]
+                code=error["type"],
             )
         )
 
@@ -78,18 +76,16 @@ async def validation_exception_handler(
         error="VALIDATION_ERROR",
         message="入力データの検証に失敗しました",
         details=errors,
-        request_id=request_id
+        request_id=request_id,
     )
 
     return JSONResponse(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-        content=error_response.model_dump(mode='json')
+        content=error_response.model_dump(mode="json"),
     )
 
-async def general_exception_handler(
-    request: Request,
-    exc: Exception
-) -> JSONResponse:
+
+async def general_exception_handler(request: Request, exc: Exception) -> JSONResponse:
     """一般的な例外用のハンドラー"""
 
     request_id = str(uuid.uuid4())
@@ -110,10 +106,10 @@ async def general_exception_handler(
     error_response = ErrorResponse(
         error="INTERNAL_SERVER_ERROR",
         message="サーバー内部でエラーが発生しました",
-        request_id=request_id
+        request_id=request_id,
     )
 
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-        content=error_response.model_dump(mode='json')
+        content=error_response.model_dump(mode="json"),
     )

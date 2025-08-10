@@ -14,15 +14,14 @@ from src.api.websocket.connection_manager import manager
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(
-    tags=["WebSocket"]
-)
+router = APIRouter(tags=["WebSocket"])
+
 
 @router.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket,
     token: str | None = Query(None, description="認証トークン"),
-    client_id: str | None = Query(None, description="クライアントID")
+    client_id: str | None = Query(None, description="クライアントID"),
 ):
     """
     WebSocketエンドポイント
@@ -85,19 +84,18 @@ async def websocket_endpoint(
                         type="error",
                         data={
                             "message": "Invalid JSON format",
-                            "received": data[:100]  # 最初の100文字のみ
-                        }
+                            "received": data[:100],  # 最初の100文字のみ
+                        },
                     ),
-                    client_id
+                    client_id,
                 )
             except Exception as e:
                 logger.exception(f"Message processing error: {e}")
                 await manager.send_personal_message(
                     WebSocketMessage(
-                        type="error",
-                        data={"message": "Internal server error"}
+                        type="error", data={"message": "Internal server error"}
                     ),
-                    client_id
+                    client_id,
                 )
 
     except WebSocketDisconnect:
@@ -110,11 +108,10 @@ async def websocket_endpoint(
         logger.exception(f"WebSocket error: {e}")
         await manager.disconnect(client_id)
 
+
 @router.websocket("/ws/predictions/{race_id}")
 async def prediction_updates(
-    websocket: WebSocket,
-    race_id: str,
-    token: str | None = Query(None)
+    websocket: WebSocket, race_id: str, token: str | None = Query(None)
 ):
     """
     レース予測更新用WebSocket
@@ -148,10 +145,10 @@ async def prediction_updates(
                 data={
                     "race_id": race_id,
                     "status": "waiting",
-                    "message": f"レース {race_id} の予測更新を待機中"
-                }
+                    "message": f"レース {race_id} の予測更新を待機中",
+                },
             ),
-            client_id
+            client_id,
         )
 
         # メッセージ受信ループ

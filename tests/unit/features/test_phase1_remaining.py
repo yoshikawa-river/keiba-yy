@@ -96,7 +96,9 @@ class TestRaceConditionExtractor(unittest.TestCase):
         self.assertEqual(info["categories"]["basic_race"], 8)
         self.assertEqual(info["categories"]["track"], 7)
 
-        print(f"✅ レース条件特徴量テスト完了: {self.extractor.feature_count}個の特徴量を確認")
+        print(
+            f"✅ レース条件特徴量テスト完了: {self.extractor.feature_count}個の特徴量を確認"
+        )
 
 
 class TestPedigreeBasicExtractor(unittest.TestCase):
@@ -198,9 +200,7 @@ class TestPedigreeBasicExtractor(unittest.TestCase):
 
     def test_extract_all_pedigree_features(self):
         """全血統基本特徴量の統合テスト"""
-        self.extractor.extract_all_pedigree_features(
-            self.df, self.pedigree_df
-        )
+        self.extractor.extract_all_pedigree_features(self.df, self.pedigree_df)
 
         # 全15個の特徴量が生成されることを確認
         self.assertEqual(self.extractor.feature_count, 15)
@@ -212,7 +212,9 @@ class TestPedigreeBasicExtractor(unittest.TestCase):
         self.assertEqual(info["categories"]["dam_sire"], 5)
         self.assertEqual(info["categories"]["compatibility"], 5)
 
-        print(f"✅ 血統基本特徴量テスト完了: {self.extractor.feature_count}個の特徴量を確認")
+        print(
+            f"✅ 血統基本特徴量テスト完了: {self.extractor.feature_count}個の特徴量を確認"
+        )
 
 
 class TestFeatureCompleteness(unittest.TestCase):
@@ -278,4 +280,3 @@ class TestFeatureCompleteness(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
-

@@ -20,8 +20,8 @@ class TestAuthAPI:
                 "username": "testuser123",
                 "email": "test123@example.com",
                 "password": "Test123!@#",
-                "full_name": "Test User"
-            }
+                "full_name": "Test User",
+            },
         )
         assert response.status_code == 201
         data = response.json()
@@ -37,8 +37,8 @@ class TestAuthAPI:
             json={
                 "username": "testuser",
                 "email": "another@example.com",
-                "password": "Test123!@#"
-            }
+                "password": "Test123!@#",
+            },
         )
         assert response.status_code == 400
 
@@ -49,8 +49,8 @@ class TestAuthAPI:
             json={
                 "username": "weakpassuser",
                 "email": "weak@example.com",
-                "password": "weak"  # 弱いパスワード
-            }
+                "password": "weak",  # 弱いパスワード
+            },
         )
         assert response.status_code == 422
 
@@ -58,10 +58,7 @@ class TestAuthAPI:
         """ログイン成功テスト"""
         response = client.post(
             "/api/v1/auth/login",
-            data={
-                "username": "testuser",
-                "password": "Test123!@#"
-            }
+            data={"username": "testuser", "password": "Test123!@#"},
         )
         assert response.status_code == 200
         data = response.json()
@@ -73,10 +70,7 @@ class TestAuthAPI:
         """無効な認証情報でのログインテスト"""
         response = client.post(
             "/api/v1/auth/login",
-            data={
-                "username": "testuser",
-                "password": "wrongpassword"
-            }
+            data={"username": "testuser", "password": "wrongpassword"},
         )
         assert response.status_code == 401
 
@@ -84,10 +78,7 @@ class TestAuthAPI:
         """カスタムログインエンドポイントテスト"""
         response = client.post(
             "/api/v1/auth/login/custom",
-            json={
-                "username": "testuser",
-                "password": "Test123!@#"
-            }
+            json={"username": "testuser", "password": "Test123!@#"},
         )
         assert response.status_code == 200
         data = response.json()
@@ -98,17 +89,13 @@ class TestAuthAPI:
         # ログインしてトークン取得
         login_response = client.post(
             "/api/v1/auth/login",
-            data={
-                "username": "testuser",
-                "password": "Test123!@#"
-            }
+            data={"username": "testuser", "password": "Test123!@#"},
         )
         token = login_response.json()["access_token"]
 
         # ユーザー情報取得
         response = client.get(
-            "/api/v1/auth/me",
-            headers={"Authorization": f"Bearer {token}"}
+            "/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"}
         )
         assert response.status_code == 200
         data = response.json()
@@ -118,8 +105,7 @@ class TestAuthAPI:
     def test_get_current_user_invalid_token(self):
         """無効なトークンでのユーザー情報取得テスト"""
         response = client.get(
-            "/api/v1/auth/me",
-            headers={"Authorization": "Bearer invalid_token"}
+            "/api/v1/auth/me", headers={"Authorization": "Bearer invalid_token"}
         )
         assert response.status_code == 401
 
@@ -128,17 +114,13 @@ class TestAuthAPI:
         # ログインしてトークン取得
         login_response = client.post(
             "/api/v1/auth/login",
-            data={
-                "username": "testuser",
-                "password": "Test123!@#"
-            }
+            data={"username": "testuser", "password": "Test123!@#"},
         )
         refresh_token = login_response.json()["refresh_token"]
 
         # トークンリフレッシュ
         response = client.post(
-            "/api/v1/auth/refresh",
-            json={"refresh_token": refresh_token}
+            "/api/v1/auth/refresh", json={"refresh_token": refresh_token}
         )
         assert response.status_code == 200
         data = response.json()
@@ -150,10 +132,7 @@ class TestAuthAPI:
         # ログインしてトークン取得
         login_response = client.post(
             "/api/v1/auth/login",
-            data={
-                "username": "testuser",
-                "password": "Test123!@#"
-            }
+            data={"username": "testuser", "password": "Test123!@#"},
         )
         token = login_response.json()["access_token"]
 
@@ -161,7 +140,7 @@ class TestAuthAPI:
         response = client.post(
             "/api/v1/auth/api-keys",
             json={"name": "Test API Key"},
-            headers={"Authorization": f"Bearer {token}"}
+            headers={"Authorization": f"Bearer {token}"},
         )
         assert response.status_code == 200
         data = response.json()

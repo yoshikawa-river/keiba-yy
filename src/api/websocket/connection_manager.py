@@ -14,6 +14,7 @@ from src.api.schemas.common import WebSocketMessage
 
 logger = logging.getLogger(__name__)
 
+
 class ConnectionManager:
     """WebSocket接続マネージャー"""
 
@@ -30,10 +31,7 @@ class ConnectionManager:
         self.heartbeat_tasks: dict[str, asyncio.Task] = {}
 
     async def connect(
-        self,
-        websocket: WebSocket,
-        client_id: str,
-        user_id: str | None = None
+        self, websocket: WebSocket, client_id: str, user_id: str | None = None
     ) -> bool:
         """WebSocket接続を確立"""
         try:
@@ -58,7 +56,7 @@ class ConnectionManager:
                 "user_id": user_id,
                 "connected_at": datetime.utcnow(),
                 "last_activity": datetime.utcnow(),
-                "subscribed_channels": set()
+                "subscribed_channels": set(),
             }
 
             # ハートビートタスクを開始
@@ -73,13 +71,15 @@ class ConnectionManager:
                     data={
                         "status": "connected",
                         "client_id": client_id,
-                        "timestamp": datetime.utcnow().isoformat()
-                    }
+                        "timestamp": datetime.utcnow().isoformat(),
+                    },
                 ),
-                client_id
+                client_id,
             )
 
-            logger.info(f"WebSocket connected: client_id={client_id}, user_id={user_id}")
+            logger.info(
+                f"WebSocket connected: client_id={client_id}, user_id={user_id}"
+            )
             return True
 
         except Exception as e:
@@ -121,11 +121,7 @@ class ConnectionManager:
         except Exception as e:
             logger.exception(f"Disconnect error: {e}")
 
-    async def send_personal_message(
-        self,
-        message: WebSocketMessage,
-        client_id: str
-    ):
+    async def send_personal_message(self, message: WebSocketMessage, client_id: str):
         """個別メッセージ送信"""
         if client_id in self.active_connections:
             websocket = self.active_connections[client_id]
@@ -143,9 +139,7 @@ class ConnectionManager:
                 await self.disconnect(client_id)
 
     async def broadcast(
-        self,
-        message: WebSocketMessage,
-        exclude_client: str | None = None
+        self, message: WebSocketMessage, exclude_client: str | None = None
     ):
         """全クライアントにブロードキャスト"""
         disconnected_clients = []
@@ -163,11 +157,7 @@ class ConnectionManager:
         for client_id in disconnected_clients:
             await self.disconnect(client_id)
 
-    async def send_to_user(
-        self,
-        message: WebSocketMessage,
-        user_id: str
-    ):
+    async def send_to_user(self, message: WebSocketMessage, user_id: str):
         """特定ユーザーの全接続にメッセージ送信"""
         if user_id in self.user_connections:
             for client_id in self.user_connections[user_id]:
@@ -190,10 +180,10 @@ class ConnectionManager:
                 data={
                     "action": "subscribed",
                     "channel": channel,
-                    "timestamp": datetime.utcnow().isoformat()
-                }
+                    "timestamp": datetime.utcnow().isoformat(),
+                },
             ),
-            client_id
+            client_id,
         )
 
         logger.info(f"Client {client_id} subscribed to channel: {channel}")
@@ -215,17 +205,14 @@ class ConnectionManager:
                 data={
                     "action": "unsubscribed",
                     "channel": channel,
-                    "timestamp": datetime.utcnow().isoformat()
-                }
+                    "timestamp": datetime.utcnow().isoformat(),
+                },
             ),
-            client_id
+            client_id,
         )
 
     async def publish_to_channel(
-        self,
-        channel: str,
-        message: WebSocketMessage,
-        exclude_client: str | None = None
+        self, channel: str, message: WebSocketMessage, exclude_client: str | None = None
     ):
         """チャンネルにメッセージを配信"""
         if channel in self.channel_subscribers:
@@ -254,10 +241,9 @@ class ConnectionManager:
                 # Pingメッセージを送信
                 await self.send_personal_message(
                     WebSocketMessage(
-                        type="ping",
-                        data={"timestamp": datetime.utcnow().isoformat()}
+                        type="ping", data={"timestamp": datetime.utcnow().isoformat()}
                     ),
-                    client_id
+                    client_id,
                 )
 
                 # タイムアウトチェック
@@ -275,11 +261,7 @@ class ConnectionManager:
         except Exception as e:
             logger.exception(f"Heartbeat error for {client_id}: {e}")
 
-    async def handle_message(
-        self,
-        client_id: str,
-        message: dict[str, Any]
-    ):
+    async def handle_message(self, client_id: str, message: dict[str, Any]):
         """クライアントからのメッセージを処理"""
         try:
             msg_type = message.get("type")
@@ -320,10 +302,10 @@ class ConnectionManager:
                                 "channel": channel,
                                 "content": content,
                                 "from": client_id,
-                                "timestamp": datetime.utcnow().isoformat()
-                            }
+                                "timestamp": datetime.utcnow().isoformat(),
+                            },
                         ),
-                        exclude_client=client_id
+                        exclude_client=client_id,
                     )
             else:
                 # 不明なメッセージタイプ
@@ -332,10 +314,10 @@ class ConnectionManager:
                         type="error",
                         data={
                             "message": f"Unknown message type: {msg_type}",
-                            "timestamp": datetime.utcnow().isoformat()
-                        }
+                            "timestamp": datetime.utcnow().isoformat(),
+                        },
                     ),
-                    client_id
+                    client_id,
                 )
 
         except Exception as e:
@@ -345,10 +327,10 @@ class ConnectionManager:
                     type="error",
                     data={
                         "message": "Message processing error",
-                        "timestamp": datetime.utcnow().isoformat()
-                    }
+                        "timestamp": datetime.utcnow().isoformat(),
+                    },
                 ),
-                client_id
+                client_id,
             )
 
     def get_stats(self) -> dict[str, Any]:
@@ -360,8 +342,9 @@ class ConnectionManager:
             "channel_stats": {
                 channel: len(subscribers)
                 for channel, subscribers in self.channel_subscribers.items()
-            }
+            },
         }
+
 
 # シングルトンインスタンス
 manager = ConnectionManager()

@@ -68,8 +68,8 @@ class TestMainAPI:
             "/",
             headers={
                 "Origin": "http://localhost:3000",
-                "Access-Control-Request-Method": "GET"
-            }
+                "Access-Control-Request-Method": "GET",
+            },
         )
         assert response.status_code == 200
         assert "access-control-allow-origin" in response.headers
@@ -90,10 +90,7 @@ class TestMainAPI:
             assert "x-ratelimit-remaining" in response.headers
             assert "x-ratelimit-reset" in response.headers
 
-    @pytest.mark.parametrize("endpoint", [
-        "/docs",
-        "/redoc"
-    ])
+    @pytest.mark.parametrize("endpoint", ["/docs", "/redoc"])
     def test_documentation_endpoints(self, endpoint):
         """ドキュメントエンドポイントテスト"""
         response = client.get(endpoint)
@@ -111,8 +108,8 @@ class TestErrorHandling:
             json={
                 "username": "a",  # 短すぎる
                 "email": "invalid-email",  # 無効なメール
-                "password": "weak"  # 弱いパスワード
-            }
+                "password": "weak",  # 弱いパスワード
+            },
         )
         assert response.status_code == 422
         data = response.json()
@@ -138,6 +135,7 @@ class TestDebugEndpoints:
         """ルート一覧取得テスト"""
         # デバッグモードでのみ存在
         from src.api.config import settings
+
         if settings.debug:
             response = client.get("/debug/routes")
             assert response.status_code == 200
@@ -148,6 +146,7 @@ class TestDebugEndpoints:
     def test_debug_websocket_stats(self):
         """WebSocket統計取得テスト"""
         from src.api.config import settings
+
         if settings.debug:
             response = client.get("/debug/websocket-stats")
             assert response.status_code == 200

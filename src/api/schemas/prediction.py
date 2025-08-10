@@ -11,12 +11,15 @@ from pydantic import BaseModel, Field, validator
 
 class RaceType(str, Enum):
     """レースタイプ"""
+
     TURF = "turf"  # 芝
     DIRT = "dirt"  # ダート
     OBSTACLE = "obstacle"  # 障害
 
+
 class RaceGrade(str, Enum):
     """レースグレード"""
+
     G1 = "G1"
     G2 = "G2"
     G3 = "G3"
@@ -28,23 +31,29 @@ class RaceGrade(str, Enum):
     TWO_WIN = "2勝クラス"
     THREE_WIN = "3勝クラス"
 
+
 class WeatherCondition(str, Enum):
     """天候"""
+
     FINE = "晴"
     CLOUDY = "曇"
     RAINY = "雨"
     SNOWY = "雪"
     FOGGY = "霧"
 
+
 class TrackCondition(str, Enum):
     """馬場状態"""
+
     FIRM = "良"
     GOOD = "稍重"
     YIELDING = "重"
     SOFT = "不良"
 
+
 class HorseInfo(BaseModel):
     """馬情報"""
+
     horse_id: str = Field(..., description="馬ID")
     name: str = Field(..., description="馬名")
     age: int = Field(..., ge=2, le=10, description="年齢")
@@ -60,8 +69,10 @@ class HorseInfo(BaseModel):
     odds: float | None = Field(None, ge=1.0, description="オッズ")
     popularity: int | None = Field(None, ge=1, le=18, description="人気順")
 
+
 class RaceInfo(BaseModel):
     """レース情報"""
+
     race_id: str = Field(..., description="レースID")
     race_date: date = Field(..., description="開催日")
     race_number: int = Field(..., ge=1, le=12, description="レース番号")
@@ -75,19 +86,25 @@ class RaceInfo(BaseModel):
     prize_money: int | None = Field(None, ge=0, description="賞金総額")
     field_size: int = Field(..., ge=2, le=18, description="出走頭数")
 
+
 class PredictionRequest(BaseModel):
     """予測リクエスト"""
+
     race_info: RaceInfo = Field(..., description="レース情報")
-    horses: list[HorseInfo] = Field(..., min_items=2, max_items=18, description="出走馬情報")
+    horses: list[HorseInfo] = Field(
+        ..., min_items=2, max_items=18, description="出走馬情報"
+    )
     include_confidence: bool = Field(default=True, description="信頼度を含める")
     include_features: bool = Field(default=False, description="特徴量を含める")
 
-    @validator('horses')
+    @validator("horses")
     def validate_horses(cls, v, values):
         """出走馬の検証"""
-        if 'race_info' in values:
-            if len(v) != values['race_info'].field_size:
-                raise ValueError(f"出走頭数が一致しません。期待: {values['race_info'].field_size}, 実際: {len(v)}")
+        if "race_info" in values:
+            if len(v) != values["race_info"].field_size:
+                raise ValueError(
+                    f"出走頭数が一致しません。期待: {values['race_info'].field_size}, 実際: {len(v)}"
+                )
 
         # 馬番の重複チェック
         horse_numbers = [h.horse_number for h in v]
@@ -96,8 +113,10 @@ class PredictionRequest(BaseModel):
 
         return v
 
+
 class PredictionResult(BaseModel):
     """予測結果（個別馬）"""
+
     horse_id: str = Field(..., description="馬ID")
     horse_name: str = Field(..., description="馬名")
     horse_number: int = Field(..., description="馬番")
@@ -108,8 +127,10 @@ class PredictionResult(BaseModel):
     expected_value: float | None = Field(None, description="期待値")
     features: dict[str, Any] | None = Field(None, description="使用した特徴量")
 
+
 class RacePredictionResponse(BaseModel):
     """レース予測レスポンス"""
+
     race_id: str = Field(..., description="レースID")
     race_name: str = Field(..., description="レース名")
     prediction_id: str = Field(..., description="予測ID")
@@ -136,35 +157,34 @@ class RacePredictionResponse(BaseModel):
                         "place_probability": 0.65,
                         "predicted_rank": 1,
                         "confidence_score": 0.85,
-                        "expected_value": 3.2
+                        "expected_value": 3.2,
                     }
                 ],
                 "recommended_bets": {
                     "win": [1],
                     "place": [1, 3, 5],
                     "exacta": [1, 3],
-                    "trio": [1, 3, 5]
-                }
+                    "trio": [1, 3, 5],
+                },
             }
         }
 
+
 class BatchPredictionRequest(BaseModel):
     """バッチ予測リクエスト"""
+
     races: list[PredictionRequest] = Field(
-        ...,
-        min_items=1,
-        max_items=100,
-        description="予測対象レースリスト"
+        ..., min_items=1, max_items=100, description="予測対象レースリスト"
     )
     priority: str | None = Field(
-        default="normal",
-        pattern="^(high|normal|low)$",
-        description="処理優先度"
+        default="normal", pattern="^(high|normal|low)$", description="処理優先度"
     )
     callback_url: str | None = Field(None, description="結果通知用URL")
 
+
 class BatchPredictionResponse(BaseModel):
     """バッチ予測レスポンス"""
+
     batch_id: str = Field(..., description="バッチID")
     status: str = Field(..., description="処理ステータス")
     total_races: int = Field(..., description="総レース数")
@@ -173,8 +193,10 @@ class BatchPredictionResponse(BaseModel):
     estimated_completion: datetime | None = Field(None, description="完了予定時刻")
     results_url: str | None = Field(None, description="結果取得URL")
 
+
 class PredictionHistory(BaseModel):
     """予測履歴"""
+
     prediction_id: str
     race_id: str
     race_name: str

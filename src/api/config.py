@@ -22,8 +22,7 @@ class Settings(BaseSettings):
 
     # セキュリティ設定
     secret_key: str = Field(
-        default="your-secret-key-here-change-in-production",
-        env="SECRET_KEY"
+        default="your-secret-key-here-change-in-production", env="SECRET_KEY"
     )
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
@@ -32,17 +31,14 @@ class Settings(BaseSettings):
     # CORS設定
     backend_cors_origins: list[str] = Field(
         default=["http://localhost:3000", "http://localhost:8501"],
-        env="BACKEND_CORS_ORIGINS"
+        env="BACKEND_CORS_ORIGINS",
     )
 
     # データベース設定（将来の接続用）
     database_url: str | None = Field(default=None, env="DATABASE_URL")
 
     # Redis設定（キャッシュ・レート制限用）
-    redis_url: str = Field(
-        default="redis://localhost:6379/0",
-        env="REDIS_URL"
-    )
+    redis_url: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
 
     # レート制限設定
     rate_limit_enabled: bool = True
@@ -66,10 +62,12 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = False
 
+
 @lru_cache
 def get_settings() -> Settings:
     """設定のシングルトンインスタンスを取得"""
     return Settings()
+
 
 # グローバル設定インスタンス
 settings = get_settings()

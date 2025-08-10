@@ -29,9 +29,10 @@ router = APIRouter(
     tags=["Predictions"],
     responses={
         401: {"description": "認証エラー"},
-        429: {"description": "レート制限エラー"}
-    }
+        429: {"description": "レート制限エラー"},
+    },
 )
+
 
 class MockPredictor:
     """モック予測器"""
@@ -39,7 +40,9 @@ class MockPredictor:
     def __init__(self):
         self.model_version = "v1.0.0-mock"
 
-    async def predict_race(self, race_info: RaceInfo, horses: list[HorseInfo]) -> list[PredictionResult]:
+    async def predict_race(
+        self, race_info: RaceInfo, horses: list[HorseInfo]
+    ) -> list[PredictionResult]:
         """レース予測（モック）"""
         # 処理時間のシミュレーション
         await asyncio.sleep(random.uniform(0.1, 0.5))
@@ -78,8 +81,10 @@ class MockPredictor:
                     "speed_rating": round(random.uniform(70, 95), 1),
                     "recent_form": round(random.uniform(0.3, 0.9), 2),
                     "jockey_skill": round(random.uniform(0.5, 1.0), 2),
-                    "track_affinity": round(random.uniform(0.4, 0.9), 2)
-                } if random.random() > 0.5 else None
+                    "track_affinity": round(random.uniform(0.4, 0.9), 2),
+                }
+                if random.random() > 0.5
+                else None,
             )
             results.append(result)
 
@@ -90,10 +95,14 @@ class MockPredictor:
 
         return results
 
-    def generate_recommended_bets(self, predictions: list[PredictionResult]) -> dict[str, list[int]]:
+    def generate_recommended_bets(
+        self, predictions: list[PredictionResult]
+    ) -> dict[str, list[int]]:
         """推奨馬券生成（モック）"""
         # 上位馬の馬番を取得
-        top_horses = sorted(predictions, key=lambda x: x.win_probability, reverse=True)[:5]
+        top_horses = sorted(predictions, key=lambda x: x.win_probability, reverse=True)[
+            :5
+        ]
         horse_numbers = [h.horse_number for h in top_horses]
 
         return {
@@ -102,18 +111,20 @@ class MockPredictor:
             "exacta": horse_numbers[:2],  # 馬単
             "quinella": horse_numbers[:2],  # 馬連
             "trio": horse_numbers[:3],  # 三連複
-            "trifecta": horse_numbers[:3]  # 三連単
+            "trifecta": horse_numbers[:3],  # 三連単
         }
+
 
 # モック予測器インスタンス
 predictor = MockPredictor()
+
 
 @router.post("/race", response_model=ResponseBase[RacePredictionResponse])
 async def predict_race(
     request: PredictionRequest,
     background_tasks: BackgroundTasks,
     api_key: str | None = Depends(require_api_key),
-    _: bool = Depends(rate_limit_100)
+    _: bool = Depends(rate_limit_100),
 ) -> ResponseBase[RacePredictionResponse]:
     """
     単一レースの予測
@@ -141,31 +152,28 @@ async def predict_race(
                 "distance": request.race_info.distance,
                 "race_type": request.race_info.race_type.value,
                 "field_size": request.race_info.field_size,
-                "processing_time_ms": random.randint(100, 500)
-            }
+                "processing_time_ms": random.randint(100, 500),
+            },
         )
 
         # バックグラウンドで予測履歴を保存（モック）
         background_tasks.add_task(save_prediction_history, response)
 
-        return ResponseBase(
-            success=True,
-            data=response,
-            message="予測が完了しました"
-        )
+        return ResponseBase(success=True, data=response, message="予測が完了しました")
 
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"予測処理中にエラーが発生しました: {e!s}"
+            detail=f"予測処理中にエラーが発生しました: {e!s}",
         ) from e
+
 
 @router.post("/batch", response_model=ResponseBase[BatchPredictionResponse])
 async def predict_batch(
     request: BatchPredictionRequest,
     background_tasks: BackgroundTasks,
     api_key: str | None = Depends(require_api_key),
-    _: bool = Depends(rate_limit_100)
+    _: bool = Depends(rate_limit_100),
 ) -> ResponseBase[BatchPredictionResponse]:
     """
     バッチ予測
@@ -185,10 +193,7 @@ async def predict_batch(
 
     # バックグラウンドで予測処理を実行
     background_tasks.add_task(
-        process_batch_predictions,
-        batch_id,
-        request.races,
-        request.callback_url
+        process_batch_predictions, batch_id, request.races, request.callback_url
     )
 
     response = BatchPredictionResponse(
@@ -198,19 +203,19 @@ async def predict_batch(
         completed_races=0,
         created_at=datetime.utcnow(),
         estimated_completion=estimated_completion,
-        results_url=f"/predictions/batch/{batch_id}/results"
+        results_url=f"/predictions/batch/{batch_id}/results",
     )
 
     return ResponseBase(
-        success=True,
-        data=response,
-        message="バッチ予測処理を開始しました"
+        success=True, data=response, message="バッチ予測処理を開始しました"
     )
 
-@router.get("/batch/{batch_id}/status", response_model=ResponseBase[BatchPredictionResponse])
+
+@router.get(
+    "/batch/{batch_id}/status", response_model=ResponseBase[BatchPredictionResponse]
+)
 async def get_batch_status(
-    batch_id: str,
-    api_key: str | None = Depends(require_api_key)
+    batch_id: str, api_key: str | None = Depends(require_api_key)
 ) -> ResponseBase[BatchPredictionResponse]:
     """
     バッチ予測ステータス取得
@@ -223,19 +228,18 @@ async def get_batch_status(
         completed_races=10,
         created_at=datetime.utcnow(),
         estimated_completion=None,
-        results_url=f"/predictions/batch/{batch_id}/results"
+        results_url=f"/predictions/batch/{batch_id}/results",
     )
 
-    return ResponseBase(
-        success=True,
-        data=response,
-        message=None
-    )
+    return ResponseBase(success=True, data=response, message=None)
 
-@router.get("/batch/{batch_id}/results", response_model=ResponseBase[list[RacePredictionResponse]])
+
+@router.get(
+    "/batch/{batch_id}/results",
+    response_model=ResponseBase[list[RacePredictionResponse]],
+)
 async def get_batch_results(
-    batch_id: str,
-    api_key: str | None = Depends(require_api_key)
+    batch_id: str, api_key: str | None = Depends(require_api_key)
 ) -> ResponseBase[list[RacePredictionResponse]]:
     """
     バッチ予測結果取得
@@ -245,10 +249,9 @@ async def get_batch_results(
     results = []
 
     return ResponseBase(
-        success=True,
-        data=results,
-        message="バッチ処理結果を取得しました"
+        success=True, data=results, message="バッチ処理結果を取得しました"
     )
+
 
 @router.get("/history", response_model=PaginatedResponse[PredictionHistory])
 async def get_prediction_history(
@@ -256,7 +259,7 @@ async def get_prediction_history(
     start_date: date | None = Query(None, description="開始日"),
     end_date: date | None = Query(None, description="終了日"),
     race_id: str | None = Query(None, description="レースID"),
-    api_key: str | None = Depends(require_api_key)
+    api_key: str | None = Depends(require_api_key),
 ) -> PaginatedResponse[PredictionHistory]:
     """
     予測履歴取得
@@ -269,11 +272,11 @@ async def get_prediction_history(
         history = PredictionHistory(
             prediction_id=f"pred_history_{i}",
             race_id=f"2023120101{i:02d}",
-            race_name=f"テストレース{i+1}",
+            race_name=f"テストレース{i + 1}",
             race_date=date(2023, 12, 1),
             predicted_at=datetime.utcnow(),
             model_version="v1.0.0",
-            accuracy_score=random.uniform(0.6, 0.9) if random.random() > 0.5 else None
+            accuracy_score=random.uniform(0.6, 0.9) if random.random() > 0.5 else None,
         )
         items.append(history)
 
@@ -281,12 +284,13 @@ async def get_prediction_history(
         items=items,
         total=100,  # モック値
         page=pagination.page,
-        size=pagination.size
+        size=pagination.size,
     )
+
 
 @router.get("/models", response_model=ResponseBase[list[dict[str, Any]]])
 async def get_available_models(
-    api_key: str | None = Depends(require_api_key)
+    api_key: str | None = Depends(require_api_key),
 ) -> ResponseBase[list[dict[str, Any]]]:
     """
     利用可能なモデル一覧取得
@@ -299,7 +303,7 @@ async def get_available_models(
             "description": "LightGBMベースの基本予測モデル",
             "accuracy": 0.72,
             "created_at": "2023-11-01T00:00:00",
-            "is_active": True
+            "is_active": True,
         },
         {
             "model_id": "xgboost_v1",
@@ -308,7 +312,7 @@ async def get_available_models(
             "description": "XGBoostベースの高精度モデル",
             "accuracy": 0.74,
             "created_at": "2023-11-15T00:00:00",
-            "is_active": True
+            "is_active": True,
         },
         {
             "model_id": "ensemble_v1",
@@ -317,15 +321,12 @@ async def get_available_models(
             "description": "複数モデルのアンサンブル",
             "accuracy": 0.76,
             "created_at": "2023-12-01T00:00:00",
-            "is_active": False
-        }
+            "is_active": False,
+        },
     ]
 
-    return ResponseBase(
-        success=True,
-        data=models,
-        message=None
-    )
+    return ResponseBase(success=True, data=models, message=None)
+
 
 # バックグラウンドタスク用のヘルパー関数
 async def save_prediction_history(prediction: RacePredictionResponse):
@@ -334,10 +335,9 @@ async def save_prediction_history(prediction: RacePredictionResponse):
     await asyncio.sleep(0.1)
     logger.debug(f"Saved prediction: {prediction.prediction_id}")
 
+
 async def process_batch_predictions(
-    batch_id: str,
-    races: list[PredictionRequest],
-    callback_url: str | None
+    batch_id: str, races: list[PredictionRequest], callback_url: str | None
 ):
     """バッチ予測処理（モック）"""
     # 実際は各レースを処理してデータベースに保存

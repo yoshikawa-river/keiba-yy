@@ -2,7 +2,6 @@
 予測APIのテスト
 """
 
-
 import pytest
 from fastapi.testclient import TestClient
 
@@ -36,7 +35,7 @@ class TestPredictionAPI:
                 "weather": "晴",
                 "track_condition": "良",
                 "prize_money": 100000000,
-                "field_size": 3
+                "field_size": 3,
             },
             "horses": [
                 {
@@ -52,7 +51,7 @@ class TestPredictionAPI:
                     "jockey_weight": 55.0,
                     "trainer_name": "テスト調教師1",
                     "odds": 2.5,
-                    "popularity": 1
+                    "popularity": 1,
                 },
                 {
                     "horse_id": "2021104322",
@@ -67,7 +66,7 @@ class TestPredictionAPI:
                     "jockey_weight": 54.0,
                     "trainer_name": "テスト調教師2",
                     "odds": 5.0,
-                    "popularity": 2
+                    "popularity": 2,
                 },
                 {
                     "horse_id": "2021104323",
@@ -82,11 +81,11 @@ class TestPredictionAPI:
                     "jockey_weight": 56.0,
                     "trainer_name": "テスト調教師3",
                     "odds": 10.0,
-                    "popularity": 3
-                }
+                    "popularity": 3,
+                },
             ],
             "include_confidence": True,
-            "include_features": False
+            "include_features": False,
         }
 
     def test_predict_race_with_api_key(self, api_key, race_request_data):
@@ -94,7 +93,7 @@ class TestPredictionAPI:
         response = client.post(
             "/api/v1/predictions/race",
             json=race_request_data,
-            headers={"X-API-Key": api_key}
+            headers={"X-API-Key": api_key},
         )
 
         # APIキーが無効なためエラーになるが、エンドポイントは動作する
@@ -118,15 +117,15 @@ class TestPredictionAPI:
                 "track": "東京",
                 "race_type": "invalid_type",  # 無効な値
                 "distance": 100,  # 範囲外
-                "field_size": 2
+                "field_size": 2,
             },
-            "horses": []  # 空のリスト
+            "horses": [],  # 空のリスト
         }
 
         response = client.post(
             "/api/v1/predictions/race",
             json=invalid_data,
-            headers={"X-API-Key": api_key}
+            headers={"X-API-Key": api_key},
         )
         assert response.status_code == 422
 
@@ -134,13 +133,11 @@ class TestPredictionAPI:
         """バッチ予測テスト"""
         batch_data = {
             "races": [race_request_data, race_request_data],
-            "priority": "normal"
+            "priority": "normal",
         }
 
         response = client.post(
-            "/api/v1/predictions/batch",
-            json=batch_data,
-            headers={"X-API-Key": api_key}
+            "/api/v1/predictions/batch", json=batch_data, headers={"X-API-Key": api_key}
         )
 
         # APIキーチェックまたは成功
@@ -157,7 +154,7 @@ class TestPredictionAPI:
         response = client.get(
             "/api/v1/predictions/history",
             params={"page": 1, "size": 10},
-            headers={"X-API-Key": api_key}
+            headers={"X-API-Key": api_key},
         )
 
         assert response.status_code in [200, 401]
@@ -171,8 +168,7 @@ class TestPredictionAPI:
     def test_get_available_models(self, api_key):
         """利用可能モデル一覧取得テスト"""
         response = client.get(
-            "/api/v1/predictions/models",
-            headers={"X-API-Key": api_key}
+            "/api/v1/predictions/models", headers={"X-API-Key": api_key}
         )
 
         assert response.status_code in [200, 401]
@@ -199,7 +195,7 @@ class TestPredictionAPI:
                 "track": "東京",
                 "race_type": "turf",
                 "distance": 2000,
-                "field_size": 2
+                "field_size": 2,
             },
             "horses": [
                 {
@@ -211,7 +207,7 @@ class TestPredictionAPI:
                     "horse_number": 1,  # 同じ馬番
                     "jockey_name": "騎手1",
                     "jockey_weight": 55.0,
-                    "trainer_name": "調教師1"
+                    "trainer_name": "調教師1",
                 },
                 {
                     "horse_id": "002",
@@ -222,14 +218,12 @@ class TestPredictionAPI:
                     "horse_number": 1,  # 同じ馬番（エラー）
                     "jockey_name": "騎手2",
                     "jockey_weight": 55.0,
-                    "trainer_name": "調教師2"
-                }
-            ]
+                    "trainer_name": "調教師2",
+                },
+            ],
         }
 
         response = client.post(
-            "/api/v1/predictions/race",
-            json=data,
-            headers={"X-API-Key": api_key}
+            "/api/v1/predictions/race", json=data, headers={"X-API-Key": api_key}
         )
         assert response.status_code == 422

@@ -21,8 +21,9 @@ security = HTTPBearer()
 # APIキーヘッダー
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
 
+
 async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Security(security)
+    credentials: HTTPAuthorizationCredentials = Security(security),
 ) -> User:
     """現在のユーザーを取得"""
     token = credentials.credentials
@@ -41,7 +42,7 @@ async def get_current_user(
         email=f"{token_data.username}@example.com",
         full_name="Test User",
         is_active=True,
-        created_at=datetime.utcnow()
+        created_at=datetime.utcnow(),
     )
 
     if not user.is_active:
@@ -49,21 +50,23 @@ async def get_current_user(
 
     return user
 
+
 async def get_current_active_user(
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ) -> User:
     """アクティブなユーザーを取得"""
     if not current_user.is_active:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="アクティブでないユーザー"
+            status_code=status.HTTP_400_BAD_REQUEST, detail="アクティブでないユーザー"
         )
     return current_user
 
+
 def require_scopes(required_scopes: list[str]):
     """スコープ要求デコレータ"""
+
     async def scope_checker(
-        credentials: HTTPAuthorizationCredentials = Security(security)
+        credentials: HTTPAuthorizationCredentials = Security(security),
     ):
         token = credentials.credentials
         token_data = jwt_handler.decode_token(token)
@@ -74,17 +77,14 @@ def require_scopes(required_scopes: list[str]):
         # スコープチェック
         for scope in required_scopes:
             if scope not in token_data.scopes:
-                raise AuthorizationException(
-                    f"必要なスコープ '{scope}' がありません"
-                )
+                raise AuthorizationException(f"必要なスコープ '{scope}' がありません")
 
         return token_data
 
     return scope_checker
 
-async def get_api_key(
-    api_key: str | None = Security(api_key_header)
-) -> str | None:
+
+async def get_api_key(api_key: str | None = Security(api_key_header)) -> str | None:
     """APIキーを取得"""
     if api_key is None:
         return None
@@ -96,9 +96,8 @@ async def get_api_key(
 
     return api_key
 
-async def require_api_key(
-    api_key: str = Depends(get_api_key)
-) -> str:
+
+async def require_api_key(api_key: str = Depends(get_api_key)) -> str:
     """APIキーを要求"""
     if api_key is None:
         raise AuthenticationException("APIキーが必要です")
@@ -110,8 +109,9 @@ async def require_api_key(
 
     return api_key
 
+
 async def get_optional_user(
-    credentials: HTTPAuthorizationCredentials | None = Security(security)
+    credentials: HTTPAuthorizationCredentials | None = Security(security),
 ) -> User | None:
     """オプショナルユーザー取得（認証不要エンドポイント用）"""
     if credentials is None:
@@ -121,6 +121,7 @@ async def get_optional_user(
         return await get_current_user(credentials)
     except:
         return None
+
 
 class RateLimitChecker:
     """レート制限チェッカー"""
@@ -132,7 +133,7 @@ class RateLimitChecker:
     async def __call__(
         self,
         user: User | None = Depends(get_optional_user),
-        api_key: str | None = Depends(get_api_key)
+        api_key: str | None = Depends(get_api_key),
     ) -> bool:
         """レート制限チェック"""
         # TODO: Redisを使用した実際のレート制限実装
@@ -156,7 +157,7 @@ class RateLimitChecker:
 
         return True
 
+
 # 使用例のインスタンス
 rate_limit_100 = RateLimitChecker(requests=100, window=60)
 rate_limit_1000 = RateLimitChecker(requests=1000, window=3600)
-

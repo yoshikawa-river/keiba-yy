@@ -16,6 +16,7 @@ from src.api.schemas.auth import TokenData
 # パスワードハッシュ化コンテキスト
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class JWTHandler:
     """JWT認証処理クラス"""
 
@@ -34,9 +35,7 @@ class JWTHandler:
         return pwd_context.hash(password)
 
     def create_access_token(
-        self,
-        data: dict[str, Any],
-        expires_delta: timedelta | None = None
+        self, data: dict[str, Any], expires_delta: timedelta | None = None
     ) -> str:
         """アクセストークン作成"""
         to_encode = data.copy()
@@ -44,20 +43,16 @@ class JWTHandler:
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=self.access_token_expire_minutes)
+            expire = datetime.utcnow() + timedelta(
+                minutes=self.access_token_expire_minutes
+            )
 
-        to_encode.update({
-            "exp": expire,
-            "type": "access",
-            "iat": datetime.utcnow()
-        })
+        to_encode.update({"exp": expire, "type": "access", "iat": datetime.utcnow()})
 
         return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
     def create_refresh_token(
-        self,
-        data: dict[str, Any],
-        expires_delta: timedelta | None = None
+        self, data: dict[str, Any], expires_delta: timedelta | None = None
     ) -> str:
         """リフレッシュトークン作成"""
         to_encode = data.copy()
@@ -67,12 +62,14 @@ class JWTHandler:
         else:
             expire = datetime.utcnow() + timedelta(days=self.refresh_token_expire_days)
 
-        to_encode.update({
-            "exp": expire,
-            "type": "refresh",
-            "iat": datetime.utcnow(),
-            "jti": secrets.token_urlsafe(32)  # JWT ID for refresh token tracking
-        })
+        to_encode.update(
+            {
+                "exp": expire,
+                "type": "refresh",
+                "iat": datetime.utcnow(),
+                "jti": secrets.token_urlsafe(32),  # JWT ID for refresh token tracking
+            }
+        )
 
         return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
@@ -87,15 +84,13 @@ class JWTHandler:
             if username is None:
                 return None
 
-            return TokenData(
-                username=username,
-                user_id=user_id,
-                scopes=scopes
-            )
+            return TokenData(username=username, user_id=user_id, scopes=scopes)
         except JWTError:
             return None
 
-    def verify_token(self, token: str, token_type: str = "access") -> dict[str, Any] | None:
+    def verify_token(
+        self, token: str, token_type: str = "access"
+    ) -> dict[str, Any] | None:
         """トークン検証"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
@@ -123,6 +118,7 @@ class JWTHandler:
     def verify_api_key(self, api_key: str, hashed_key: str) -> bool:
         """APIキー検証"""
         return self.hash_api_key(api_key) == hashed_key
+
 
 # シングルトンインスタンス
 jwt_handler = JWTHandler()
