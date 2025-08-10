@@ -10,12 +10,10 @@ from loguru import logger
 
 # from src.core.exceptions import FeatureExtractionError
 
-
 class FeatureExtractionError(Exception):
     """特徴量抽出エラー"""
 
     pass
-
 
 class JockeyTrainerFeatureExtractor:
     """騎手・調教師特徴量を抽出するクラス

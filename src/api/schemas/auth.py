@@ -4,18 +4,15 @@
 
 import re
 from datetime import datetime
-from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator
-
 
 class UserBase(BaseModel):
     """ユーザー基本情報"""
     username: str = Field(..., min_length=3, max_length=50, description="ユーザー名")
     email: EmailStr = Field(..., description="メールアドレス")
-    full_name: Optional[str] = Field(None, max_length=100, description="フルネーム")
+    full_name: str | None = Field(None, max_length=100, description="フルネーム")
     is_active: bool = Field(default=True, description="アクティブフラグ")
-
 
 class UserCreate(UserBase):
     """ユーザー作成用スキーマ"""
@@ -34,14 +31,12 @@ class UserCreate(UserBase):
             raise ValueError('パスワードには特殊文字を含める必要があります')
         return v
 
-
 class UserInDB(UserBase):
     """データベース内のユーザー情報"""
     id: int
     hashed_password: str
     created_at: datetime
     updated_at: datetime
-
 
 class User(UserBase):
     """ユーザー情報（レスポンス用）"""
@@ -51,32 +46,27 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
-
 class Token(BaseModel):
     """認証トークン"""
     access_token: str = Field(..., description="アクセストークン")
-    refresh_token: Optional[str] = Field(None, description="リフレッシュトークン")
+    refresh_token: str | None = Field(None, description="リフレッシュトークン")
     token_type: str = Field(default="bearer", description="トークンタイプ")
     expires_in: int = Field(..., description="有効期限（秒）")
 
-
 class TokenData(BaseModel):
     """トークンデータ"""
-    username: Optional[str] = None
-    user_id: Optional[int] = None
-    scopes: List[str] = []
-
+    username: str | None = None
+    user_id: int | None = None
+    scopes: list[str] = []
 
 class LoginRequest(BaseModel):
     """ログインリクエスト"""
     username: str = Field(..., description="ユーザー名またはメールアドレス")
     password: str = Field(..., description="パスワード")
 
-
 class RefreshTokenRequest(BaseModel):
     """リフレッシュトークンリクエスト"""
     refresh_token: str = Field(..., description="リフレッシュトークン")
-
 
 class PasswordChangeRequest(BaseModel):
     """パスワード変更リクエスト"""
@@ -99,21 +89,19 @@ class PasswordChangeRequest(BaseModel):
             raise ValueError('パスワードには特殊文字を含める必要があります')
         return v
 
-
 class APIKey(BaseModel):
     """APIキー情報"""
     id: int
     name: str = Field(..., max_length=100, description="APIキー名")
     key: str = Field(..., description="APIキー")
     created_at: datetime
-    last_used_at: Optional[datetime] = None
+    last_used_at: datetime | None = None
     is_active: bool = True
 
     class Config:
         orm_mode = True
 
-
 class APIKeyCreate(BaseModel):
     """APIキー作成リクエスト"""
     name: str = Field(..., max_length=100, description="APIキー名")
-    expires_in_days: Optional[int] = Field(None, ge=1, le=365, description="有効期限（日数）")
+    expires_in_days: int | None = Field(None, ge=1, le=365, description="有効期限（日数）")

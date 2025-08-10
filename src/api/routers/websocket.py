@@ -5,7 +5,6 @@ WebSocketエンドポイント
 import json
 import logging
 import uuid
-from typing import Optional
 
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
 
@@ -19,20 +18,19 @@ router = APIRouter(
     tags=["WebSocket"]
 )
 
-
 @router.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket,
-    token: Optional[str] = Query(None, description="認証トークン"),
-    client_id: Optional[str] = Query(None, description="クライアントID")
+    token: str | None = Query(None, description="認証トークン"),
+    client_id: str | None = Query(None, description="クライアントID")
 ):
     """
     WebSocketエンドポイント
-    
+
     接続例:
     - 認証あり: ws://localhost:8000/ws?token=YOUR_JWT_TOKEN
     - 認証なし: ws://localhost:8000/ws?client_id=YOUR_CLIENT_ID
-    
+
     メッセージ形式:
     ```json
     {
@@ -42,7 +40,7 @@ async def websocket_endpoint(
         }
     }
     ```
-    
+
     利用可能なメッセージタイプ:
     - subscribe: チャンネル購読
     - unsubscribe: 購読解除
@@ -112,16 +110,15 @@ async def websocket_endpoint(
         logger.error(f"WebSocket error: {e}")
         await manager.disconnect(client_id)
 
-
 @router.websocket("/ws/predictions/{race_id}")
 async def prediction_updates(
     websocket: WebSocket,
     race_id: str,
-    token: Optional[str] = Query(None)
+    token: str | None = Query(None)
 ):
     """
     レース予測更新用WebSocket
-    
+
     特定のレースの予測更新をリアルタイムで配信します。
     """
     client_id = f"pred_{race_id}_{uuid.uuid4().hex[:8]}"

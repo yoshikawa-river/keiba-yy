@@ -16,7 +16,6 @@ from src.api.schemas.auth import TokenData
 # パスワードハッシュ化コンテキスト
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
 class JWTHandler:
     """JWT認証処理クラス"""
 
@@ -124,7 +123,6 @@ class JWTHandler:
     def verify_api_key(self, api_key: str, hashed_key: str) -> bool:
         """APIキー検証"""
         return self.hash_api_key(api_key) == hashed_key
-
 
 # シングルトンインスタンス
 jwt_handler = JWTHandler()

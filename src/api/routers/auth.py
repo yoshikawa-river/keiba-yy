@@ -32,7 +32,6 @@ router = APIRouter(
     }
 )
 
-
 # モックユーザーデータベース（実際にはDBを使用）
 mock_users = {
     "testuser": {
@@ -55,7 +54,6 @@ mock_users = {
     }
 }
 
-
 @router.post("/register", response_model=ResponseBase[User], status_code=status.HTTP_201_CREATED)
 async def register(
     user_create: UserCreate,
@@ -63,7 +61,7 @@ async def register(
 ) -> ResponseBase[User]:
     """
     新規ユーザー登録
-    
+
     - **username**: ユーザー名（3-50文字）
     - **email**: メールアドレス
     - **password**: パスワード（8文字以上、大文字・小文字・数字・特殊文字を含む）
@@ -107,7 +105,6 @@ async def register(
         message="ユーザー登録が完了しました"
     )
 
-
 @router.post("/login", response_model=Token)
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -115,7 +112,7 @@ async def login(
 ) -> Token:
     """
     ユーザーログイン（OAuth2互換）
-    
+
     アクセストークンとリフレッシュトークンを返します。
     """
     # ユーザー認証
@@ -147,7 +144,6 @@ async def login(
         expires_in=settings.access_token_expire_minutes * 60
     )
 
-
 @router.post("/login/custom", response_model=Token)
 async def login_custom(
     login_request: LoginRequest,
@@ -155,7 +151,7 @@ async def login_custom(
 ) -> Token:
     """
     カスタムログインエンドポイント
-    
+
     OAuth2形式ではなく、JSONボディでログイン情報を受け取ります。
     """
     # ユーザー認証
@@ -191,7 +187,6 @@ async def login_custom(
         expires_in=settings.access_token_expire_minutes * 60
     )
 
-
 @router.post("/refresh", response_model=Token)
 async def refresh_token(
     refresh_request: RefreshTokenRequest,
@@ -199,7 +194,7 @@ async def refresh_token(
 ) -> Token:
     """
     トークンリフレッシュ
-    
+
     リフレッシュトークンを使用して新しいアクセストークンを取得します。
     """
     # リフレッシュトークン検証
@@ -225,7 +220,6 @@ async def refresh_token(
         expires_in=settings.access_token_expire_minutes * 60
     )
 
-
 @router.post("/logout", response_model=ResponseBase[None])
 async def logout(
     response: Response,
@@ -233,7 +227,7 @@ async def logout(
 ) -> ResponseBase[None]:
     """
     ログアウト
-    
+
     トークンを無効化します（実際の実装ではRedisでブラックリスト管理）
     """
     # TODO: Redisにトークンをブラックリスト登録
@@ -247,7 +241,6 @@ async def logout(
         message="ログアウトしました"
     )
 
-
 @router.get("/me", response_model=ResponseBase[User])
 async def get_me(
     current_user: User = Depends(get_current_user)
@@ -260,7 +253,6 @@ async def get_me(
         data=current_user,
         message=None
     )
-
 
 @router.post("/change-password", response_model=ResponseBase[None])
 async def change_password(
@@ -291,7 +283,6 @@ async def change_password(
         message="パスワードを変更しました"
     )
 
-
 @router.post("/api-keys", response_model=ResponseBase[APIKey])
 async def create_api_key(
     api_key_create: APIKeyCreate,
@@ -321,7 +312,6 @@ async def create_api_key(
         data=api_key_info,
         message="APIキーを作成しました。このキーは二度と表示されません。"
     )
-
 
 @router.delete("/api-keys/{key_id}", response_model=ResponseBase[None])
 async def delete_api_key(

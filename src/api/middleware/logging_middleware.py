@@ -14,7 +14,6 @@ from starlette.middleware.base import BaseHTTPMiddleware
 
 logger = logging.getLogger(__name__)
 
-
 class LoggingMiddleware(BaseHTTPMiddleware):
     """リクエスト/レスポンスロギング用ミドルウェア"""
 
@@ -71,7 +70,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             logger.info(f"Response: {json.dumps(response_log)}")
 
         return response
-
 
 class PerformanceMonitoringMiddleware(BaseHTTPMiddleware):
     """パフォーマンス監視ミドルウェア"""

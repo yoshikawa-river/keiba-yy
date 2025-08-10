@@ -5,7 +5,6 @@
 import logging
 import traceback
 import uuid
-from typing import Union
 
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
@@ -17,10 +16,9 @@ from src.api.schemas.common import ErrorDetail, ErrorResponse
 
 logger = logging.getLogger(__name__)
 
-
 async def http_exception_handler(
     request: Request,
-    exc: Union[StarletteHTTPException, KeibaAPIException]
+    exc: StarletteHTTPException | KeibaAPIException
 ) -> JSONResponse:
     """HTTPException用のエラーハンドラー"""
 
@@ -47,7 +45,6 @@ async def http_exception_handler(
         content=error_response.model_dump(mode='json'),
         headers=getattr(exc, "headers", None)
     )
-
 
 async def validation_exception_handler(
     request: Request,
@@ -88,7 +85,6 @@ async def validation_exception_handler(
         status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
         content=error_response.model_dump(mode='json')
     )
-
 
 async def general_exception_handler(
     request: Request,

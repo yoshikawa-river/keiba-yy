@@ -2,10 +2,9 @@
 カスタム例外クラス定義
 """
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 from fastapi import HTTPException, status
-
 
 class KeibaAPIException(HTTPException):
     """基本例外クラス"""
@@ -14,10 +13,9 @@ class KeibaAPIException(HTTPException):
         self,
         status_code: int,
         detail: str,
-        headers: Optional[Dict[str, Any]] = None
+        headers: dict[str, Any] | None = None
     ):
         super().__init__(status_code=status_code, detail=detail, headers=headers)
-
 
 class AuthenticationException(KeibaAPIException):
     """認証エラー"""
@@ -29,7 +27,6 @@ class AuthenticationException(KeibaAPIException):
             headers={"WWW-Authenticate": "Bearer"}
         )
 
-
 class AuthorizationException(KeibaAPIException):
     """認可エラー"""
 
@@ -38,7 +35,6 @@ class AuthorizationException(KeibaAPIException):
             status_code=status.HTTP_403_FORBIDDEN,
             detail=detail
         )
-
 
 class ResourceNotFoundException(KeibaAPIException):
     """リソース未検出エラー"""
@@ -49,7 +45,6 @@ class ResourceNotFoundException(KeibaAPIException):
             detail=f"{resource} (ID: {identifier}) が見つかりません"
         )
 
-
 class ValidationException(KeibaAPIException):
     """バリデーションエラー"""
 
@@ -58,7 +53,6 @@ class ValidationException(KeibaAPIException):
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             detail=detail
         )
-
 
 class RateLimitException(KeibaAPIException):
     """レート制限エラー"""
@@ -70,7 +64,6 @@ class RateLimitException(KeibaAPIException):
             headers={"Retry-After": str(retry_after)}
         )
 
-
 class PredictionException(KeibaAPIException):
     """予測処理エラー"""
 
@@ -79,7 +72,6 @@ class PredictionException(KeibaAPIException):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"予測処理中にエラーが発生しました: {detail}"
         )
-
 
 class WebSocketException(Exception):
     """WebSocket関連エラー"""

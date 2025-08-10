@@ -5,36 +5,36 @@ WebSocket接続管理
 import asyncio
 import logging
 from datetime import datetime
-from typing import Any, Dict, Optional, Set
 
 from fastapi import WebSocket, WebSocketDisconnect
+
+from typing import Any
 
 from src.api.config import settings
 from src.api.schemas.common import WebSocketMessage
 
 logger = logging.getLogger(__name__)
 
-
 class ConnectionManager:
     """WebSocket接続マネージャー"""
 
     def __init__(self):
         # 接続中のWebSocketを管理
-        self.active_connections: Dict[str, WebSocket] = {}
+        self.active_connections: dict[str, WebSocket] = {}
         # ユーザーごとの接続を管理
-        self.user_connections: Dict[str, Set[str]] = {}
+        self.user_connections: dict[str, set[str]] = {}
         # チャンネル（トピック）ごとの購読者を管理
-        self.channel_subscribers: Dict[str, Set[str]] = {}
+        self.channel_subscribers: dict[str, set[str]] = {}
         # 接続情報
-        self.connection_info: Dict[str, Dict[str, Any]] = {}
+        self.connection_info: dict[str, dict[str, Any]] = {}
         # ハートビートタスク
-        self.heartbeat_tasks: Dict[str, asyncio.Task] = {}
+        self.heartbeat_tasks: dict[str, asyncio.Task] = {}
 
     async def connect(
         self,
         websocket: WebSocket,
         client_id: str,
-        user_id: Optional[str] = None
+        user_id: str | None = None
     ) -> bool:
         """WebSocket接続を確立"""
         try:
@@ -51,7 +51,7 @@ class ConnectionManager:
             # ユーザー接続を記録
             if user_id:
                 if user_id not in self.user_connections:
-                    self.user_connections[user_id]: Set[str] = set()
+                    self.user_connections[user_id] = set()
                 self.user_connections[user_id].add(client_id)
 
             # 接続情報を保存
@@ -84,7 +84,7 @@ class ConnectionManager:
             return True
 
         except Exception as e:
-            logger.error(f"Connection error: {e}")
+            logger.exception(f"Connection error: {e}")
             return False
 
     async def disconnect(self, client_id: str):
@@ -120,7 +120,7 @@ class ConnectionManager:
             logger.info(f"WebSocket disconnected: client_id={client_id}")
 
         except Exception as e:
-            logger.error(f"Disconnect error: {e}")
+            logger.exception(f"Disconnect error: {e}")
 
     async def send_personal_message(
         self,
@@ -140,13 +140,13 @@ class ConnectionManager:
             except WebSocketDisconnect:
                 await self.disconnect(client_id)
             except Exception as e:
-                logger.error(f"Send message error: {e}")
+                logger.exception(f"Send message error: {e}")
                 await self.disconnect(client_id)
 
     async def broadcast(
         self,
         message: WebSocketMessage,
-        exclude_client: Optional[str] = None
+        exclude_client: str | None = None
     ):
         """全クライアントにブロードキャスト"""
         disconnected_clients = []
@@ -226,7 +226,7 @@ class ConnectionManager:
         self,
         channel: str,
         message: WebSocketMessage,
-        exclude_client: Optional[str] = None
+        exclude_client: str | None = None
     ):
         """チャンネルにメッセージを配信"""
         if channel in self.channel_subscribers:
@@ -274,12 +274,12 @@ class ConnectionManager:
         except asyncio.CancelledError:
             pass
         except Exception as e:
-            logger.error(f"Heartbeat error for {client_id}: {e}")
+            logger.exception(f"Heartbeat error for {client_id}: {e}")
 
     async def handle_message(
         self,
         client_id: str,
-        message: Dict[str, Any]
+        message: dict[str, Any]
     ):
         """クライアントからのメッセージを処理"""
         try:
@@ -340,7 +340,7 @@ class ConnectionManager:
                 )
 
         except Exception as e:
-            logger.error(f"Message handling error: {e}")
+            logger.exception(f"Message handling error: {e}")
             await self.send_personal_message(
                 WebSocketMessage(
                     type="error",
@@ -352,7 +352,7 @@ class ConnectionManager:
                 client_id
             )
 
-    def get_stats(self) -> Dict[str, Any]:
+    def get_stats(self) -> dict[str, Any]:
         """接続統計を取得"""
         return {
             "total_connections": len(self.active_connections),
@@ -363,7 +363,6 @@ class ConnectionManager:
                 for channel, subscribers in self.channel_subscribers.items()
             }
         }
-
 
 # シングルトンインスタンス
 manager = ConnectionManager()

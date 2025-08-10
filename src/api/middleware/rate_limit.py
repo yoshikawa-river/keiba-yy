@@ -8,7 +8,6 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Dict, List, Optional, Tuple, Union
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -18,12 +17,11 @@ from src.api.exceptions.custom_exceptions import RateLimitException
 
 logger = logging.getLogger(__name__)
 
-
 class InMemoryRateLimiter:
     """インメモリレート制限実装（開発用）"""
 
     def __init__(self):
-        self.requests: Dict[str, List] = defaultdict(list)
+        self.requests: dict[str, list[float]] = defaultdict(list)
         self.lock = asyncio.Lock()
 
     async def check_rate_limit(
@@ -31,10 +29,10 @@ class InMemoryRateLimiter:
         key: str,
         limit: int,
         window: int
-    ) -> Tuple[bool, int]:
+    ) -> tuple[bool, int]:
         """
         レート制限チェック
-        
+
         Returns:
             (制限内かどうか, 残りリクエスト数)
         """
@@ -69,11 +67,10 @@ class InMemoryRateLimiter:
                 return max(reset_time, 0)
             return 0
 
-
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
 
-    def __init__(self, app, limiter: Optional[InMemoryRateLimiter] = None):
+    def __init__(self, app, limiter: InMemoryRateLimiter | None = None):
         super().__init__(app)
         self.limiter = limiter or InMemoryRateLimiter()
 
@@ -102,10 +99,10 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         return f"ip:{client_ip}"
 
-    def get_rate_limit_config(self, request: Request) -> Tuple[int, int]:
+    def get_rate_limit_config(self, request: Request) -> tuple[int, int]:
         """
         エンドポイントごとのレート制限設定を取得
-        
+
         Returns:
             (リクエスト数制限, 時間窓（秒）)
         """
@@ -173,7 +170,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         return response
 
-
 class APIKeyRateLimiter:
     """APIキー別のレート制限"""
 
@@ -188,10 +184,10 @@ class APIKeyRateLimiter:
     async def check_api_key_limit(
         self,
         api_key: str
-    ) -> Tuple[bool, Optional[int]]:
+    ) -> tuple[bool, int | None]:
         """
         APIキーのレート制限チェック
-        
+
         Returns:
             (許可されるか, リトライまでの秒数)
         """

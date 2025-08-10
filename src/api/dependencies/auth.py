@@ -2,8 +2,6 @@
 認証関連の依存関数
 """
 
-from typing import List, Optional
-
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 
@@ -20,7 +18,6 @@ security = HTTPBearer()
 
 # APIキーヘッダー
 api_key_header = APIKeyHeader(name="X-API-Key", auto_error=False)
-
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Security(security)
@@ -50,7 +47,6 @@ async def get_current_user(
 
     return user
 
-
 async def get_current_active_user(
     current_user: User = Depends(get_current_user)
 ) -> User:
@@ -62,8 +58,7 @@ async def get_current_active_user(
         )
     return current_user
 
-
-def require_scopes(required_scopes: List[str]):
+def require_scopes(required_scopes: list[str]):
     """スコープ要求デコレータ"""
     async def scope_checker(
         credentials: HTTPAuthorizationCredentials = Security(security)
@@ -85,10 +80,9 @@ def require_scopes(required_scopes: List[str]):
 
     return scope_checker
 
-
 async def get_api_key(
-    api_key: Optional[str] = Security(api_key_header)
-) -> Optional[str]:
+    api_key: str | None = Security(api_key_header)
+) -> str | None:
     """APIキーを取得"""
     if api_key is None:
         return None
@@ -99,7 +93,6 @@ async def get_api_key(
         raise AuthenticationException("無効なAPIキー形式です")
 
     return api_key
-
 
 async def require_api_key(
     api_key: str = Depends(get_api_key)
@@ -115,10 +108,9 @@ async def require_api_key(
 
     return api_key
 
-
 async def get_optional_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Security(security)
-) -> Optional[User]:
+    credentials: HTTPAuthorizationCredentials | None = Security(security)
+) -> User | None:
     """オプショナルユーザー取得（認証不要エンドポイント用）"""
     if credentials is None:
         return None
@@ -127,7 +119,6 @@ async def get_optional_user(
         return await get_current_user(credentials)
     except:
         return None
-
 
 class RateLimitChecker:
     """レート制限チェッカー"""
@@ -138,8 +129,8 @@ class RateLimitChecker:
 
     async def __call__(
         self,
-        user: Optional[User] = Depends(get_optional_user),
-        api_key: Optional[str] = Depends(get_api_key)
+        user: User | None = Depends(get_optional_user),
+        api_key: str | None = Depends(get_api_key)
     ) -> bool:
         """レート制限チェック"""
         # TODO: Redisを使用した実際のレート制限実装
@@ -164,10 +155,8 @@ class RateLimitChecker:
 
         return True
 
-
 # 使用例のインスタンス
 rate_limit_100 = RateLimitChecker(requests=100, window=60)
 rate_limit_1000 = RateLimitChecker(requests=1000, window=3600)
-
 
 from datetime import datetime  # インポート追加
