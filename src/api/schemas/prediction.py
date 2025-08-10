@@ -4,10 +4,10 @@
 
 from datetime import date, datetime
 from enum import Enum
-
 from typing import Any
 
 from pydantic import BaseModel, Field, validator
+
 
 class RaceType(str, Enum):
     """レースタイプ"""

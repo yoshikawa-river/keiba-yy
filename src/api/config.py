@@ -7,6 +7,7 @@ from functools import lru_cache
 from pydantic import Field
 from pydantic_settings import BaseSettings
 
+
 class Settings(BaseSettings):
     """アプリケーション設定"""
 

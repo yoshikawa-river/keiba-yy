@@ -6,6 +6,7 @@ from typing import Any
 
 from fastapi import HTTPException, status
 
+
 class KeibaAPIException(HTTPException):
     """基本例外クラス"""
 

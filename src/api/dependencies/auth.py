@@ -142,7 +142,6 @@ class RateLimitChecker:
             return True
 
         # ユーザーまたはAPIキーで識別
-        identifier = None
         if user:
             _ = f"user:{user.id}"  # identifier for future Redis implementation
         elif api_key:

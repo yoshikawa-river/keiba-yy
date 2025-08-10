@@ -7,6 +7,7 @@ from datetime import datetime
 
 from pydantic import BaseModel, EmailStr, Field, validator
 
+
 class UserBase(BaseModel):
     """ユーザー基本情報"""
     username: str = Field(..., min_length=3, max_length=50, description="ユーザー名")

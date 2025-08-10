@@ -5,10 +5,9 @@ WebSocket接続管理
 import asyncio
 import logging
 from datetime import datetime
+from typing import Any
 
 from fastapi import WebSocket, WebSocketDisconnect
-
-from typing import Any
 
 from src.api.config import settings
 from src.api.schemas.common import WebSocketMessage
