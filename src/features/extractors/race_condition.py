@@ -4,7 +4,6 @@
 基本的なレース条件特徴量15個を実装。
 """
 
-import numpy as np
 import pandas as pd
 from loguru import logger
 
@@ -248,3 +247,4 @@ class RaceConditionExtractor:
                 "track": 7,
             },
         }
+

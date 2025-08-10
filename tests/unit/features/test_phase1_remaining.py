@@ -5,7 +5,6 @@
 
 import unittest
 
-import numpy as np
 import pandas as pd
 
 from src.features.extractors.pedigree_basic import PedigreeBasicExtractor
@@ -86,7 +85,7 @@ class TestRaceConditionExtractor(unittest.TestCase):
 
     def test_extract_all_race_condition_features(self):
         """全レース条件特徴量の統合テスト"""
-        result = self.extractor.extract_all_race_condition_features(self.df)
+        self.extractor.extract_all_race_condition_features(self.df)
 
         # 全15個の特徴量が生成されることを確認
         self.assertEqual(self.extractor.feature_count, 15)
@@ -199,7 +198,7 @@ class TestPedigreeBasicExtractor(unittest.TestCase):
 
     def test_extract_all_pedigree_features(self):
         """全血統基本特徴量の統合テスト"""
-        result = self.extractor.extract_all_pedigree_features(
+        self.extractor.extract_all_pedigree_features(
             self.df, self.pedigree_df
         )
 
@@ -279,3 +278,4 @@ class TestFeatureCompleteness(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
