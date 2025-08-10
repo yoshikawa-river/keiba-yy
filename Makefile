@@ -125,3 +125,10 @@ restore: ## データベースをリストア（BACKUP_FILE=backups/xxx.sql）
 	@if [ -z "$(BACKUP_FILE)" ]; then echo "Usage: make restore BACKUP_FILE=backups/xxx.sql"; exit 1; fi
 	docker compose exec -T mysql mysql -u${DATABASE_USER:-keiba_user} -p${DATABASE_PASSWORD:-keiba_password} ${DATABASE_NAME:-keiba_db} < $(BACKUP_FILE)
 	@echo "Restore completed from: $(BACKUP_FILE)"
+
+# EvryDB2 Connection Test
+test-connection: ## EvryDB2接続テストを実行
+	docker compose exec app python scripts/test_evrydb2_connection.py
+
+test-external-connection: ## 外部からの接続テスト（ホストマシンから実行）
+	python scripts/test_evrydb2_connection.py

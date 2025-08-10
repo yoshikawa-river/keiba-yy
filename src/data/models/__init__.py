@@ -1,31 +1,25 @@
 """
-データモデル定義
+mykeibaDBテーブルモデル
 
-全てのSQLAlchemyモデルのエクスポート
+実際のmykeibaDBスキーマに対応したSQLAlchemyモデル
 """
 
-from .base import Base, BaseModel
-from .horse import Horse, Jockey, Trainer
-from .odds import FeatureCache, OddsHistory, Prediction
-from .race import Race, Racecourse
-from .result import RaceEntry, RaceResult
+from .mykeibadb_models import (
+    Base,
+    RaceShosai,
+    KyosobaMaster2,
+    UmagotoRaceJoho,
+    KishuMaster,
+    ChokyoshiMaster,
+    BanushiMaster
+)
 
 __all__ = [
-    # Base
-    "Base",
-    "BaseModel",
-    # Race
-    "Race",
-    "Racecourse",
-    # Horse
-    "Horse",
-    "Jockey",
-    "Trainer",
-    # Result
-    "RaceEntry",
-    "RaceResult",
-    # Odds
-    "OddsHistory",
-    "Prediction",
-    "FeatureCache",
+    'Base',
+    'RaceShosai',
+    'KyosobaMaster2',
+    'UmagotoRaceJoho',
+    'KishuMaster',
+    'ChokyoshiMaster',
+    'BanushiMaster'
 ]
