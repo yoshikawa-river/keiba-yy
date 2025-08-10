@@ -1,0 +1,95 @@
+[mysqld]
+# Row size too large エラー対策設定
+
+# ===== 最重要設定（Row sizeエラー対策） =====
+# 行フォーマットをDYNAMICに設定（TEXT/BLOB型を効率的に格納）
+innodb_default_row_format = DYNAMIC
+# 厳密モードを無効化（警告をエラーにしない）
+innodb_strict_mode = 0
+# テーブルごとに個別ファイル
+innodb_file_per_table = 1
+
+# ===== パケットサイズ設定 =====
+# 最大パケットサイズ（1GB - 大量データ対応）
+max_allowed_packet = 1073741824
+
+# ===== メモリ設定 =====
+# バッファプールサイズ（4GB - メモリに余裕があれば増やす）
+innodb_buffer_pool_size = 4294967296
+# バッファプールインスタンス数
+innodb_buffer_pool_instances = 4
+
+# ===== ログ設定 =====
+# REDOログファイルサイズ（512MB）
+innodb_log_file_size = 536870912
+# REDOログバッファサイズ（64MB）
+innodb_log_buffer_size = 67108864
+
+# ===== 一時テーブル設定 =====
+# 一時テーブルの最大サイズ（512MB）
+tmp_table_size = 536870912
+max_heap_table_size = 536870912
+
+# ===== バッファ設定 =====
+# ソート用バッファ（16MB）
+sort_buffer_size = 16777216
+# 読み込みバッファ（16MB）
+read_buffer_size = 16777216
+# ランダム読み込みバッファ（32MB）
+read_rnd_buffer_size = 33554432
+# JOIN用バッファ（16MB）
+join_buffer_size = 16777216
+# バルクインサート用バッファ（256MB）
+bulk_insert_buffer_size = 268435456
+
+# ===== 接続設定 =====
+# 最大接続数
+max_connections = 500
+# 接続タイムアウト（24時間）
+wait_timeout = 86400
+interactive_timeout = 86400
+# ネットワークタイムアウト
+net_read_timeout = 600
+net_write_timeout = 600
+
+# ===== InnoDB最適化 =====
+# フラッシュ方法
+innodb_flush_method = O_DIRECT
+# トランザクションコミット時のログ書き込み（2=1秒ごと）
+innodb_flush_log_at_trx_commit = 2
+# 自動インクリメントロックモード（2=インターリーブ）
+innodb_autoinc_lock_mode = 2
+# ダーティページの割合
+innodb_max_dirty_pages_pct = 90
+# I/O容量
+innodb_io_capacity = 2000
+innodb_io_capacity_max = 4000
+# 読み込みスレッド数
+innodb_read_io_threads = 8
+# 書き込みスレッド数
+innodb_write_io_threads = 8
+
+# ===== 文字コード設定 =====
+character-set-server = utf8mb4
+collation-server = utf8mb4_unicode_ci
+
+# ===== その他の最適化 =====
+# DNS逆引きを無効化
+skip-name-resolve = 1
+# パフォーマンススキーマを無効化（メモリ節約）
+performance_schema = OFF
+# バイナリログを無効化（レプリケーション不要の場合）
+skip-log-bin = 1
+
+# ===== スレッド設定 =====
+# スレッドキャッシュサイズ
+thread_cache_size = 100
+# スレッドスタックサイズ（256KB）
+thread_stack = 262144
+
+[mysql]
+default-character-set = utf8mb4
+
+[client]
+default-character-set = utf8mb4
+max_allowed_packet = 1073741824

@@ -1,0 +1,79 @@
+# mykeibaDB接続設定
+# タイムアウト対策を含む推奨設定
+
+database:
+  # 基本接続情報
+  host: ${MYKEIBADB_HOST:-localhost}
+  port: ${MYKEIBADB_PORT:-3306}
+  user: ${MYKEIBADB_USER}
+  password: ${MYKEIBADB_PASS}
+  database: ${MYKEIBADB_NAME:-mykeibadb}
+  
+  # タイムアウト設定（秒）
+  connection_timeout: 60      # 接続タイムアウト（デフォルト: 10秒）
+  read_timeout: 300           # 読み込みタイムアウト（5分）
+  write_timeout: 300          # 書き込みタイムアウト（5分）
+  
+  # 接続プール設定
+  pool_size: 5                # 接続プールサイズ
+  pool_name: mykeibadb_pool
+  pool_reset_session: true    # セッションをリセット
+  
+  # 安定性・パフォーマンス設定
+  use_pure: true              # Pure Python実装を使用（C拡張の問題回避）
+  autocommit: false           # 自動コミット（トランザクション制御する場合はfalse）
+  raise_on_warnings: false    # 警告でエラーを発生させない
+  consume_results: true       # 結果を自動的に消費
+  
+  # 文字エンコーディング
+  charset: utf8mb4
+  collation: utf8mb4_unicode_ci
+  use_unicode: true
+  
+  # 認証設定
+  auth_plugin: mysql_native_password
+  
+  # SSL/TLS設定（必要に応じて有効化）
+  use_ssl: false
+  # ssl_ca: /path/to/ca.pem
+  # ssl_cert: /path/to/client-cert.pem
+  # ssl_key: /path/to/client-key.pem
+  # ssl_verify_cert: true
+  # ssl_verify_identity: true
+  
+  # その他のオプション
+  sql_mode: TRADITIONAL
+  time_zone: +09:00          # 日本時間
+  get_warnings: false
+  allow_local_infile: false  # セキュリティのため無効化
+
+# 再試行設定
+retry:
+  max_attempts: 3            # 最大再試行回数
+  initial_delay: 5           # 初回再試行までの待機時間（秒）
+  max_delay: 30              # 最大待機時間（秒）
+  exponential_base: 2        # 指数バックオフの基数
+
+# ロギング設定
+logging:
+  level: INFO
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: logs/mykeibadb_connection.log
+
+# プロキシ設定（必要な場合）
+proxy:
+  enabled: false
+  # host: proxy.example.com
+  # port: 8080
+  # username: proxy_user
+  # password: proxy_pass
+
+# SSHトンネル設定（必要な場合）
+ssh_tunnel:
+  enabled: false
+  # ssh_host: bastion.example.com
+  # ssh_port: 22
+  # ssh_username: ssh_user
+  # ssh_password: ssh_pass  # またはssh_pkey_file
+  # ssh_pkey_file: ~/.ssh/id_rsa
+  # remote_bind_address: (localhost, 3306)
