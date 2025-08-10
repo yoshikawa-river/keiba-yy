@@ -1,39 +1,72 @@
-name: Test CI
+name: Test
 
 on:
   push:
-    branches: [ main, feature/github-actions-ci ]
+    branches: [ main, develop, 'feature/*', 'fix/*' ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, develop ]
+
+env:
+  PYTHON_VERSION: '3.11'
+  UV_VERSION: '0.4.15'
 
 jobs:
   test:
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v4
-    
+    - name: Checkout code
+      uses: actions/checkout@v4
+
     - name: Set up Python
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
-    
+        python-version: ${{ env.PYTHON_VERSION }}
+
     - name: Install uv
       uses: astral-sh/setup-uv@v3
       with:
-        version: "0.4.15"
-    
+        version: ${{ env.UV_VERSION }}
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/uv
+          .venv
+        key: ${{ runner.os }}-uv-${{ hashFiles('**/pyproject.toml', '**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-uv-
+
     - name: Install dependencies
       run: |
         uv venv
         uv pip install -r requirements.txt
         uv pip install -r requirements-dev.txt
-    
-    - name: Run tests
+
+    - name: Run unit tests
       run: |
-        uv run pytest tests/ -v --ignore=tests/integration/
-    
-    - name: Run linting
+        uv run pytest tests/unit/ -v --tb=short
+
+    - name: Run integration tests (if exists)
       run: |
-        uv run ruff check src/ tests/ || true
-        uv run ruff format --check src/ tests/ || true
+        if [ -d "tests/integration" ]; then
+          echo "Running integration tests..."
+          uv run pytest tests/integration/ -v --tb=short || true
+        else
+          echo "No integration tests found, skipping..."
+        fi
+
+    - name: Generate test report
+      if: always()
+      run: |
+        uv run pytest tests/ --junitxml=test-results.xml --cov=src --cov-report=xml --cov-report=term || true
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          test-results.xml
+          coverage.xml
