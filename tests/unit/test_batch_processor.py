@@ -3,14 +3,12 @@
 """
 
 from datetime import datetime
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from src.data.importers import CSVFile, FileType
 from src.data.processors import BatchProcessor, BatchResult
-from src.data.models.race import Race
 
 
 class TestBatchResult:

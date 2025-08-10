@@ -2,8 +2,9 @@
 Celery アプリケーション設定
 """
 
-from celery import Celery
 import os
+
+from celery import Celery
 
 # Redis URL取得
 redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
