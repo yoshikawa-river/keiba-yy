@@ -1,0 +1,13 @@
+{
+  "dashboard": {
+    "enabled": true,
+    "auto_open": false
+  },
+  "browser": {
+    "open_on_start": false
+  },
+  "server": {
+    "no_browser": true
+  }
+}
+EOF < /dev/null
