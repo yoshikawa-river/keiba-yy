@@ -1,16 +1,15 @@
+import builtins
+import contextlib
+from datetime import date, datetime, time
 from typing import Any
+
+from src.data.utils.code_master import CodeMaster
 
 """
 データコンバーター
 
 mykeibaDBデータ形式と内部形式の変換
 """
-
-import builtins
-import contextlib
-from datetime import date, datetime, time
-
-from src.data.utils.code_master import CodeMaster
 
 
 class RaceKey:

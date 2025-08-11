@@ -1,18 +1,17 @@
-from typing import Any, Optional
-
-"""
-データバリデーター
-
-ビジネスロジックを含むデータ検証機能を提供
-"""
-
 from datetime import date, datetime
+from typing import Any
 
 from sqlalchemy.orm import Session
 
 from src.data.models.horse import Horse, Jockey, Trainer
 from src.data.models.race import Race, Racecourse
 from src.data.validators.base_validator import BaseValidator, ValidationResult
+
+"""
+データバリデーター
+
+ビジネスロジックを含むデータ検証機能を提供
+"""
 
 
 class DataValidator(BaseValidator):
@@ -328,7 +327,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def _get_minimum_prize_for_grade(self, grade: str) -> Optional[int]:
+    def _get_minimum_prize_for_grade(self, grade: str) -> int | None:
         """グレードに応じた最低賞金を取得"""
         min_prizes = {
             "G1": 100000000,  # 1億円

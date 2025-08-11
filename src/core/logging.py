@@ -1,20 +1,19 @@
-from typing import Any, Optional, Union
+import logging
+import sys
+from collections.abc import Callable
+from functools import wraps
+from pathlib import Path
+from typing import Any
+
+from loguru import logger
+
+from src.core.config import settings
 
 """
 ロギング設定
 
 loguruを使用した統一的なロギング設定を提供
 """
-
-import logging
-import sys
-from collections.abc import Callable
-from functools import wraps
-from pathlib import Path
-
-from loguru import logger
-
-from src.core.config import settings
 
 
 class LoggerManager:
@@ -26,9 +25,9 @@ class LoggerManager:
 
     def setup_logging(
         self,
-        log_level: Optional[str] = None,
-        log_file: Optional[Union[str, Path]] = None,
-        log_format: Optional[str] = None,
+        log_level: str | None = None,
+        log_file: str | Path | None = None,
+        log_format: str | None = None,
         serialize: bool = False,
         backtrace: bool = True,
         diagnose: bool = True,

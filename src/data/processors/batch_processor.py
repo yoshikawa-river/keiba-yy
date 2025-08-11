@@ -1,15 +1,8 @@
-from typing import Any, ClassVar
-
-"""
-バッチプロセッサー
-
-大量データの効率的な処理を行うバッチ処理機能
-"""
-
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
+from typing import Any, ClassVar
 
 from src.core.database import db_manager
 from src.core.exceptions import DataImportError
@@ -19,6 +12,12 @@ from src.data.importers.horse_parser import HorseCSVParser
 from src.data.importers.odds_parser import OddsCSVParser
 from src.data.importers.race_parser import RaceCSVParser
 from src.data.importers.result_parser import ResultCSVParser
+
+"""
+バッチプロセッサー
+
+大量データの効率的な処理を行うバッチ処理機能
+"""
 
 
 @dataclass

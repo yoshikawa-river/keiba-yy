@@ -1,13 +1,6 @@
-"""
-馬情報CSVパーサー
-
-TARGET frontier JVから出力された馬情報CSVをパースし、
-データベースに保存する機能を提供
-"""
-
 import hashlib
 from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -15,6 +8,13 @@ from sqlalchemy.exc import IntegrityError
 from src.core.exceptions import ValidationError
 from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
+
+"""
+馬情報CSVパーサー
+
+TARGET frontier JVから出力された馬情報CSVをパースし、
+データベースに保存する機能を提供
+"""
 
 # from src.data.models.horse import Horse, Trainer  # TODO: モデルの実装が必要
 
@@ -39,7 +39,7 @@ class Trainer:
 class HorseCSVParser(BaseCSVParser):
     """馬情報CSVパーサー"""
 
-    def _get_column_mappings(self) -> Dict[str, str]:
+    def _get_column_mappings(self) -> dict[str, str]:
         """CSVカラムとDBカラムのマッピング"""
         return {
             "馬ID": "horse_key",
@@ -59,11 +59,11 @@ class HorseCSVParser(BaseCSVParser):
             "通算成績": "career_record",
         }
 
-    def _get_required_columns(self) -> List[str]:
+    def _get_required_columns(self) -> list[str]:
         """必須カラムのリスト"""
         return ["馬ID", "馬名", "性齢"]
 
-    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
         """
         行データを変換
 
@@ -130,7 +130,7 @@ class HorseCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         馬データのバリデーション
 
@@ -162,7 +162,7 @@ class HorseCSVParser(BaseCSVParser):
 
         return True, None
 
-    def _save_row(self, row_data: Dict[str, Any]) -> bool:
+    def _save_row(self, row_data: dict[str, Any]) -> bool:
         """
         馬データを保存
 

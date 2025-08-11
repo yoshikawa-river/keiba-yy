@@ -1,15 +1,14 @@
 from typing import Any
 
+import numpy as np
+import pandas as pd
+from loguru import logger
+
 """血統基本特徴量抽出モジュール
 
 父、母父、系統などの基本的な血統情報から特徴量を生成する。
 Phase1の血統基本特徴量15個を実装。
 """
-
-
-import numpy as np
-import pandas as pd
-from loguru import logger
 
 
 class FeatureExtractionError(Exception):

@@ -1,15 +1,14 @@
-from typing import Any, Dict, List, Union
+from collections.abc import Callable
+from datetime import datetime
+from typing import Any
+
+from src.data.validators.schema_validator import Schema, SchemaField
 
 """
 バリデーションルール定義
 
 各種データタイプ用のバリデーションルールを定義
 """
-
-from collections.abc import Callable
-from datetime import datetime
-
-from src.data.validators.schema_validator import Schema, SchemaField
 
 
 class ValidationRules:
@@ -34,7 +33,7 @@ class ValidationRules:
             return False
 
     @staticmethod
-    def jra_race_key_validator(value: Any) -> Union[str, bool]:
+    def jra_race_key_validator(value: Any) -> str | bool:
         """JRAレースキーをバリデーション"""
         if not value:
             return "レースキーが空です"
@@ -67,7 +66,7 @@ class ValidationRules:
         return True
 
     @staticmethod
-    def horse_weight_validator(value: Any) -> Union[str, bool]:
+    def horse_weight_validator(value: Any) -> str | bool:
         """馬体重をバリデーション"""
         if not value:
             return True
@@ -81,7 +80,7 @@ class ValidationRules:
             return "馬体重は数値である必要があります"
 
     @staticmethod
-    def time_format_validator(value: Any) -> Union[str, bool]:
+    def time_format_validator(value: Any) -> str | bool:
         """タイムフォーマットをバリデーション"""
         if not value:
             return True
@@ -103,7 +102,7 @@ class ValidationRules:
     def odds_combination_validator(odds_type: str) -> Callable:
         """オッズ組み合わせバリデーターを生成"""
 
-        def validator(value: Any) -> Union[str, bool]:
+        def validator(value: Any) -> str | bool:
             if not value:
                 return "組み合わせが空です"
 
@@ -283,8 +282,8 @@ class DataQualityRules:
 
     @staticmethod
     def check_completeness(
-        data: Dict[str, Any], required_fields: List[str]
-    ) -> Dict[str, float]:
+        data: dict[str, Any], required_fields: list[str]
+    ) -> dict[str, float]:
         """
         データの完全性をチェック
 
@@ -313,7 +312,7 @@ class DataQualityRules:
         }
 
     @staticmethod
-    def check_consistency(data_list: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def check_consistency(data_list: list[dict[str, Any]]) -> dict[str, Any]:
         """
         データの一貫性をチェック
 

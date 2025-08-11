@@ -1,4 +1,3 @@
-from typing import Optional
 
 """
 JRA-VANコードマスター
@@ -314,7 +313,7 @@ class CodeMaster:
         return cls.HINSYU_CODES.get(code, "サラブレッド")
 
     @classmethod
-    def convert_time(cls, time_str: str) -> Optional[float]:
+    def convert_time(cls, time_str: str) -> float | None:
         """
         タイム文字列を秒数に変換
         "0593" -> 59.3秒
@@ -332,7 +331,7 @@ class CodeMaster:
             return None
 
     @classmethod
-    def convert_odds(cls, odds_str: str) -> Optional[float]:
+    def convert_odds(cls, odds_str: str) -> float | None:
         """
         オッズ文字列を数値に変換
         "0123" -> 12.3
@@ -347,7 +346,7 @@ class CodeMaster:
             return None
 
     @classmethod
-    def convert_weight(cls, weight_str: str) -> Optional[float]:
+    def convert_weight(cls, weight_str: str) -> float | None:
         """
         斤量文字列を数値に変換
         "560" -> 56.0
@@ -366,7 +365,7 @@ class CodeMaster:
             return None
 
     @classmethod
-    def convert_distance(cls, distance_str: str) -> Optional[int]:
+    def convert_distance(cls, distance_str: str) -> int | None:
         """
         距離文字列を数値に変換
         "1200" -> 1200
@@ -380,7 +379,7 @@ class CodeMaster:
             return None
 
     @classmethod
-    def convert_money(cls, money_str: str) -> Optional[int]:
+    def convert_money(cls, money_str: str) -> int | None:
         """
         賞金文字列を数値に変換（万円単位）
         "12345678" -> 12345678万円

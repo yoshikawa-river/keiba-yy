@@ -1,12 +1,5 @@
 from typing import Any
 
-"""
-バリデーション統合パーサー
-
-バリデーション機能を統合したCSVパーサー
-"""
-
-
 import pandas as pd
 from sqlalchemy.orm import Session
 
@@ -14,6 +7,12 @@ from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
 from src.data.validators import DataValidator, SchemaValidator, ValidationResult
 from src.data.validators.schema_validator import Schema
+
+"""
+バリデーション統合パーサー
+
+バリデーション機能を統合したCSVパーサー
+"""
 
 
 class ValidatedCSVParser(BaseCSVParser):

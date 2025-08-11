@@ -1,18 +1,17 @@
-from typing import Any, Optional
-
-"""
-JWT認証ハンドラー
-"""
-
 import hashlib
 import secrets
 from datetime import datetime, timedelta
+from typing import Any
 
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 
 from src.api.config import settings
 from src.api.schemas.auth import TokenData
+
+"""
+JWT認証ハンドラー
+"""
 
 # パスワードハッシュ化コンテキスト
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -36,7 +35,7 @@ class JWTHandler:
         return pwd_context.hash(password)
 
     def create_access_token(
-        self, data: dict[str, Any], expires_delta: Optional[timedelta] = None
+        self, data: dict[str, Any], expires_delta: timedelta | None = None
     ) -> str:
         """アクセストークン作成"""
         to_encode = data.copy()
@@ -53,7 +52,7 @@ class JWTHandler:
         return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
     def create_refresh_token(
-        self, data: dict[str, Any], expires_delta: Optional[timedelta] = None
+        self, data: dict[str, Any], expires_delta: timedelta | None = None
     ) -> str:
         """リフレッシュトークン作成"""
         to_encode = data.copy()
@@ -74,7 +73,7 @@ class JWTHandler:
 
         return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
-    def decode_token(self, token: str) -> Optional[TokenData]:
+    def decode_token(self, token: str) -> TokenData | None:
         """トークンデコード"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
@@ -91,7 +90,7 @@ class JWTHandler:
 
     def verify_token(
         self, token: str, token_type: str = "access"
-    ) -> Optional[dict[str, Any]]:
+    ) -> dict[str, Any] | None:
         """トークン検証"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])

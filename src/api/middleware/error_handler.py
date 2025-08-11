@@ -1,4 +1,3 @@
-from typing import Union
 
 """
 エラーハンドリングミドルウェア
@@ -20,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 async def http_exception_handler(
-    request: Request, exc: Union[StarletteHTTPException, KeibaAPIException]
+    request: Request, exc: StarletteHTTPException | KeibaAPIException
 ) -> JSONResponse:
     """HTTPException用のエラーハンドラー"""
 

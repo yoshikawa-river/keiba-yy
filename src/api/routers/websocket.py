@@ -1,8 +1,3 @@
-from typing import Optional
-
-"""
-WebSocketエンドポイント
-"""
 
 import json
 import logging
@@ -14,6 +9,10 @@ from src.api.auth.jwt_handler import jwt_handler
 from src.api.schemas.common import WebSocketMessage
 from src.api.websocket.connection_manager import manager
 
+"""
+WebSocketエンドポイント
+"""
+
 logger = logging.getLogger(__name__)
 
 router = APIRouter(tags=["WebSocket"])
@@ -22,8 +21,8 @@ router = APIRouter(tags=["WebSocket"])
 @router.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket,
-    token: Optional[str] = Query(None, description="認証トークン"),
-    client_id: Optional[str] = Query(None, description="クライアントID"),
+    token: str | None = Query(None, description="認証トークン"),
+    client_id: str | None = Query(None, description="クライアントID"),
 ):
     """
     WebSocketエンドポイント
@@ -113,7 +112,7 @@ async def websocket_endpoint(
 
 @router.websocket("/ws/predictions/{race_id}")
 async def prediction_updates(
-    websocket: WebSocket, race_id: str, token: Optional[str] = Query(None)
+    websocket: WebSocket, race_id: str, token: str | None = Query(None)
 ):
     """
     レース予測更新用WebSocket

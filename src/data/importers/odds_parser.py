@@ -1,13 +1,5 @@
-from typing import Any, Optional
-
-"""
-オッズCSVパーサー
-
-TARGET frontier JVから出力されたオッズCSVをパースし、
-データベースに保存する機能を提供
-"""
-
 from datetime import datetime
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -17,6 +9,13 @@ from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
 from src.data.models.odds import OddsHistory
 from src.data.models.race import Race
+
+"""
+オッズCSVパーサー
+
+TARGET frontier JVから出力されたオッズCSVをパースし、
+データベースに保存する機能を提供
+"""
 
 
 class OddsCSVParser(BaseCSVParser):
@@ -77,7 +76,7 @@ class OddsCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         オッズデータのバリデーション
 

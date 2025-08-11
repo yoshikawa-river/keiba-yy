@@ -3,6 +3,7 @@ API設定管理
 """
 
 from functools import lru_cache
+from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -35,7 +36,7 @@ class Settings(BaseSettings):
     )
 
     # データベース設定（将来の接続用）
-    database_url: str | None = Field(default=None, env="DATABASE_URL")
+    database_url: Optional[str] = Field(default=None, env="DATABASE_URL")
 
     # Redis設定（キャッシュ・レート制限用）
     redis_url: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")

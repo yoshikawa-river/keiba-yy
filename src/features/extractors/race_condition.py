@@ -1,14 +1,13 @@
 from typing import Any
 
+import pandas as pd
+from loguru import logger
+
 """レース条件特徴量抽出モジュール
 
 レース条件（距離、クラス、頭数、開催時期など）に関する特徴量を生成する。
 基本的なレース条件特徴量15個を実装。
 """
-
-
-import pandas as pd
-from loguru import logger
 
 
 class FeatureExtractionError(Exception):
