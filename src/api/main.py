@@ -7,19 +7,17 @@ from datetime import datetime
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from src.api.exceptions.custom_exceptions import KeibaAPIException
 from src.api.middleware.error_handler import (
     general_exception_handler,
     http_exception_handler,
-    validation_exception_handler,
 )
 from src.api.middleware.logging_middleware import LoggingMiddleware
 from src.api.middleware.rate_limit import RateLimitMiddleware
-from src.api.exceptions.custom_exceptions import KeibaAPIException
-from src.api.websocket.connection_manager import manager
 from src.api.routers import auth, prediction, websocket
+from src.api.websocket.connection_manager import manager
 
 # 起動時間記録
 start_time = time.time()
@@ -59,7 +57,7 @@ app.include_router(websocket.router, tags=["websocket"])
 async def add_request_id_header(request: Request, call_next):
     """リクエストIDをヘッダーに追加"""
     import uuid
-    
+
     request_id = str(uuid.uuid4())
     response = await call_next(request)
     response.headers["x-request-id"] = request_id

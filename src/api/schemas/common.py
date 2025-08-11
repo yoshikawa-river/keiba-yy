@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from typing import Any, Generic, Optional, TypeVar, Union
+from typing import Any, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
