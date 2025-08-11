@@ -116,7 +116,7 @@ class APIKey(BaseModel):
     name: str = Field(..., max_length=100, description="APIキー名")
     key: str = Field(..., description="APIキー")
     created_at: datetime
-    last_used_at: datetime | None = None
+    last_used_at: Optional[datetime] = None
     is_active: bool = True
 
     class Config:
