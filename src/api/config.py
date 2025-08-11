@@ -3,6 +3,7 @@ API設定管理
 """
 
 from functools import lru_cache
+from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -14,31 +15,26 @@ class Settings(BaseSettings):
     # 基本設定
     app_name: str = "競馬予想AIシステム"
     app_version: str = "0.1.0"
-    debug: bool = Field(default=False, env="DEBUG")
+    debug: bool = False
 
     # API設定
     api_v1_str: str = "/api/v1"
-    api_port: int = Field(default=8000, env="API_PORT")
+    api_port: int = 8000
 
     # セキュリティ設定
-    secret_key: str = Field(
-        default="your-secret-key-here-change-in-production", env="SECRET_KEY"
-    )
+    secret_key: str = "your-secret-key-here-change-in-production"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
 
     # CORS設定
-    backend_cors_origins: list[str] = Field(
-        default=["http://localhost:3000", "http://localhost:8501"],
-        env="BACKEND_CORS_ORIGINS",
-    )
+    backend_cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8501"]
 
     # データベース設定（将来の接続用）
-    database_url: str | None = Field(default=None, env="DATABASE_URL")
+    database_url: Optional[str] = None
 
     # Redis設定（キャッシュ・レート制限用）
-    redis_url: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
+    redis_url: str = "redis://localhost:6379/0"
 
     # レート制限設定
     rate_limit_enabled: bool = True
@@ -50,7 +46,7 @@ class Settings(BaseSettings):
     websocket_max_connections: int = 100
 
     # ログ設定
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
+    log_level: str = "INFO"
     log_format: str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 
     # 予測モデル設定（モック用）

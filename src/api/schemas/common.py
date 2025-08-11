@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from typing import Any, Generic, TypeVar
+from typing import Any, Generic, Optional, TypeVar
 
 from pydantic import BaseModel, Field
 
@@ -14,8 +14,8 @@ class ResponseBase(BaseModel, Generic[T]):
     """基本レスポンス形式"""
 
     success: bool = Field(..., description="処理成功フラグ")
-    data: T | None = Field(None, description="レスポンスデータ")
-    message: str | None = Field(None, description="メッセージ")
+    data: Optional[T] = Field(None, description="レスポンスデータ")
+    message: Optional[str] = Field(None, description="メッセージ")
     timestamp: datetime = Field(
         default_factory=datetime.utcnow, description="レスポンス生成時刻"
     )
@@ -64,9 +64,9 @@ class PaginatedResponse(BaseModel, Generic[T]):
 class ErrorDetail(BaseModel):
     """エラー詳細"""
 
-    field: str | None = Field(None, description="エラーフィールド")
+    field: Optional[str] = Field(None, description="エラーフィールド")
     message: str = Field(..., description="エラーメッセージ")
-    code: str | None = Field(None, description="エラーコード")
+    code: Optional[str] = Field(None, description="エラーコード")
 
 
 class ErrorResponse(BaseModel):
@@ -75,11 +75,11 @@ class ErrorResponse(BaseModel):
     success: bool = Field(default=False, description="処理成功フラグ")
     error: str = Field(..., description="エラー種別")
     message: str = Field(..., description="エラーメッセージ")
-    details: list[ErrorDetail] | None = Field(None, description="エラー詳細")
+    details: Optional[list[ErrorDetail]] = Field(None, description="エラー詳細")
     timestamp: datetime = Field(
         default_factory=datetime.utcnow, description="エラー発生時刻"
     )
-    request_id: str | None = Field(None, description="リクエストID")
+    request_id: Optional[str] = Field(None, description="リクエストID")
 
 
 class HealthCheck(BaseModel):
@@ -118,7 +118,7 @@ class NotificationPreference(BaseModel):
 
     email_enabled: bool = Field(default=True, description="メール通知")
     push_enabled: bool = Field(default=False, description="プッシュ通知")
-    webhook_url: str | None = Field(None, description="Webhook URL")
+    webhook_url: Optional[str] = Field(None, description="Webhook URL")
     notification_types: list[str] = Field(
         default_factory=lambda: ["prediction_complete", "error"],
         description="通知タイプ",
