@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Any, Optional, Union
+from typing import Any, Union
 
 from src.core.logging import logger
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -19,11 +19,11 @@ class SchemaField:
         name: str,
         field_type: type,
         required: bool = False,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
-        pattern: Optional[str] = None,
-        enum_values: Optional[list[Any]] = None,
-        custom_validator: Optional[Callable[[Any], str | bool]] = None,
+        min_value: float | None = None,
+        max_value: float | None = None,
+        pattern: str | None = None,
+        enum_values: list[Any | None] = None,
+        custom_validator: Callable[[Any | None, str | bool]] = None,
     ):
         self.name = name
         self.field_type = field_type
@@ -188,7 +188,7 @@ class SchemaValidator(BaseValidator):
 
     def _check_field_type(
         self, field: str, value: Any, expected_type: type
-    ) -> Optional[Any]:
+    ) -> Any | None:
         """
         フィールドの型をチェック(Union型対応)
 

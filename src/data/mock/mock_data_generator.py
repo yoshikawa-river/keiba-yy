@@ -6,7 +6,6 @@
 
 import random
 from datetime import date, datetime, timedelta
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -40,8 +39,8 @@ class MockDataGenerator:
 
     def __init__(
         self,
-        start_date: Optional[date] = None,
-        end_date: Optional[date] = None,
+        start_date: date | None = None,
+        end_date: date | None = None,
         num_horses: int = 5000,
         num_jockeys: int = 200,
         num_trainers: int = 150,

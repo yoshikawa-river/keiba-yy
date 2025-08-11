@@ -6,7 +6,7 @@ TARGET frontier JVから出力されたレース情報CSVをパースし、
 """
 
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -97,7 +97,7 @@ class RaceCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         レースデータのバリデーション
 

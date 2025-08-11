@@ -3,7 +3,7 @@
 通算成績、直近N走の成績、コース別成績、距離別成績、馬場状態別成績などを抽出する
 """
 
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -121,7 +121,7 @@ class PerformanceFeatureExtractor:
         performance_history: pd.DataFrame,
         entity_column: str = "horse_id",
         date_column: str = "race_date",
-        n_recent: Optional[list[int]] = None,
+        n_recent: list[int | None] = None,
     ) -> pd.DataFrame:
         """直近N走の成績特徴量抽出
 
@@ -318,7 +318,7 @@ class PerformanceFeatureExtractor:
         performance_history: pd.DataFrame,
         entity_column: str = "horse_id",
         date_column: str = "race_date",
-        distance_ranges: Optional[list[tuple[int, int]]] = None,
+        distance_ranges: list[tuple[int, int | None]] = None,
     ) -> pd.DataFrame:
         """距離別成績特徴量の抽出
 

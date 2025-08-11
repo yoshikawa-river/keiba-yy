@@ -3,7 +3,7 @@
 欠損値処理、外れ値検出・処理、データ正規化、カテゴリ変数エンコーディングを行う
 """
 
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -27,8 +27,8 @@ class DataCleaner:
         self,
         df: pd.DataFrame,
         strategy: str = "mean",
-        columns: Optional[list[str]] = None,
-        custom_values: Optional[dict[str, Any]] = None,
+        columns: list[str | None] = None,
+        custom_values: dict[str, Any | None] = None,
     ) -> pd.DataFrame:
         """欠損値処理
 
@@ -110,7 +110,7 @@ class DataCleaner:
     def detect_outliers(
         self,
         df: pd.DataFrame,
-        columns: Optional[list[str]] = None,
+        columns: list[str | None] = None,
         method: str = "iqr",
         threshold: float = 1.5,
     ) -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -252,7 +252,7 @@ class DataCleaner:
     def normalize_data(
         self,
         df: pd.DataFrame,
-        columns: Optional[list[str]] = None,
+        columns: list[str | None] = None,
         method: str = "standard",
         feature_range: tuple[float, float] = (0, 1),
     ) -> pd.DataFrame:
@@ -308,7 +308,7 @@ class DataCleaner:
     def encode_categorical(
         self,
         df: pd.DataFrame,
-        columns: Optional[list[str]] = None,
+        columns: list[str | None] = None,
         method: str = "label",
         handle_unknown: str = "error",
     ) -> pd.DataFrame:

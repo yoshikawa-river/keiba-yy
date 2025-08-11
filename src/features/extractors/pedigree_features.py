@@ -3,7 +3,7 @@
 父馬、母父馬、兄弟馬の成績、血統の距離適性などを抽出する
 """
 
-from typing import Any, Optional
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -25,7 +25,7 @@ class PedigreeFeatureExtractor:
         self,
         df: pd.DataFrame,
         sire_performance: pd.DataFrame,
-        horse_pedigree: Optional[pd.DataFrame] = None,
+        horse_pedigree: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """父馬の成績特徴量抽出
 
@@ -156,7 +156,7 @@ class PedigreeFeatureExtractor:
         self,
         df: pd.DataFrame,
         dam_sire_performance: pd.DataFrame,
-        horse_pedigree: Optional[pd.DataFrame] = None,
+        horse_pedigree: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """母父馬の成績特徴量抽出
 
@@ -535,7 +535,7 @@ class PedigreeFeatureExtractor:
         dam_sire_performance: pd.DataFrame,
         sibling_performance: pd.DataFrame,
         horse_pedigree: pd.DataFrame,
-        bloodline_cross_performance: Optional[pd.DataFrame] = None,
+        bloodline_cross_performance: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """全ての血統特徴量を抽出
 
