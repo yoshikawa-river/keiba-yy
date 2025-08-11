@@ -148,7 +148,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"父馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"父馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_dam_sire_features(
         self,
@@ -244,7 +246,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"母父馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"母父馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_sibling_features(
         self,
@@ -350,7 +354,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"兄弟馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"兄弟馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_bloodline_affinity(
         self, df: pd.DataFrame, bloodline_cross_performance: pd.DataFrame
@@ -434,7 +440,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"血統相性特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"血統相性特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def _get_distance_category(self, distance: float) -> str:
         """距離カテゴリの取得
@@ -566,13 +574,17 @@ class PedigreeFeatureExtractor:
                     df_features, bloodline_cross_performance
                 )
 
-            logger.info(f"✅ 血統特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(
+                f"✅ 血統特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"全血統特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"全血統特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def get_feature_info(self) -> dict[str, Any]:
         """特徴量サマリー情報を取得
