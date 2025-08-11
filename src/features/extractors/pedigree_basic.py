@@ -412,11 +412,7 @@ class PedigreeBasicExtractor:
                 f"血統基本特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-<<<<<<< HEAD
-    def get_feature_info(self) -> dict[str, any]:
-=======
     def get_feature_info(self) -> dict[str, Any]:
->>>>>>> origin/main
         """特徴量情報の取得
 
         Returns:
