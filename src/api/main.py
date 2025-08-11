@@ -6,6 +6,7 @@ import time
 from datetime import datetime
 
 from fastapi import FastAPI, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
@@ -13,6 +14,7 @@ from src.api.exceptions.custom_exceptions import KeibaAPIException
 from src.api.middleware.error_handler import (
     general_exception_handler,
     http_exception_handler,
+    validation_exception_handler,
 )
 from src.api.middleware.logging_middleware import LoggingMiddleware
 from src.api.middleware.rate_limit import RateLimitMiddleware
@@ -34,6 +36,7 @@ app.add_middleware(LoggingMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
 # エラーハンドラー
+app.add_exception_handler(RequestValidationError, validation_exception_handler)
 app.add_exception_handler(StarletteHTTPException, http_exception_handler)
 app.add_exception_handler(KeibaAPIException, http_exception_handler)
 app.add_exception_handler(Exception, general_exception_handler)

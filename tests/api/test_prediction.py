@@ -16,8 +16,8 @@ class TestPredictionAPI:
     @pytest.fixture
     def api_key(self):
         """テスト用APIキー"""
-        # 実際のテストではモックAPIキーを使用
-        return "sk_test_api_key_12345678901234567890"
+        # 実際のテストではモックAPIキーを使用（35文字以上の長さが必要）
+        return "sk_test_api_key_1234567890123456789012345"
 
     @pytest.fixture
     def race_request_data(self):
