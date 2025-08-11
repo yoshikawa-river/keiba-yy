@@ -4,6 +4,8 @@ JRA-VANコードマスター
 JRA-VANの各種コードを意味のある値に変換するユーティリティ
 """
 
+from typing import Optional
+
 
 class CodeMaster:
     """JRA-VANコードマスター"""
