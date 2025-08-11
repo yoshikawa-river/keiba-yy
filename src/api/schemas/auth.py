@@ -4,7 +4,10 @@
 
 import re
 from datetime import datetime
+<<<<<<< HEAD
 from typing import List, Optional
+=======
+>>>>>>> origin/main
 
 from pydantic import BaseModel, EmailStr, Field, validator
 
@@ -14,7 +17,11 @@ class UserBase(BaseModel):
 
     username: str = Field(..., min_length=3, max_length=50, description="ユーザー名")
     email: EmailStr = Field(..., description="メールアドレス")
+<<<<<<< HEAD
     full_name: Optional[str] = Field(None, max_length=100, description="フルネーム")
+=======
+    full_name: str | None = Field(None, max_length=100, description="フルネーム")
+>>>>>>> origin/main
     is_active: bool = Field(default=True, description="アクティブフラグ")
 
 
@@ -60,7 +67,11 @@ class Token(BaseModel):
     """認証トークン"""
 
     access_token: str = Field(..., description="アクセストークン")
+<<<<<<< HEAD
     refresh_token: Optional[str] = Field(None, description="リフレッシュトークン")
+=======
+    refresh_token: str | None = Field(None, description="リフレッシュトークン")
+>>>>>>> origin/main
     token_type: str = Field(default="bearer", description="トークンタイプ")
     expires_in: int = Field(..., description="有効期限（秒）")
 
@@ -68,9 +79,15 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """トークンデータ"""
 
+<<<<<<< HEAD
     username: Optional[str] = None
     user_id: Optional[int] = None
     scopes: List[str] = []
+=======
+    username: str | None = None
+    user_id: int | None = None
+    scopes: list[str] = []
+>>>>>>> origin/main
 
 
 class LoginRequest(BaseModel):
@@ -116,7 +133,11 @@ class APIKey(BaseModel):
     name: str = Field(..., max_length=100, description="APIキー名")
     key: str = Field(..., description="APIキー")
     created_at: datetime
+<<<<<<< HEAD
     last_used_at: Optional[datetime] = None
+=======
+    last_used_at: datetime | None = None
+>>>>>>> origin/main
     is_active: bool = True
 
     class Config:
@@ -127,6 +148,10 @@ class APIKeyCreate(BaseModel):
     """APIキー作成リクエスト"""
 
     name: str = Field(..., max_length=100, description="APIキー名")
+<<<<<<< HEAD
     expires_in_days: Optional[int] = Field(
+=======
+    expires_in_days: int | None = Field(
+>>>>>>> origin/main
         None, ge=1, le=365, description="有効期限（日数）"
     )

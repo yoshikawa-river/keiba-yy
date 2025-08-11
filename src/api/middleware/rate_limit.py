@@ -8,7 +8,10 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
+<<<<<<< HEAD
 from typing import Dict, List, Optional, Tuple
+=======
+>>>>>>> origin/main
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -23,12 +26,20 @@ class InMemoryRateLimiter:
     """インメモリレート制限実装（開発用）"""
 
     def __init__(self):
+<<<<<<< HEAD
         self.requests: Dict[str, List[float]] = defaultdict(list)
+=======
+        self.requests: dict[str, list[float]] = defaultdict(list)
+>>>>>>> origin/main
         self.lock = asyncio.Lock()
 
     async def check_rate_limit(
         self, key: str, limit: int, window: int
+<<<<<<< HEAD
     ) -> Tuple[bool, int]:
+=======
+    ) -> tuple[bool, int]:
+>>>>>>> origin/main
         """
         レート制限チェック
 
@@ -69,7 +80,11 @@ class InMemoryRateLimiter:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
 
+<<<<<<< HEAD
     def __init__(self, app, limiter: Optional[InMemoryRateLimiter] = None):
+=======
+    def __init__(self, app, limiter: InMemoryRateLimiter | None = None):
+>>>>>>> origin/main
         super().__init__(app)
         self.limiter = limiter or InMemoryRateLimiter()
 
@@ -98,7 +113,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
         return f"ip:{client_ip}"
 
+<<<<<<< HEAD
     def get_rate_limit_config(self, request: Request) -> Tuple[int, int]:
+=======
+    def get_rate_limit_config(self, request: Request) -> tuple[int, int]:
+>>>>>>> origin/main
         """
         エンドポイントごとのレート制限設定を取得
 
@@ -179,7 +198,11 @@ class APIKeyRateLimiter:
         }
         self.limiter = InMemoryRateLimiter()
 
+<<<<<<< HEAD
     async def check_api_key_limit(self, api_key: str) -> Tuple[bool, Optional[int]]:
+=======
+    async def check_api_key_limit(self, api_key: str) -> tuple[bool, int | None]:
+>>>>>>> origin/main
         """
         APIキーのレート制限チェック
 

@@ -3,7 +3,10 @@
 """
 
 from datetime import datetime
+<<<<<<< HEAD
 from typing import List, Optional
+=======
+>>>>>>> origin/main
 
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
@@ -63,7 +66,11 @@ async def get_current_active_user(
     return current_user
 
 
+<<<<<<< HEAD
 def require_scopes(required_scopes: List[str]):
+=======
+def require_scopes(required_scopes: list[str]):
+>>>>>>> origin/main
     """スコープ要求デコレータ"""
 
     async def scope_checker(
@@ -85,7 +92,11 @@ def require_scopes(required_scopes: List[str]):
     return scope_checker
 
 
+<<<<<<< HEAD
 async def get_api_key(api_key: Optional[str] = Security(api_key_header)) -> Optional[str]:
+=======
+async def get_api_key(api_key: str | None = Security(api_key_header)) -> str | None:
+>>>>>>> origin/main
     """APIキーを取得"""
     if api_key is None:
         return None
@@ -112,8 +123,13 @@ async def require_api_key(api_key: str = Depends(get_api_key)) -> str:
 
 
 async def get_optional_user(
+<<<<<<< HEAD
     credentials: Optional[HTTPAuthorizationCredentials] = Security(security),
 ) -> Optional[User]:
+=======
+    credentials: HTTPAuthorizationCredentials | None = Security(security),
+) -> User | None:
+>>>>>>> origin/main
     """オプショナルユーザー取得（認証不要エンドポイント用）"""
     if credentials is None:
         return None
@@ -133,8 +149,13 @@ class RateLimitChecker:
 
     async def __call__(
         self,
+<<<<<<< HEAD
         user: Optional[User] = Depends(get_optional_user),
         api_key: Optional[str] = Depends(get_api_key),
+=======
+        user: User | None = Depends(get_optional_user),
+        api_key: str | None = Depends(get_api_key),
+>>>>>>> origin/main
     ) -> bool:
         """レート制限チェック"""
         # TODO: Redisを使用した実際のレート制限実装

@@ -5,7 +5,10 @@ WebSocketエンドポイント
 import json
 import logging
 import uuid
+<<<<<<< HEAD
 from typing import Optional
+=======
+>>>>>>> origin/main
 
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
 
@@ -21,8 +24,13 @@ router = APIRouter(tags=["WebSocket"])
 @router.websocket("/ws")
 async def websocket_endpoint(
     websocket: WebSocket,
+<<<<<<< HEAD
     token: Optional[str] = Query(None, description="認証トークン"),
     client_id: Optional[str] = Query(None, description="クライアントID"),
+=======
+    token: str | None = Query(None, description="認証トークン"),
+    client_id: str | None = Query(None, description="クライアントID"),
+>>>>>>> origin/main
 ):
     """
     WebSocketエンドポイント
@@ -112,7 +120,11 @@ async def websocket_endpoint(
 
 @router.websocket("/ws/predictions/{race_id}")
 async def prediction_updates(
+<<<<<<< HEAD
     websocket: WebSocket, race_id: str, token: Optional[str] = Query(None)
+=======
+    websocket: WebSocket, race_id: str, token: str | None = Query(None)
+>>>>>>> origin/main
 ):
     """
     レース予測更新用WebSocket

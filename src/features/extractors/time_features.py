@@ -4,7 +4,7 @@
 基本タイム特徴量20個を実装。
 """
 
-from typing import Any, Dict
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -512,7 +512,7 @@ class TimeFeatureExtractor:
         }
         return corrections.get(condition, 1.0)
 
-    def get_feature_info(self) -> Dict[str, Any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:

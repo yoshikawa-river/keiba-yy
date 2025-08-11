@@ -4,7 +4,7 @@
 基本的な騎手・調教師特徴量20個を実装。
 """
 
-from typing import Any, Dict
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -506,7 +506,7 @@ class JockeyTrainerFeatureExtractor:
             return 9
         return 10
 
-    def get_feature_info(self) -> Dict[str, Any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:

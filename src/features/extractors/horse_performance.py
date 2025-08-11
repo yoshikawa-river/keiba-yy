@@ -4,7 +4,7 @@
 過去N走の着順、勝率、連対率、複勝率、成績トレンドなど30個の特徴量を抽出。
 """
 
-from typing import Any, Dict
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -497,7 +497,7 @@ class HorsePerformanceExtractor:
                 f"馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> Dict[str, Any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:

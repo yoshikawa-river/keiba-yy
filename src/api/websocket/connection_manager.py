@@ -5,7 +5,11 @@ WebSocket接続管理
 import asyncio
 import logging
 from datetime import datetime
+<<<<<<< HEAD
 from typing import Any, Dict, Optional, Set
+=======
+from typing import Any
+>>>>>>> origin/main
 
 from fastapi import WebSocket, WebSocketDisconnect
 
@@ -20,6 +24,7 @@ class ConnectionManager:
 
     def __init__(self):
         # 接続中のWebSocketを管理
+<<<<<<< HEAD
         self.active_connections: Dict[str, WebSocket] = {}
         # ユーザーごとの接続を管理
         self.user_connections: Dict[str, Set[str]] = {}
@@ -32,6 +37,20 @@ class ConnectionManager:
 
     async def connect(
         self, websocket: WebSocket, client_id: str, user_id: Optional[str] = None
+=======
+        self.active_connections: dict[str, WebSocket] = {}
+        # ユーザーごとの接続を管理
+        self.user_connections: dict[str, set[str]] = {}
+        # チャンネル（トピック）ごとの購読者を管理
+        self.channel_subscribers: dict[str, set[str]] = {}
+        # 接続情報
+        self.connection_info: dict[str, dict[str, Any]] = {}
+        # ハートビートタスク
+        self.heartbeat_tasks: dict[str, asyncio.Task] = {}
+
+    async def connect(
+        self, websocket: WebSocket, client_id: str, user_id: str | None = None
+>>>>>>> origin/main
     ) -> bool:
         """WebSocket接続を確立"""
         try:
@@ -139,7 +158,11 @@ class ConnectionManager:
                 await self.disconnect(client_id)
 
     async def broadcast(
+<<<<<<< HEAD
         self, message: WebSocketMessage, exclude_client: Optional[str] = None
+=======
+        self, message: WebSocketMessage, exclude_client: str | None = None
+>>>>>>> origin/main
     ):
         """全クライアントにブロードキャスト"""
         disconnected_clients = []
@@ -212,7 +235,11 @@ class ConnectionManager:
         )
 
     async def publish_to_channel(
+<<<<<<< HEAD
         self, channel: str, message: WebSocketMessage, exclude_client: Optional[str] = None
+=======
+        self, channel: str, message: WebSocketMessage, exclude_client: str | None = None
+>>>>>>> origin/main
     ):
         """チャンネルにメッセージを配信"""
         if channel in self.channel_subscribers:
@@ -261,7 +288,11 @@ class ConnectionManager:
         except Exception as e:
             logger.exception(f"Heartbeat error for {client_id}: {e}")
 
+<<<<<<< HEAD
     async def handle_message(self, client_id: str, message: Dict[str, Any]):
+=======
+    async def handle_message(self, client_id: str, message: dict[str, Any]):
+>>>>>>> origin/main
         """クライアントからのメッセージを処理"""
         try:
             msg_type = message.get("type")
@@ -333,7 +364,11 @@ class ConnectionManager:
                 client_id,
             )
 
+<<<<<<< HEAD
     def get_stats(self) -> Dict[str, Any]:
+=======
+    def get_stats(self) -> dict[str, Any]:
+>>>>>>> origin/main
         """接続統計を取得"""
         return {
             "total_connections": len(self.active_connections),

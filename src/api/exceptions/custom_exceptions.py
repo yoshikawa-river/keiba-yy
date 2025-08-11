@@ -2,7 +2,11 @@
 カスタム例外クラス定義
 """
 
+<<<<<<< HEAD
 from typing import Any, Dict, Optional
+=======
+from typing import Any
+>>>>>>> origin/main
 
 from fastapi import HTTPException, status
 
@@ -11,7 +15,11 @@ class KeibaAPIException(HTTPException):
     """基本例外クラス"""
 
     def __init__(
+<<<<<<< HEAD
         self, status_code: int, detail: str, headers: Optional[Dict[str, Any]] = None
+=======
+        self, status_code: int, detail: str, headers: dict[str, Any] | None = None
+>>>>>>> origin/main
     ):
         super().__init__(status_code=status_code, detail=detail, headers=headers)
 
