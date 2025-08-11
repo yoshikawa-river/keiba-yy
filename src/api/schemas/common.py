@@ -75,7 +75,7 @@ class ErrorResponse(BaseModel):
     success: bool = Field(default=False, description="処理成功フラグ")
     error: str = Field(..., description="エラー種別")
     message: str = Field(..., description="エラーメッセージ")
-    details: list[ErrorDetail | None] = Field(None, description="エラー詳細")
+    details: list[ErrorDetail | None] | None = Field(None, description="エラー詳細")
     timestamp: datetime = Field(
         default_factory=datetime.utcnow, description="エラー発生時刻"
     )
