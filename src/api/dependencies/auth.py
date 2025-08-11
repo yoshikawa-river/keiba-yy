@@ -3,7 +3,6 @@
 """
 
 from datetime import datetime
-from typing import Optional
 
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
@@ -86,8 +85,8 @@ def require_scopes(required_scopes: list[str]):
 
 
 async def get_api_key(
-    api_key: Optional[str] = Security(api_key_header),
-) -> Optional[str]:
+    api_key: str | None = Security(api_key_header),
+) -> str | None:
     """APIキーを取得"""
     if api_key is None:
         return None
@@ -114,8 +113,8 @@ async def require_api_key(api_key: str = Depends(get_api_key)) -> str:
 
 
 async def get_optional_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Security(security),
-) -> Optional[User]:
+    credentials: HTTPAuthorizationCredentials | None = Security(security),
+) -> User | None:
     """オプショナルユーザー取得（認証不要エンドポイント用）"""
     if credentials is None:
         return None
@@ -135,8 +134,8 @@ class RateLimitChecker:
 
     async def __call__(
         self,
-        user: Optional[User] = Depends(get_optional_user),
-        api_key: Optional[str] = Depends(get_api_key),
+        user: User | None = Depends(get_optional_user),
+        api_key: str | None = Depends(get_api_key),
     ) -> bool:
         """レート制限チェック"""
         # TODO: Redisを使用した実際のレート制限実装
