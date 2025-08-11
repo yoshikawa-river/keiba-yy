@@ -4,6 +4,8 @@
 基本タイム特徴量20個を実装。
 """
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -510,7 +512,7 @@ class TimeFeatureExtractor:
         }
         return corrections.get(condition, 1.0)
 
-    def get_feature_info(self) -> dict[str, any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:
