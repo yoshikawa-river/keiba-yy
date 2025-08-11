@@ -8,7 +8,7 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Optional
+from typing import Optional, cast
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -127,8 +127,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # レート制限が無効な場合はスキップ
         if not settings.rate_limit_enabled:
-            from typing import cast
-
             return cast(Response, await call_next(request))
 
         # 静的ファイルやヘルスチェックは除外
