@@ -76,9 +76,7 @@ class ErrorResponse(BaseModel):
     error: str = Field(..., description="エラー種別")
     message: str = Field(..., description="エラーメッセージ")
     details: list[ErrorDetail] | None = Field(None, description="エラー詳細")
-    timestamp: datetime = Field(
-        default_factory=datetime.utcnow, description="エラー発生時刻"
-    )
+    timestamp: datetime = Field(default_factory=datetime.utcnow, description="エラー発生時刻")
     request_id: str | None = Field(None, description="リクエストID")
 
 

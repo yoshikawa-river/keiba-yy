@@ -160,9 +160,7 @@ class BaseFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"馬の基本特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"馬の基本特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def extract_jockey_trainer_features(
         self,
@@ -272,9 +270,7 @@ class BaseFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"騎手・調教師の特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"騎手・調教師の特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def extract_race_condition_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """レース条件の特徴量抽出
@@ -408,9 +404,7 @@ class BaseFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"レース条件の特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"レース条件の特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def _encode_sex(self, sex_series: pd.Series) -> pd.Series:
         """性別のエンコーディング
@@ -476,9 +470,7 @@ class BaseFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"全基本特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"全基本特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def get_feature_info(self) -> dict[str, list[str]]:
         """特徴量情報の取得

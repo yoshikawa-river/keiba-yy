@@ -107,9 +107,7 @@ class PerformanceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"通算成績特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"通算成績特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def extract_recent_performance(
         self,
@@ -211,9 +209,7 @@ class PerformanceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"直近成績特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"直近成績特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def extract_course_performance(
         self,
@@ -302,9 +298,7 @@ class PerformanceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"コース別成績特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"コース別成績特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def extract_distance_performance(
         self,
@@ -406,9 +400,7 @@ class PerformanceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"距離別成績特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"距離別成績特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def extract_track_condition_performance(
         self,
@@ -508,9 +500,7 @@ class PerformanceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"馬場状態別成績特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"馬場状態別成績特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def _calculate_streak(self, positions: np.ndarray) -> int:
         """連勝・連敗の計算
@@ -606,6 +596,4 @@ class PerformanceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"全過去成績特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"全過去成績特徴量抽出中にエラーが発生しました: {e!s}") from e

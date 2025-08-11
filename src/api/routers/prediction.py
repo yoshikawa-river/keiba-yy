@@ -206,9 +206,7 @@ async def predict_batch(
         results_url=f"/predictions/batch/{batch_id}/results",
     )
 
-    return ResponseBase(
-        success=True, data=response, message="バッチ予測処理を開始しました"
-    )
+    return ResponseBase(success=True, data=response, message="バッチ予測処理を開始しました")
 
 
 @router.get(
@@ -248,9 +246,7 @@ async def get_batch_results(
     # ここでは空のリストを返す
     results = []
 
-    return ResponseBase(
-        success=True, data=results, message="バッチ処理結果を取得しました"
-    )
+    return ResponseBase(success=True, data=results, message="バッチ処理結果を取得しました")
 
 
 @router.get("/history", response_model=PaginatedResponse[PredictionHistory])

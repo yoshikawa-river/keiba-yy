@@ -103,7 +103,8 @@ async def register(
 
 @router.post("/login", response_model=Token)
 async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(), _: bool = Depends(simple_rate_limit_100)
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    _: bool = Depends(simple_rate_limit_100),
 ) -> Token:
     """
     ユーザーログイン（OAuth2互換）

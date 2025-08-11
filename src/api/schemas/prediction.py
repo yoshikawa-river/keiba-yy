@@ -91,9 +91,7 @@ class PredictionRequest(BaseModel):
     """予測リクエスト"""
 
     race_info: RaceInfo = Field(..., description="レース情報")
-    horses: list[HorseInfo] = Field(
-        ..., min_items=2, max_items=18, description="出走馬情報"
-    )
+    horses: list[HorseInfo] = Field(..., min_items=2, max_items=18, description="出走馬情報")
     include_confidence: bool = Field(default=True, description="信頼度を含める")
     include_features: bool = Field(default=False, description="特徴量を含める")
 

@@ -86,7 +86,7 @@ class PedigreeBasicExtractor:
                         # 簡易的なハッシュ値でエンコーディング
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "sire_encoded"
-                        ] = hash(str(sire_id)) % 10000
+                        ] = (hash(str(sire_id)) % 10000)
 
                     # 2. 父の系統
                     if "sire_name" in horse_pedigree.columns:
@@ -171,7 +171,7 @@ class PedigreeBasicExtractor:
                         dam_sire_id = horse_pedigree.iloc[0]["dam_sire_id"]
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "dam_sire_encoded"
-                        ] = hash(str(dam_sire_id)) % 10000
+                        ] = (hash(str(dam_sire_id)) % 10000)
 
                     # 2. 母父の系統
                     if "dam_sire_name" in horse_pedigree.columns:
@@ -398,17 +398,13 @@ class PedigreeBasicExtractor:
                 df_features, pedigree_df
             )
 
-            logger.info(
-                f"✅ 血統基本特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
-            )
+            logger.info(f"✅ 血統基本特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"血統基本特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"血統基本特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def get_feature_info(self) -> dict[str, any]:
         """特徴量情報の取得
