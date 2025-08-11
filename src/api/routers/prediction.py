@@ -6,7 +6,7 @@ import asyncio
 import random
 import uuid
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from loguru import logger
@@ -215,7 +215,8 @@ async def predict_batch(
     "/batch/{batch_id}/status", response_model=ResponseBase[BatchPredictionResponse]
 )
 async def get_batch_status(
-    batch_id: Optional[str, api_key: str] = Depends(require_api_key)
+    batch_id: str,
+    api_key: Optional[str] = Depends(require_api_key)
 ) -> ResponseBase[BatchPredictionResponse]:
     """
     バッチ予測ステータス取得
@@ -239,7 +240,8 @@ async def get_batch_status(
     response_model=ResponseBase[list[RacePredictionResponse]],
 )
 async def get_batch_results(
-    batch_id: Optional[str, api_key: str] = Depends(require_api_key)
+    batch_id: str,
+    api_key: Optional[str] = Depends(require_api_key)
 ) -> ResponseBase[list[RacePredictionResponse]]:
     """
     バッチ予測結果取得
@@ -337,7 +339,7 @@ async def save_prediction_history(prediction: RacePredictionResponse):
 
 
 async def process_batch_predictions(
-    batch_id: Optional[str, races: list[PredictionRequest], callback_url: str]
+    batch_id: str, races: list[PredictionRequest], callback_url: Optional[str]
 ):
     """バッチ予測処理（モック）"""
     # 実際は各レースを処理してデータベースに保存
