@@ -1,8 +1,8 @@
-
 """
 レート制限ミドルウェア
 """
 
+from typing import Any, Optional, Union
 import asyncio
 import hashlib
 import logging
@@ -69,7 +69,7 @@ class InMemoryRateLimiter:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
 
-    def __init__(self, app, limiter: InMemoryRateLimiter | None = None):
+    def __init__(self, app, limiter: Optional[InMemoryRateLimiter] = None):
         super().__init__(app)
         self.limiter = limiter or InMemoryRateLimiter()
 
@@ -179,7 +179,7 @@ class APIKeyRateLimiter:
         }
         self.limiter = InMemoryRateLimiter()
 
-    async def check_api_key_limit(self, api_key: str) -> tuple[bool, int | None]:
+    async def check_api_key_limit(self, api_key: str) -> tuple[bool, Optional[int]]:
         """
         APIキーのレート制限チェック
 

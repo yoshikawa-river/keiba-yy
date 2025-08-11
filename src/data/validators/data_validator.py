@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Optional, Union
 
 from sqlalchemy.orm import Session
 
@@ -327,7 +327,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def _get_minimum_prize_for_grade(self, grade: str) -> int | None:
+    def _get_minimum_prize_for_grade(self, grade: str) -> Optional[int]:
         """グレードに応じた最低賞金を取得"""
         min_prizes = {
             "G1": 100000000,  # 1億円

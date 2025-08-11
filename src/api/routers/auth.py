@@ -2,6 +2,7 @@
 認証関連のAPIエンドポイント
 """
 
+from typing import Any, Optional, Union
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status

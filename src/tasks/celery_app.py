@@ -2,6 +2,7 @@
 Celery アプリケーション設定
 """
 
+from typing import Any, Optional, Union
 import os
 
 from celery import Celery

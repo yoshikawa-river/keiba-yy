@@ -5,7 +5,7 @@ CSVパーサーの基底クラス
 """
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Optional, Union
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -81,7 +81,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
         """
         行データをバリデーション
 

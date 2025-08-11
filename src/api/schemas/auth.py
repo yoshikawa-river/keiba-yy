@@ -1,4 +1,4 @@
-
+from typing import Any, Optional, Union
 import re
 from datetime import datetime
 
@@ -14,7 +14,7 @@ class UserBase(BaseModel):
 
     username: str = Field(..., min_length=3, max_length=50, description="ユーザー名")
     email: EmailStr = Field(..., description="メールアドレス")
-    full_name: str | None = Field(None, max_length=100, description="フルネーム")
+    full_name: Optional[str] = Field(None, max_length=100, description="フルネーム")
     is_active: bool = Field(default=True, description="アクティブフラグ")
 
 
@@ -60,7 +60,7 @@ class Token(BaseModel):
     """認証トークン"""
 
     access_token: str = Field(..., description="アクセストークン")
-    refresh_token: str | None = Field(None, description="リフレッシュトークン")
+    refresh_token: Optional[str] = Field(None, description="リフレッシュトークン")
     token_type: str = Field(default="bearer", description="トークンタイプ")
     expires_in: int = Field(..., description="有効期限（秒）")
 
@@ -68,8 +68,8 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     """トークンデータ"""
 
-    username: str | None = None
-    user_id: int | None = None
+    username: Optional[str] = None
+    user_id: Optional[int] = None
     scopes: list[str] = []
 
 
@@ -116,7 +116,7 @@ class APIKey(BaseModel):
     name: str = Field(..., max_length=100, description="APIキー名")
     key: str = Field(..., description="APIキー")
     created_at: datetime
-    last_used_at: datetime | None = None
+    last_used_at: Optional[datetime] = None
     is_active: bool = True
 
     class Config:
@@ -127,6 +127,6 @@ class APIKeyCreate(BaseModel):
     """APIキー作成リクエスト"""
 
     name: str = Field(..., max_length=100, description="APIキー名")
-    expires_in_days: int | None = Field(
+    expires_in_days: Optional[int] = Field(
         None, ge=1, le=365, description="有効期限（日数）"
     )

@@ -8,6 +8,7 @@
 import os
 from functools import lru_cache
 from pathlib import Path
+from typing import Optional, Union
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
@@ -45,7 +46,7 @@ class Settings(BaseSettings):
     REDIS_HOST: str = Field(default="redis", description="Redisホスト")
     REDIS_PORT: int = Field(default=6379, description="Redisポート")
     REDIS_DB: int = Field(default=0, description="Redis DB番号")
-    REDIS_PASSWORD: str | None = Field(default=None, description="Redisパスワード")
+    REDIS_PASSWORD: Optional[str] = Field(default=None, description="Redisパスワード")
 
     # === Celery設定 ===
     CELERY_BROKER_URL: str = Field(
@@ -76,7 +77,7 @@ class Settings(BaseSettings):
         default="[%(asctime)s] [%(name)s] [%(levelname)s] %(message)s",
         description="ログフォーマット",
     )
-    LOG_FILE: str | None = Field(default=None, description="ログファイルパス")
+    LOG_FILE: Optional[str] = Field(default=None, description="ログファイルパス")
 
     # === MLflow設定 ===
     MLFLOW_TRACKING_URI: str = Field(
@@ -87,15 +88,17 @@ class Settings(BaseSettings):
     )
 
     # === JRA-VAN設定 ===
-    JRAVAN_USER_ID: str | None = Field(default=None, description="JRA-VANユーザーID")
-    JRAVAN_PASSWORD: str | None = Field(default=None, description="JRA-VANパスワード")
+    JRAVAN_USER_ID: Optional[str] = Field(default=None, description="JRA-VANユーザーID")
+    JRAVAN_PASSWORD: Optional[str] = Field(
+        default=None, description="JRA-VANパスワード"
+    )
 
     # === パス設定 ===
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent
-    DATA_DIR: Path | None = Field(default=None, description="データディレクトリ")
-    MODEL_DIR: Path | None = Field(default=None, description="モデルディレクトリ")
-    LOG_DIR: Path | None = Field(default=None, description="ログディレクトリ")
-    PREDICTION_DIR: Path | None = Field(
+    DATA_DIR: Optional[Path] = Field(default=None, description="データディレクトリ")
+    MODEL_DIR: Optional[Path] = Field(default=None, description="モデルディレクトリ")
+    LOG_DIR: Optional[Path] = Field(default=None, description="ログディレクトリ")
+    PREDICTION_DIR: Optional[Path] = Field(
         default=None, description="予測結果ディレクトリ"
     )
 

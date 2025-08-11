@@ -1,6 +1,6 @@
 import hashlib
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Optional, Union
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -130,7 +130,7 @@ class HorseCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
         """
         馬データのバリデーション
 

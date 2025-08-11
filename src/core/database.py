@@ -7,6 +7,7 @@ SQLAlchemyを使用したデータベース接続の管理と
 
 from collections.abc import Generator
 from contextlib import contextmanager
+from typing import Optional, Union
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
@@ -21,11 +22,11 @@ class DatabaseManager:
 
     def __init__(
         self,
-        database_url: str | None = None,
-        pool_size: int | None = None,
-        max_overflow: int | None = None,
-        pool_pre_ping: bool | None = None,
-        echo: bool | None = None,
+        database_url: Optional[str] = None,
+        pool_size: Optional[int] = None,
+        max_overflow: Optional[int] = None,
+        pool_pre_ping: Optional[bool] = None,
+        echo: Optional[bool] = None,
     ):
         """
         データベース接続マネージャーの初期化
@@ -43,8 +44,8 @@ class DatabaseManager:
         self.pool_pre_ping = pool_pre_ping or settings.DATABASE_POOL_PRE_PING
         self.echo = echo if echo is not None else settings.DEBUG
 
-        self._engine: Engine | None = None
-        self._session_factory: sessionmaker | None = None
+        self._engine: Optional[Engine] = None
+        self._session_factory: Optional[sessionmaker] = None
 
     @property
     def engine(self) -> Engine:

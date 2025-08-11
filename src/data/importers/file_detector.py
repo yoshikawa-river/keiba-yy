@@ -5,6 +5,7 @@ TARGET frontier JVから出力されたCSVファイルを検出し、
 ファイルタイプを自動判定する機能を提供
 """
 
+from typing import Any, Optional, Union
 import csv
 from dataclasses import dataclass
 from enum import Enum
@@ -265,7 +266,7 @@ class CSVFileDetector:
         return max(0, row_count)  # 負の値を防ぐ
 
     def get_files_by_type(
-        self, file_type: FileType, csv_files: list[CSVFile] | None = None
+        self, file_type: FileType, csv_files: Optional[list[CSVFile]] = None
     ) -> list[CSVFile]:
         """
         特定タイプのファイルのみを取得

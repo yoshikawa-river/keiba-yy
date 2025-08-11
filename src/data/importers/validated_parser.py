@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional, Union
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -38,7 +38,9 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(self.schema)
+            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(
+                self.schema
+            )
         else:
             self.schema_validator: Optional[SchemaValidator] = None
 
