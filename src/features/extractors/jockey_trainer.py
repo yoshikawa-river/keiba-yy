@@ -63,15 +63,15 @@ class JockeyTrainerFeatureExtractor:
                     # 騎手勝率・連対率・複勝率
                     df_features.loc[
                         df_features["jockey_id"] == jockey_id, "jockey_win_rate"
-                    ] = wins / total_rides if total_rides > 0 else 0
+                    ] = (wins / total_rides if total_rides > 0 else 0)
 
                     df_features.loc[
                         df_features["jockey_id"] == jockey_id, "jockey_place_rate"
-                    ] = places / total_rides if total_rides > 0 else 0
+                    ] = (places / total_rides if total_rides > 0 else 0)
 
                     df_features.loc[
                         df_features["jockey_id"] == jockey_id, "jockey_show_rate"
-                    ] = shows / total_rides if total_rides > 0 else 0
+                    ] = (shows / total_rides if total_rides > 0 else 0)
 
                     # 騎手競馬場別勝率
                     if "venue" in df.columns and "venue" in jockey_data.columns:
@@ -233,15 +233,15 @@ class JockeyTrainerFeatureExtractor:
                     # 調教師勝率・連対率・複勝率
                     df_features.loc[
                         df_features["trainer_id"] == trainer_id, "trainer_win_rate"
-                    ] = wins / total_horses if total_horses > 0 else 0
+                    ] = (wins / total_horses if total_horses > 0 else 0)
 
                     df_features.loc[
                         df_features["trainer_id"] == trainer_id, "trainer_place_rate"
-                    ] = places / total_horses if total_horses > 0 else 0
+                    ] = (places / total_horses if total_horses > 0 else 0)
 
                     df_features.loc[
                         df_features["trainer_id"] == trainer_id, "trainer_show_rate"
-                    ] = shows / total_horses if total_horses > 0 else 0
+                    ] = (shows / total_horses if total_horses > 0 else 0)
 
                     # 調教師競馬場別勝率
                     if "venue" in df.columns and "venue" in trainer_data.columns:
@@ -398,17 +398,13 @@ class JockeyTrainerFeatureExtractor:
             # 調教師特徴量（10個）
             df_features = self.extract_trainer_features(df_features, trainer_stats)
 
-            logger.info(
-                f"✅ 騎手・調教師特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
-            )
+            logger.info(f"✅ 騎手・調教師特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"騎手・調教師特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"騎手・調教師特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def _get_distance_category(self, distance: int) -> str:
         """距離をカテゴリに分類
