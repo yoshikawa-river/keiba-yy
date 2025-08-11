@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from src.api.auth.jwt_handler import jwt_handler
 from src.api.config import settings
-from src.api.dependencies.auth import get_current_user, rate_limit_100
+from src.api.dependencies.auth import get_current_user, rate_limit_100, simple_rate_limit_100
 from src.api.exceptions.custom_exceptions import AuthenticationException
 from src.api.schemas.auth import (
     APIKey,
@@ -56,7 +56,7 @@ mock_users = {
     "/register", response_model=ResponseBase[User], status_code=status.HTTP_201_CREATED
 )
 async def register(
-    user_create: UserCreate, _: bool = Depends(rate_limit_100)
+    user_create: UserCreate, _: bool = Depends(simple_rate_limit_100)
 ) -> ResponseBase[User]:
     """
     新規ユーザー登録
@@ -103,7 +103,7 @@ async def register(
 
 @router.post("/login", response_model=Token)
 async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(), _: bool = Depends(rate_limit_100)
+    form_data: OAuth2PasswordRequestForm = Depends(), _: bool = Depends(simple_rate_limit_100)
 ) -> Token:
     """
     ユーザーログイン（OAuth2互換）
@@ -142,7 +142,7 @@ async def login(
 
 @router.post("/login/custom", response_model=Token)
 async def login_custom(
-    login_request: LoginRequest, _: bool = Depends(rate_limit_100)
+    login_request: LoginRequest, _: bool = Depends(simple_rate_limit_100)
 ) -> Token:
     """
     カスタムログインエンドポイント
@@ -181,7 +181,7 @@ async def login_custom(
 
 @router.post("/refresh", response_model=Token)
 async def refresh_token(
-    refresh_request: RefreshTokenRequest, _: bool = Depends(rate_limit_100)
+    refresh_request: RefreshTokenRequest, _: bool = Depends(simple_rate_limit_100)
 ) -> Token:
     """
     トークンリフレッシュ

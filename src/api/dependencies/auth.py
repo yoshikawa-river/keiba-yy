@@ -158,6 +158,27 @@ class RateLimitChecker:
         return True
 
 
+class SimpleRateLimitChecker:
+    """認証不要エンドポイント用シンプルレート制限チェッカー"""
+
+    def __init__(self, requests: int = 100, window: int = 60):
+        self.requests = requests
+        self.window = window
+
+    async def __call__(self) -> bool:
+        """レート制限チェック（認証なし）"""
+        # TODO: Redisを使用した実際のレート制限実装
+        # ここでは常にTrueを返す
+        
+        if not settings.rate_limit_enabled:
+            return True
+
+        return True
+
+
 # 使用例のインスタンス
 rate_limit_100 = RateLimitChecker(requests=100, window=60)
 rate_limit_1000 = RateLimitChecker(requests=1000, window=3600)
+
+# 認証不要エンドポイント用
+simple_rate_limit_100 = SimpleRateLimitChecker(requests=100, window=60)
