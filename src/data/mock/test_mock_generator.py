@@ -105,7 +105,9 @@ def test_feature_extraction_compatibility():
         assert col in races_df.columns, f"必須カラム {col} が存在しません"
 
     # データ型チェック
-    assert pd.api.types.is_numeric_dtype(races_df["distance"]), "distance が数値型ではありません"
+    assert pd.api.types.is_numeric_dtype(
+        races_df["distance"]
+    ), "distance が数値型ではありません"
     assert pd.api.types.is_numeric_dtype(
         races_df["finish_position"]
     ), "finish_position が数値型ではありません"

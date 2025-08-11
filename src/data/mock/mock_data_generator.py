@@ -68,7 +68,9 @@ class MockDataGenerator:
         np.random.seed(random_seed)
 
         logger.info(f"モックデータ生成器初期化: {self.start_date} ~ {self.end_date}")
-        logger.info(f"馬数: {num_horses}, 騎手数: {num_jockeys}, 調教師数: {num_trainers}")
+        logger.info(
+            f"馬数: {num_horses}, 騎手数: {num_jockeys}, 調教師数: {num_trainers}"
+        )
 
         # マスターデータ格納
         self.horses_master: list[dict] = []
