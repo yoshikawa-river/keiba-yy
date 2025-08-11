@@ -3,7 +3,7 @@ import sys
 from collections.abc import Callable
 from functools import wraps
 from pathlib import Path
-from typing import Any, Union
+from typing import Any
 
 from loguru import logger
 
@@ -26,7 +26,7 @@ class LoggerManager:
     def setup_logging(
         self,
         log_level: str | None = None,
-        log_file: Union[str, Path, None] = None,
+        log_file: str | Path | None = None,
         log_format: str | None = None,
         serialize: bool = False,
         backtrace: bool = True,

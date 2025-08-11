@@ -5,7 +5,7 @@
 
 from collections.abc import Callable
 from datetime import timedelta
-from typing import Any, Union
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -61,7 +61,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations: dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
+            aggregations: dict[str, tuple[str, str | Callable[[Any], Any]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -150,7 +150,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations: dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
+            aggregations: dict[str, tuple[str, str | Callable[[Any], Any]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -220,7 +220,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations: dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
+            aggregations: dict[str, tuple[str, str | Callable[[Any], Any]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -290,7 +290,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations: dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
+            aggregations: dict[str, tuple[str, str | Callable[[Any], Any]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -367,7 +367,7 @@ class DataAggregator:
                 df_filtered = df_sorted.groupby(entity_id_column).head(n_recent)
 
             # 集計処理
-            aggregations: dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
+            aggregations: dict[str, tuple[str, str | Callable[[Any], Any]]] = {}
 
             for key, col in result_columns.items():
                 if key == "finish_position":
