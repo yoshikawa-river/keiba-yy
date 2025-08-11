@@ -233,17 +233,13 @@ class RaceConditionExtractor:
             # 競馬場・コース特徴量（7個）
             df_features = self.extract_track_features(df_features)
 
-            logger.info(
-                f"✅ レース条件特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
-            )
+            logger.info(f"✅ レース条件特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"レース条件特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"レース条件特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
