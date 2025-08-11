@@ -4,6 +4,7 @@
 """
 
 from datetime import timedelta
+from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -16,7 +17,7 @@ from src.core.exceptions import DataProcessingError
 class DataAggregator:
     """データ集計処理を行うクラス"""
 
-    def __init__(self, session: Session | None = None):
+    def __init__(self, session: Optional[Session] = None):
         """初期化
 
         Args:
@@ -29,8 +30,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         horse_id_column: str = "horse_id",
-        result_columns: dict[str, str] | None = None,
-        group_by: list[str] | None = None,
+        result_columns: Optional[dict[str, str]] = None,
+        group_by: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """馬別成績集計
 
@@ -122,8 +123,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         jockey_id_column: str = "jockey_id",
-        result_columns: dict[str, str] | None = None,
-        group_by: list[str] | None = None,
+        result_columns: Optional[dict[str, str]] = None,
+        group_by: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """騎手別成績集計
 
@@ -192,8 +193,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         trainer_id_column: str = "trainer_id",
-        result_columns: dict[str, str] | None = None,
-        group_by: list[str] | None = None,
+        result_columns: Optional[dict[str, str]] = None,
+        group_by: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """調教師別成績集計
 
@@ -262,8 +263,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         course_columns: dict[str, str],
-        result_columns: dict[str, str] | None = None,
-        group_by: list[str] | None = None,
+        result_columns: Optional[dict[str, str]] = None,
+        group_by: Optional[list[str]] = None,
     ) -> pd.DataFrame:
         """コース別成績集計
 
@@ -332,7 +333,7 @@ class DataAggregator:
         date_column: str,
         result_columns: dict[str, str],
         n_recent: int = 5,
-        days_window: int | None = None,
+        days_window: Optional[int] = None,
     ) -> pd.DataFrame:
         """直近成績の集計
 

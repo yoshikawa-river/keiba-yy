@@ -1,14 +1,14 @@
-"""
-バリデーションルール定義
-
-各種データタイプ用のバリデーションルールを定義
-"""
-
 from collections.abc import Callable
 from datetime import datetime
 from typing import Any
 
 from src.data.validators.schema_validator import Schema, SchemaField
+
+"""
+バリデーションルール定義
+
+各種データタイプ用のバリデーションルールを定義
+"""
 
 
 class ValidationRules:

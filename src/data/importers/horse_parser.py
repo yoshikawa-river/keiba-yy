@@ -1,12 +1,6 @@
-"""
-馬情報CSVパーサー
-
-TARGET frontier JVから出力された馬情報CSVをパースし、
-データベースに保存する機能を提供
-"""
-
+import hashlib
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Optional
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -14,6 +8,13 @@ from sqlalchemy.exc import IntegrityError
 from src.core.exceptions import ValidationError
 from src.core.logging import logger
 from src.data.importers.base_parser import BaseCSVParser
+
+"""
+馬情報CSVパーサー
+
+TARGET frontier JVから出力された馬情報CSVをパースし、
+データベースに保存する機能を提供
+"""
 
 # from src.data.models.horse import Horse, Trainer  # TODO: モデルの実装が必要
 
@@ -129,7 +130,7 @@ class HorseCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
         """
         馬データのバリデーション
 
@@ -333,8 +334,6 @@ class HorseCSVParser(BaseCSVParser):
 
         実際のJRAキーがわからない場合の暫定処理
         """
-        import hashlib
-
         # 名前のハッシュから8桁の数字を生成
         hash_obj = hashlib.md5(name.encode("utf-8"))
         hash_hex = hash_obj.hexdigest()

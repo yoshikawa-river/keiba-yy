@@ -44,8 +44,8 @@ class DatabaseManager:
         self.pool_pre_ping = pool_pre_ping or settings.DATABASE_POOL_PRE_PING
         self.echo = echo if echo is not None else settings.DEBUG
 
-        self._engine: Engine | None = None
-        self._session_factory: sessionmaker | None = None
+        self._engine: Optional[Engine] = None
+        self._session_factory: Optional[sessionmaker] = None
 
     @property
     def engine(self) -> Engine:

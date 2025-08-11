@@ -1,15 +1,15 @@
+import builtins
+import contextlib
+from datetime import date, datetime, time
+from typing import Any, Optional
+
+from src.data.utils.code_master import CodeMaster
+
 """
 データコンバーター
 
 mykeibaDBデータ形式と内部形式の変換
 """
-
-import builtins
-import contextlib
-from datetime import date, datetime, time
-from typing import Any
-
-from src.data.utils.code_master import CodeMaster
 
 
 class RaceKey:
@@ -71,7 +71,7 @@ class DataConverter:
     """JRA-VANデータ形式と内部形式の変換"""
 
     @staticmethod
-    def parse_date(date_str: str) -> date | None:
+    def parse_date(date_str: str) -> Optional[date]:
         """
         日付文字列をdateオブジェクトに変換
         "20240101" -> date(2024, 1, 1)
@@ -85,7 +85,7 @@ class DataConverter:
             return None
 
     @staticmethod
-    def parse_time(time_str: str) -> time | None:
+    def parse_time(time_str: str) -> Optional[time]:
         """
         時刻文字列をtimeオブジェクトに変換
         "1530" -> time(15, 30)

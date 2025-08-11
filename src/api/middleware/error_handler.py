@@ -5,6 +5,7 @@
 import logging
 import traceback
 import uuid
+from typing import Union
 
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
@@ -18,7 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 async def http_exception_handler(
-    request: Request, exc: StarletteHTTPException | KeibaAPIException
+    request: Request, exc: Union[StarletteHTTPException, KeibaAPIException]
 ) -> JSONResponse:
     """HTTPException用のエラーハンドラー"""
 

@@ -1,4 +1,5 @@
 version: '3.8'
+name: keiba-yy
 
 services:
   # MySQLデータベース
@@ -218,4 +219,6 @@ networks:
 
 volumes:
   mysql_data:
+    external: true
+    name: keiba-yy_mysql_data
   redis_data:

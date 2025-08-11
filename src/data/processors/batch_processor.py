@@ -1,14 +1,8 @@
-"""
-バッチプロセッサー
-
-大量データの効率的な処理を行うバッチ処理機能
-"""
-
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Optional
 
 from src.core.database import db_manager
 from src.core.exceptions import DataImportError
@@ -19,13 +13,19 @@ from src.data.importers.odds_parser import OddsCSVParser
 from src.data.importers.race_parser import RaceCSVParser
 from src.data.importers.result_parser import ResultCSVParser
 
+"""
+バッチプロセッサー
+
+大量データの効率的な処理を行うバッチ処理機能
+"""
+
 
 @dataclass
 class BatchResult:
     """バッチ処理結果"""
 
     start_time: datetime
-    end_time: datetime | None = None
+    end_time: Optional[datetime] = None
     total_files: int = 0
     processed_files: int = 0
     failed_files: int = 0
@@ -113,9 +113,9 @@ class BatchProcessor:
 
     def process_all(
         self,
-        file_types: list[FileType] | None = None,
+        file_types: Optional[list[FileType]] = None,
         file_pattern: str = "*.csv",
-        progress_callback: Callable[[int, int], None] | None = None,
+        progress_callback: Optional[Callable[[int, int], None]] = None,
     ) -> BatchResult:
         """
         すべてのCSVファイルを処理

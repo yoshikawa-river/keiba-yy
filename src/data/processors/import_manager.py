@@ -1,24 +1,24 @@
-"""
-インポートマネージャー
-
-CSVインポート処理の管理とスケジューリング
-"""
-
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Optional
 
 from src.core.config import settings
 from src.core.logging import logger
 from src.data.importers import FileType
 from src.data.processors.batch_processor import BatchProcessor, BatchResult
 
+"""
+インポートマネージャー
+
+CSVインポート処理の管理とスケジューリング
+"""
+
 
 class ImportManager:
     """インポート処理マネージャー"""
 
-    def __init__(self, import_base_dir: Path | None = None):
+    def __init__(self, import_base_dir: Optional[Path] = None):
         """
         インポートマネージャーの初期化
 
@@ -34,7 +34,7 @@ class ImportManager:
     def import_from_directory(
         self,
         directory_name: str,
-        file_types: list[FileType] | None = None,
+        file_types: Optional[list[FileType]] = None,
         batch_size: int = 1000,
         validate: bool = True,
         dry_run: bool = False,
@@ -98,8 +98,8 @@ class ImportManager:
     def import_incremental(
         self,
         directory_name: str,
-        since: datetime | None = None,
-        file_types: list[FileType] | None = None,
+        since: Optional[datetime] = None,
+        file_types: Optional[list[FileType]] = None,
     ) -> BatchResult:
         """
         増分インポート(前回インポート以降の新規ファイルのみ)
@@ -153,7 +153,7 @@ class ImportManager:
 
         return result
 
-    def retry_failed_imports(self, directory_name: str | None = None) -> BatchResult:
+    def retry_failed_imports(self, directory_name: Optional[str] = None) -> BatchResult:
         """
         失敗したインポートをリトライ
 
@@ -205,7 +205,7 @@ class ImportManager:
         total_result.end_time = datetime.now()
         return total_result
 
-    def get_import_status(self, directory_name: str | None = None) -> dict[str, Any]:
+    def get_import_status(self, directory_name: Optional[str] = None) -> dict[str, Any]:
         """
         インポート状況を取得
 
@@ -300,7 +300,7 @@ class ImportManager:
         self.import_history[directory_name].append(record)
         self._save_history()
 
-    def _get_last_import(self, directory_name: str) -> dict[str, Any] | None:
+    def _get_last_import(self, directory_name: str) -> Optional[dict[str, Any]]:
         """最後のインポート情報を取得"""
         return self.import_history.get(directory_name, [])
 

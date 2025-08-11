@@ -1,10 +1,4 @@
-"""
-バリデーション統合パーサー
-
-バリデーション機能を統合したCSVパーサー
-"""
-
-from typing import Any
+from typing import Any, Optional
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -14,6 +8,12 @@ from src.data.importers.base_parser import BaseCSVParser
 from src.data.validators import DataValidator, SchemaValidator, ValidationResult
 from src.data.validators.schema_validator import Schema
 
+"""
+バリデーション統合パーサー
+
+バリデーション機能を統合したCSVパーサー
+"""
+
 
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
@@ -21,7 +21,7 @@ class ValidatedCSVParser(BaseCSVParser):
     def __init__(
         self,
         db_session: Session,
-        schema: Schema | None = None,
+        schema: Optional[Schema] = None,
         validate_business_logic: bool = True,
     ):
         """
@@ -38,14 +38,16 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator: SchemaValidator | None = SchemaValidator(self.schema)
+            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(
+                self.schema
+            )
         else:
-            self.schema_validator: SchemaValidator | None = None
+            self.schema_validator: Optional[SchemaValidator] = None
 
         if self.validate_business_logic:
-            self.data_validator: DataValidator | None = DataValidator(db_session)
+            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
         else:
-            self.data_validator: DataValidator | None = None
+            self.data_validator: Optional[DataValidator] = None
 
     def _validate_row_with_validators(
         self, row_data: dict[str, Any]

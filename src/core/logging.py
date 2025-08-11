@@ -1,9 +1,3 @@
-"""
-ロギング設定
-
-loguruを使用した統一的なロギング設定を提供
-"""
-
 import logging
 import sys
 from collections.abc import Callable
@@ -14,6 +8,12 @@ from typing import Any, Optional, Union
 from loguru import logger
 
 from src.core.config import settings
+
+"""
+ロギング設定
+
+loguruを使用した統一的なロギング設定を提供
+"""
 
 
 class LoggerManager:
