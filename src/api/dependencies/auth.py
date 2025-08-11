@@ -39,8 +39,8 @@ async def get_current_user(
     # ここではモックユーザーを返す
     user = User(
         id=token_data.user_id or 1,
-        username=token_data.username,
-        email=f"{token_data.username}@example.com",
+        username=token_data.username or "anonymous",
+        email=f"{token_data.username or 'anonymous'}@example.com",
         full_name="Test User",
         is_active=True,
         created_at=datetime.utcnow(),

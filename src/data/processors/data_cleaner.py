@@ -3,7 +3,7 @@
 欠損値処理、外れ値検出・処理、データ正規化、カテゴリ変数エンコーディングを行う
 """
 
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -28,7 +28,7 @@ class DataCleaner:
         df: pd.DataFrame,
         strategy: str = "mean",
         columns: Optional[list[str]] = None,
-        custom_values: Optional[dict[str, any]] = None,
+        custom_values: Optional[dict[str, Any]] = None,
     ) -> pd.DataFrame:
         """欠損値処理
 

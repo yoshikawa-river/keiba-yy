@@ -451,7 +451,7 @@ class JockeyTrainerFeatureExtractor:
             else:
                 scores.append(0.1)
 
-        return np.mean(scores)
+        return float(np.mean(scores))
 
     def _get_recent_data(self, data: pd.DataFrame, days: int = 30) -> pd.DataFrame:
         """最近のデータを取得

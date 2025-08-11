@@ -3,7 +3,7 @@
 通算成績、直近N走の成績、コース別成績、距離別成績、馬場状態別成績などを抽出する
 """
 
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -257,10 +257,10 @@ class PerformanceFeatureExtractor:
 
                     if len(same_course) > 0:
                         stats["same_course_starts"] = len(same_course)
-                        stats["same_course_wins"] = (
+                        stats["same_course_wins"] = int((
                             same_course["finish_position"] == 1
-                        ).sum()
-                        stats["same_course_win_rate"] = (
+                        ).sum())
+                        stats["same_course_win_rate"] = int(
                             stats["same_course_wins"] / stats["same_course_starts"]
                         )
                         stats["same_course_avg_finish"] = same_course[
@@ -270,7 +270,7 @@ class PerformanceFeatureExtractor:
                         stats["same_course_starts"] = 0
                         stats["same_course_wins"] = 0
                         stats["same_course_win_rate"] = 0
-                        stats["same_course_avg_finish"] = np.nan
+                        stats["same_course_avg_finish"] = 0
 
                 # 左回り・右回りでの成績
                 if "turn_direction" in row:
@@ -362,10 +362,10 @@ class PerformanceFeatureExtractor:
 
                             if len(same_category) > 0:
                                 stats[f"{category_name}_starts"] = len(same_category)
-                                stats[f"{category_name}_wins"] = (
+                                stats[f"{category_name}_wins"] = int((
                                     same_category["finish_position"] == 1
-                                ).sum()
-                                stats[f"{category_name}_win_rate"] = (
+                                ).sum())
+                                stats[f"{category_name}_win_rate"] = int(
                                     stats[f"{category_name}_wins"]
                                     / stats[f"{category_name}_starts"]
                                 )
@@ -376,7 +376,7 @@ class PerformanceFeatureExtractor:
                                 stats[f"{category_name}_starts"] = 0
                                 stats[f"{category_name}_wins"] = 0
                                 stats[f"{category_name}_win_rate"] = 0
-                                stats[f"{category_name}_avg_finish"] = np.nan
+                                stats[f"{category_name}_avg_finish"] = 0
 
                             break
 
@@ -551,7 +551,7 @@ class PerformanceFeatureExtractor:
         Returns:
             カテゴリ名
         """
-        return ["sprint", "mile", "intermediate", "long"]
+        return "sprint"
 
     def extract_all_performance_features(
         self,
@@ -607,7 +607,7 @@ class PerformanceFeatureExtractor:
         except Exception as e:
             raise FeatureExtractionError(f"全過去成績特徴量抽出中にエラーが発生しました: {e!s}") from e
 
-    def get_feature_info(self) -> dict[str, any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量サマリー情報を取得
 
         Returns:

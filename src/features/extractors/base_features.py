@@ -486,9 +486,9 @@ class BaseFeatureExtractor:
             "feature_count": self.feature_count,
             "numerical_features": self.numerical_features,
             "categorical_features": self.categorical_features,
-            "categories": {
-                "horse_basic": "馬基本情報特徴量",
-                "jockey_trainer": "騎手・調教師特徴量",
-                "race_condition": "レース条件特徴量",
-            },
+            "categories": [
+                "馬基本情報特徴量",
+                "騎手・調教師特徴量",
+                "レース条件特徴量",
+            ],
         }

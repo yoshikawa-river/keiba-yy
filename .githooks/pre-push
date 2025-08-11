@@ -70,8 +70,13 @@ if ! docker compose exec -T app flake8 src/; then
     exit 1
 fi
 
-# MyPy type checking (temporarily disabled due to many type errors)
-echo "⚠️  MyPy type checking skipped (needs type fixes)"
+# MyPy type checking
+echo "🔍 Running MyPy type checking..."
+if ! docker compose exec -T app mypy src/; then
+    echo "❌ MyPy type checking failed!"
+    echo "💡 Please fix the type errors before pushing"
+    exit 1
+fi
 
 echo "✅ All pre-push checks passed!"
 echo "🚀 Ready to push to $remote"

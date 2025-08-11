@@ -28,11 +28,11 @@ class JWTHandler:
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """パスワード検証"""
-        return pwd_context.verify(plain_password, hashed_password)
+        return bool(pwd_context.verify(plain_password, hashed_password))
 
     def get_password_hash(self, password: str) -> str:
         """パスワードハッシュ化"""
-        return pwd_context.hash(password)
+        return str(pwd_context.hash(password))
 
     def create_access_token(
         self, data: dict[str, Any], expires_delta: Optional[timedelta] = None
@@ -49,7 +49,7 @@ class JWTHandler:
 
         to_encode.update({"exp": expire, "type": "access", "iat": datetime.utcnow()})
 
-        return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+        return str(jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm))
 
     def create_refresh_token(
         self, data: dict[str, Any], expires_delta: Optional[timedelta] = None
@@ -71,15 +71,15 @@ class JWTHandler:
             }
         )
 
-        return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
+        return str(jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm))
 
     def decode_token(self, token: str) -> Optional[TokenData]:
         """トークンデコード"""
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])
-            username: str = payload.get("sub")
-            user_id: int = payload.get("user_id")
-            scopes: list = payload.get("scopes", [])
+            username = payload.get("sub")
+            user_id = payload.get("user_id")
+            scopes = payload.get("scopes", [])
 
             if username is None:
                 return None
@@ -99,7 +99,7 @@ class JWTHandler:
             if payload.get("type") != token_type:
                 return None
 
-            return payload
+            return dict(payload) if payload else None
         except JWTError:
             return None
 

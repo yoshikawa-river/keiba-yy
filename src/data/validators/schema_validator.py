@@ -23,7 +23,7 @@ class SchemaField:
         max_value: Optional[float] = None,
         pattern: Optional[str] = None,
         enum_values: Optional[list[Any]] = None,
-        custom_validator: Optional[Callable[[Any], bool]] = None,
+        custom_validator: Optional[Callable[[Any], str | bool]] = None,
     ):
         self.name = name
         self.field_type = field_type
@@ -202,7 +202,8 @@ class SchemaValidator(BaseValidator):
         """
         # Union型の処理
         if hasattr(expected_type, "__origin__") and expected_type.__origin__ is Union:
-            for union_type in expected_type.__args__:
+            union_args = getattr(expected_type, "__args__", [])
+            for union_type in union_args:
                 if union_type is type(None) and value is None:
                     return None
                 if isinstance(value, union_type):

@@ -440,7 +440,6 @@ class TimeFeatureExtractor:
                     seconds = float(parts[1])
                     return minutes * 60 + seconds
                 return float(time_str)
-            return float(time_str)
         except:
             return 0
 
@@ -461,7 +460,7 @@ class TimeFeatureExtractor:
 
         # 最も近い距離の基準タイムを取得
         if distance in times:
-            return times[distance]
+            return float(times[distance])
         # 線形補間
         distances = sorted(times.keys())
         for i in range(len(distances) - 1):
@@ -470,12 +469,12 @@ class TimeFeatureExtractor:
                 t1, t2 = times[d1], times[d2]
                 # 線形補間
                 ratio = (distance - d1) / (d2 - d1)
-                return t1 + ratio * (t2 - t1)
+                return float(t1 + ratio * (t2 - t1))
 
         # 範囲外の場合は最も近い値
         if distance < distances[0]:
-            return times[distances[0]]
-        return times[distances[-1]]
+            return float(times[distances[0]])
+        return float(times[distances[-1]])
 
     def _get_track_correction(self, track_type: str) -> float:
         """コース種別による補正係数

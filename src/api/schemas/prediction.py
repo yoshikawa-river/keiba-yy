@@ -91,7 +91,7 @@ class PredictionRequest(BaseModel):
     """予測リクエスト"""
 
     race_info: RaceInfo = Field(..., description="レース情報")
-    horses: list[HorseInfo] = Field(..., min_items=2, max_items=18, description="出走馬情報")
+    horses: list[HorseInfo] = Field(..., description="出走馬情報")
     include_confidence: bool = Field(default=True, description="信頼度を含める")
     include_features: bool = Field(default=False, description="特徴量を含める")
 
@@ -171,9 +171,7 @@ class RacePredictionResponse(BaseModel):
 class BatchPredictionRequest(BaseModel):
     """バッチ予測リクエスト"""
 
-    races: list[PredictionRequest] = Field(
-        ..., min_items=1, max_items=100, description="予測対象レースリスト"
-    )
+    races: list[PredictionRequest] = Field(..., description="予測対象レースリスト")
     priority: Optional[str] = Field(
         default="normal", pattern="^(high|normal|low)$", description="処理優先度"
     )

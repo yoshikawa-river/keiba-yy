@@ -4,7 +4,7 @@
 """
 
 from datetime import timedelta
-from typing import Optional
+from typing import Any, Callable, Dict, Optional, Union
 
 import numpy as np
 import pandas as pd
@@ -24,7 +24,7 @@ class DataAggregator:
             session: SQLAlchemyセッション(DBから直接集計する場合)
         """
         self.session = session
-        self.aggregation_cache = {}
+        self.aggregation_cache: Dict[str, Any] = {}
 
     def aggregate_horse_performance(
         self,
@@ -60,7 +60,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations = {}
+            aggregations: Dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -149,7 +149,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations = {}
+            aggregations: Dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -219,7 +219,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations = {}
+            aggregations: Dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -289,7 +289,7 @@ class DataAggregator:
                 group_keys.extend(group_by)
 
             # 集計処理
-            aggregations = {}
+            aggregations: Dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
 
             if "finish_position" in result_columns:
                 col = result_columns["finish_position"]
@@ -366,7 +366,7 @@ class DataAggregator:
                 df_filtered = df_sorted.groupby(entity_id_column).head(n_recent)
 
             # 集計処理
-            aggregations = {}
+            aggregations: Dict[str, tuple[str, Union[str, Callable[[Any], Any]]]] = {}
 
             for key, col in result_columns.items():
                 if key == "finish_position":
