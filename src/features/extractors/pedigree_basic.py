@@ -4,6 +4,8 @@
 Phase1の血統基本特徴量15個を実装。
 """
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -410,7 +412,11 @@ class PedigreeBasicExtractor:
                 f"血統基本特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
+<<<<<<< HEAD
     def get_feature_info(self) -> dict[str, any]:
+=======
+    def get_feature_info(self) -> dict[str, Any]:
+>>>>>>> origin/main
         """特徴量情報の取得
 
         Returns:
