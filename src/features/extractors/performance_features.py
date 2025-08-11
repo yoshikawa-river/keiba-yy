@@ -618,7 +618,7 @@ class PerformanceFeatureExtractor:
                 f"全過去成績特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_summary(self) -> dict:
+    def get_feature_info(self) -> dict[str, any]:
         """特徴量サマリー情報を取得
 
         Returns:

@@ -17,6 +17,7 @@ class RaceFeatureExtractor:
     def __init__(self):
         """初期化"""
         self.feature_names = []
+        self.feature_count = 0  # 特徴量カウント管理
         self.pace_categories = ["slow", "medium", "fast", "very_fast"]
 
     def extract_race_level_features(
@@ -138,7 +139,11 @@ class RaceFeatureExtractor:
                 )
                 self.feature_names.extend(["has_sex_restriction", "is_fillies_only"])
 
-            logger.info("レースレベル特徴量抽出完了")
+            # feature_count管理
+            current_features = len([col for col in df_features.columns if col not in df.columns])
+            self.feature_count += current_features
+            
+            logger.info(f"レースレベル特徴量抽出完了: {current_features}個追加")
 
             return df_features
 
@@ -241,7 +246,11 @@ class RaceFeatureExtractor:
                         ["implied_probability", "relative_odds", "is_favorite"]
                     )
 
-            logger.info("出走馬競争レベル特徴量抽出完了")
+            # feature_count管理
+            current_features = len([col for col in df_features.columns if col not in df.columns])
+            self.feature_count += current_features
+            
+            logger.info(f"出走馬競争レベル特徴量抽出完了: {current_features}個追加")
 
             return df_features
 
@@ -358,7 +367,11 @@ class RaceFeatureExtractor:
                                 df_features["race_id"] == race_id, "historical_pace_change"
                             ] = pace_change.mean()
 
-            logger.info("ペース予想特徴量抽出完了")
+            # feature_count管理
+            current_features = len([col for col in df_features.columns if col not in df.columns])
+            self.feature_count += current_features
+            
+            logger.info(f"ペース予想特徴量抽出完了: {current_features}個追加")
 
             return df_features
 
@@ -483,7 +496,11 @@ class RaceFeatureExtractor:
                                         distance_stats["distance_position_bias"].mean()
                                     )
 
-            logger.info("枠順有利不利特徴量抽出完了")
+            # feature_count管理
+            current_features = len([col for col in df_features.columns if col not in df.columns])
+            self.feature_count += current_features
+            
+            logger.info(f"枠順有利不利特徴量抽出完了: {current_features}個追加")
 
             return df_features
 
@@ -560,7 +577,11 @@ class RaceFeatureExtractor:
                 )
                 self.feature_names.extend(season_dummies.columns.tolist())
 
-            logger.info("季節・時期特徴量抽出完了")
+            # feature_count管理
+            current_features = len([col for col in df_features.columns if col not in df.columns])
+            self.feature_count += current_features
+            
+            logger.info(f"季節・時期特徴量抽出完了: {current_features}個追加")
 
             return df_features
 
@@ -615,3 +636,21 @@ class RaceFeatureExtractor:
             raise FeatureExtractionError(
                 f"全レース特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
+
+    def get_feature_info(self) -> dict[str, any]:
+        """特徴量情報の取得
+
+        Returns:
+            特徴量の情報辞書
+        """
+        return {
+            "feature_names": self.feature_names,
+            "feature_count": self.feature_count,
+            "categories": {
+                "race_level": "レースレベル特徴量",
+                "field_competition": "出走頭数・競争特徴量",
+                "pace": "ペース特徴量",
+                "position_advantage": "枠順有利不利特徴量",
+                "seasonal": "季節・時期特徴量",
+            },
+        }
