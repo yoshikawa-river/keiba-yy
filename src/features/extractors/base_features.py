@@ -3,6 +3,7 @@
 馬齢、性別、斤量、馬体重、枠番、馬番、前走からの間隔などの基本特徴量を抽出する
 """
 
+from typing import Optional
 import pandas as pd
 from loguru import logger
 
@@ -15,11 +16,12 @@ class BaseFeatureExtractor:
     def __init__(self):
         """初期化"""
         self.feature_names = []
+        self.feature_count = 0  # 特徴量カウント管理
         self.categorical_features = []
         self.numerical_features = []
 
     def extract_horse_basic_features(
-        self, df: pd.DataFrame, horse_info: pd.DataFrame | None = None
+        self, df: pd.DataFrame, horse_info: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """馬の基本特徴量抽出
 
@@ -167,8 +169,8 @@ class BaseFeatureExtractor:
     def extract_jockey_trainer_features(
         self,
         df: pd.DataFrame,
-        jockey_stats: pd.DataFrame | None = None,
-        trainer_stats: pd.DataFrame | None = None,
+        jockey_stats: Optional[pd.DataFrame] = None,
+        trainer_stats: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """騎手・調教師の特徴量抽出
 
@@ -434,9 +436,9 @@ class BaseFeatureExtractor:
     def extract_all_base_features(
         self,
         df: pd.DataFrame,
-        horse_info: pd.DataFrame | None = None,
-        jockey_stats: pd.DataFrame | None = None,
-        trainer_stats: pd.DataFrame | None = None,
+        horse_info: Optional[pd.DataFrame] = None,
+        jockey_stats: Optional[pd.DataFrame] = None,
+        trainer_stats: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """全ての基本特徴量を抽出
 
@@ -465,13 +467,11 @@ class BaseFeatureExtractor:
 
             # 特徴量リストの更新
             self.feature_names = self.numerical_features + self.categorical_features
+            self.feature_count = len(self.feature_names)
 
-            logger.info(
-                f"全基本特徴量抽出完了: "
-                f"総特徴量数={len(self.feature_names)}, "
-                f"数値={len(self.numerical_features)}, "
-                f"カテゴリ={len(self.categorical_features)}"
-            )
+            logger.info(f"✅ 基本特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(f"数値特徴量: {len(self.numerical_features)}個, カテゴリ特徴量: {len(self.categorical_features)}個")
+            logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
@@ -487,7 +487,13 @@ class BaseFeatureExtractor:
             特徴量タイプ別のリスト
         """
         return {
-            "all_features": self.feature_names,
+            "feature_names": self.feature_names,
+            "feature_count": self.feature_count,
             "numerical_features": self.numerical_features,
             "categorical_features": self.categorical_features,
+            "categories": {
+                "horse_basic": "馬基本情報特徴量",
+                "jockey_trainer": "騎手・調教師特徴量",
+                "race_condition": "レース条件特徴量",
+            },
         }

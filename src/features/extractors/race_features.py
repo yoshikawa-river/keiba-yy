@@ -3,6 +3,7 @@
 レースのレベル、出走頭数、ペース予想、展開予想などを抽出する
 """
 
+from typing import Optional
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -19,7 +20,7 @@ class RaceFeatureExtractor:
         self.pace_categories = ["slow", "medium", "fast", "very_fast"]
 
     def extract_race_level_features(
-        self, df: pd.DataFrame, historical_races: pd.DataFrame | None = None
+        self, df: pd.DataFrame, historical_races: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """レースレベル特徴量の抽出
 
@@ -250,7 +251,7 @@ class RaceFeatureExtractor:
             ) from e
 
     def extract_pace_features(
-        self, df: pd.DataFrame, historical_lap_times: pd.DataFrame | None = None
+        self, df: pd.DataFrame, historical_lap_times: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """ペース予想特徴量の抽出
 
@@ -337,8 +338,25 @@ class RaceFeatureExtractor:
 
             # 過去のラップタイムからのペース分析
             if historical_lap_times is not None and "race_id" in df.columns:
-                # 実装は省略(実際のデータ構造に依存)
-                pass
+                for race_id in df["race_id"].unique():
+                    race_lap_data = historical_lap_times[
+                        historical_lap_times["race_id"] == race_id
+                    ]
+                    
+                    if len(race_lap_data) > 0:
+                        # 平均ラップタイムの算出
+                        if "lap_times" in race_lap_data.columns:
+                            avg_lap_time = race_lap_data["lap_times"].mean()
+                            df_features.loc[
+                                df_features["race_id"] == race_id, "historical_avg_lap_time"
+                            ] = avg_lap_time
+                        
+                        # ペース変化指標
+                        if "first_half_pace" in race_lap_data.columns and "second_half_pace" in race_lap_data.columns:
+                            pace_change = race_lap_data["second_half_pace"] - race_lap_data["first_half_pace"]
+                            df_features.loc[
+                                df_features["race_id"] == race_id, "historical_pace_change"
+                            ] = pace_change.mean()
 
             logger.info("ペース予想特徴量抽出完了")
 
@@ -350,7 +368,7 @@ class RaceFeatureExtractor:
             ) from e
 
     def extract_position_advantage_features(
-        self, df: pd.DataFrame, course_statistics: pd.DataFrame | None = None
+        self, df: pd.DataFrame, course_statistics: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """枠順・コース形態による有利不利特徴量
 
@@ -430,8 +448,40 @@ class RaceFeatureExtractor:
 
             # コース統計からの詳細な有利不利
             if course_statistics is not None:
-                # 実装は省略(実際のデータ構造に依存)
-                pass
+                for venue in df["venue"].unique():
+                    venue_stats = course_statistics[
+                        course_statistics["venue"] == venue
+                    ]
+                    
+                    if len(venue_stats) > 0:
+                        venue_df = df[df["venue"] == venue]
+                        
+                        # 枠順別勝率統計
+                        if "post_position" in df.columns and "win_rate_by_position" in venue_stats.columns:
+                            for idx, row in venue_df.iterrows():
+                                post_pos = row["post_position"]
+                                position_stats = venue_stats[
+                                    venue_stats["post_position"] == post_pos
+                                ]
+                                
+                                if len(position_stats) > 0:
+                                    df_features.loc[idx, "course_position_advantage"] = (
+                                        position_stats["win_rate_by_position"].iloc[0]
+                                    )
+                        
+                        # 距離別有利枠統計
+                        if "distance" in df.columns and "distance_position_bias" in venue_stats.columns:
+                            for idx, row in venue_df.iterrows():
+                                distance = row["distance"]
+                                distance_stats = venue_stats[
+                                    (venue_stats["distance"] == distance) |
+                                    (abs(venue_stats["distance"] - distance) <= 200)
+                                ]
+                                
+                                if len(distance_stats) > 0:
+                                    df_features.loc[idx, "course_distance_bias"] = (
+                                        distance_stats["distance_position_bias"].mean()
+                                    )
 
             logger.info("枠順有利不利特徴量抽出完了")
 
@@ -522,9 +572,9 @@ class RaceFeatureExtractor:
     def extract_all_race_features(
         self,
         df: pd.DataFrame,
-        historical_races: pd.DataFrame | None = None,
-        historical_lap_times: pd.DataFrame | None = None,
-        course_statistics: pd.DataFrame | None = None,
+        historical_races: Optional[pd.DataFrame] = None,
+        historical_lap_times: Optional[pd.DataFrame] = None,
+        course_statistics: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """全てのレース特徴量を抽出
 

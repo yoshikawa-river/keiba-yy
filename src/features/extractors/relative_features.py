@@ -16,6 +16,7 @@ class RelativeFeatureExtractor:
     def __init__(self):
         """初期化"""
         self.feature_names = []
+        self.feature_count = 0  # 特徴量カウント管理
 
     def extract_relative_performance_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """他馬との相対的な能力差特徴量
@@ -112,6 +113,7 @@ class RelativeFeatureExtractor:
                 relative_df = pd.DataFrame(relative_features, index=df.index)
                 df_features = pd.concat([df_features, relative_df], axis=1)
                 self.feature_names.extend(relative_df.columns.tolist())
+                self.feature_count += len(relative_df.columns)
 
             logger.info("相対能力差特徴量抽出完了")
 
@@ -210,23 +212,23 @@ class RelativeFeatureExtractor:
                     df_features["place_odds_mid"] + 1
                 )
 
-            self.feature_names.extend(
-                [
-                    "odds_log",
-                    "implied_win_probability",
-                    "popularity_rank",
-                    "is_favorite",
-                    "is_top3_favorite",
-                    "is_top5_favorite",
-                    "relative_odds",
-                    "odds_deviation",
-                ]
-            )
+            odds_features = [
+                "odds_log",
+                "implied_win_probability", 
+                "popularity_rank",
+                "is_favorite",
+                "is_top3_favorite",
+                "is_top5_favorite",
+                "relative_odds",
+                "odds_deviation",
+            ]
+            self.feature_names.extend(odds_features)
+            self.feature_count += len(odds_features)
 
             if "career_win_rate" in df.columns:
-                self.feature_names.extend(
-                    ["odds_value_gap", "is_undervalued", "is_overvalued"]
-                )
+                value_features = ["odds_value_gap", "is_undervalued", "is_overvalued"]
+                self.feature_names.extend(value_features)
+                self.feature_count += len(value_features)
 
             logger.info("オッズベース特徴量抽出完了")
 
@@ -309,6 +311,7 @@ class RelativeFeatureExtractor:
                 relative_df = pd.DataFrame(relative_features, index=df.index)
                 df_features = pd.concat([df_features, relative_df], axis=1)
                 self.feature_names.extend(relative_df.columns.tolist())
+                self.feature_count += len(relative_df.columns)
 
             logger.info("騎手・調教師相対特徴量抽出完了")
 
@@ -396,6 +399,7 @@ class RelativeFeatureExtractor:
                 position_df = pd.DataFrame(position_features, index=df.index)
                 df_features = pd.concat([df_features, position_df], axis=1)
                 self.feature_names.extend(position_df.columns.tolist())
+                self.feature_count += len(position_df.columns)
 
             logger.info("枠順相対特徴量抽出完了")
 
@@ -479,6 +483,7 @@ class RelativeFeatureExtractor:
                 pace_df = pd.DataFrame(pace_features, index=df.index)
                 df_features = pd.concat([df_features, pace_df], axis=1)
                 self.feature_names.extend(pace_df.columns.tolist())
+                self.feature_count += len(pace_df.columns)
 
             logger.info("ペース相対特徴量抽出完了")
 
@@ -516,7 +521,8 @@ class RelativeFeatureExtractor:
             # ペース相対特徴量
             df_features = self.extract_pace_relative_features(df_features)
 
-            logger.info(f"全相対特徴量抽出完了: 特徴量数={len(self.feature_names)}")
+            logger.info(f"✅ 相対特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
@@ -524,3 +530,21 @@ class RelativeFeatureExtractor:
             raise FeatureExtractionError(
                 f"全相対特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
+
+    def get_feature_summary(self) -> dict:
+        """特徴量サマリー情報を取得
+
+        Returns:
+            特徴量の統計情報辞書
+        """
+        return {
+            "feature_names": self.feature_names,
+            "feature_count": self.feature_count,
+            "categories": {
+                "relative_performance": "相対能力差特徴量",
+                "odds_based": "オッズベース特徴量", 
+                "jockey_trainer_relative": "騎手・調教師相対特徴量",
+                "position_relative": "枠順相対特徴量",
+                "pace_relative": "ペース相対特徴量",
+            },
+        }
