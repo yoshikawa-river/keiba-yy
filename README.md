@@ -138,3 +138,4 @@ JRA-VANデータの利用にはJRA-VAN利用規約が適用されます。
 ## 更新履歴
 
 - 2025-07-29: 初版作成
+# Test comment for pre-push hook
