@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Any, Union
+from typing import Any
 
 from src.core.logging import logger
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -23,7 +23,7 @@ class SchemaField:
         max_value: float | None = None,
         pattern: str | None = None,
         enum_values: list[Any] | None = None,
-        custom_validator: Callable[[Any], Union[str, bool]] | None = None,
+        custom_validator: Callable[[Any], str | bool] | None = None,
     ):
         self.name = name
         self.field_type = field_type
