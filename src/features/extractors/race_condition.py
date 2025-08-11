@@ -4,6 +4,7 @@
 基本的なレース条件特徴量15個を実装。
 """
 
+from typing import Any
 import pandas as pd
 from loguru import logger
 
@@ -243,7 +244,11 @@ class RaceConditionExtractor:
                 f"レース条件特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
+<<<<<<< HEAD
     def get_feature_info(self) -> dict[str, any]:
+=======
+    def get_feature_info(self) -> dict[str, Any]:
+>>>>>>> 58447d4a886b77d07e009aca6557e74bb13c58f9
         """特徴量情報の取得
 
         Returns:
