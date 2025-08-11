@@ -4,6 +4,7 @@
 """
 
 from typing import Optional
+
 import pandas as pd
 from loguru import logger
 

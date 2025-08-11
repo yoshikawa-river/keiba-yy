@@ -214,7 +214,7 @@ class RelativeFeatureExtractor:
 
             odds_features = [
                 "odds_log",
-                "implied_win_probability", 
+                "implied_win_probability",
                 "popularity_rank",
                 "is_favorite",
                 "is_top3_favorite",
@@ -542,7 +542,7 @@ class RelativeFeatureExtractor:
             "feature_count": self.feature_count,
             "categories": {
                 "relative_performance": "相対能力差特徴量",
-                "odds_based": "オッズベース特徴量", 
+                "odds_based": "オッズベース特徴量",
                 "jockey_trainer_relative": "騎手・調教師相対特徴量",
                 "position_relative": "枠順相対特徴量",
                 "pace_relative": "ペース相対特徴量",

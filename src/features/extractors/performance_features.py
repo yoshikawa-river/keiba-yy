@@ -4,6 +4,7 @@
 """
 
 from typing import Optional
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -630,7 +631,7 @@ class PerformanceFeatureExtractor:
             "categories": {
                 "career": "通算成績特徴量",
                 "recent": "直近成績特徴量",
-                "course": "コース別成績特徴量", 
+                "course": "コース別成績特徴量",
                 "distance": "距離別成績特徴量",
                 "track_condition": "馬場状態別成績特徴量",
             },

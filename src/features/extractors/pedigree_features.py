@@ -4,6 +4,7 @@
 """
 
 from typing import Optional
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -592,7 +593,7 @@ class PedigreeFeatureExtractor:
             "feature_count": self.feature_count,
             "categories": {
                 "sire": "父馬成績特徴量",
-                "dam_sire": "母父馬成績特徴量", 
+                "dam_sire": "母父馬成績特徴量",
                 "sibling": "兄弟馬成績特徴量",
                 "affinity": "血統相性特徴量",
             },

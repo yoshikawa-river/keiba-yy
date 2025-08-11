@@ -4,6 +4,7 @@
 """
 
 from typing import Optional
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -142,7 +143,7 @@ class RaceFeatureExtractor:
             # feature_count管理
             current_features = len([col for col in df_features.columns if col not in df.columns])
             self.feature_count += current_features
-            
+
             logger.info(f"レースレベル特徴量抽出完了: {current_features}個追加")
 
             return df_features
@@ -249,7 +250,7 @@ class RaceFeatureExtractor:
             # feature_count管理
             current_features = len([col for col in df_features.columns if col not in df.columns])
             self.feature_count += current_features
-            
+
             logger.info(f"出走馬競争レベル特徴量抽出完了: {current_features}個追加")
 
             return df_features
@@ -351,7 +352,7 @@ class RaceFeatureExtractor:
                     race_lap_data = historical_lap_times[
                         historical_lap_times["race_id"] == race_id
                     ]
-                    
+
                     if len(race_lap_data) > 0:
                         # 平均ラップタイムの算出
                         if "lap_times" in race_lap_data.columns:
@@ -359,7 +360,7 @@ class RaceFeatureExtractor:
                             df_features.loc[
                                 df_features["race_id"] == race_id, "historical_avg_lap_time"
                             ] = avg_lap_time
-                        
+
                         # ペース変化指標
                         if "first_half_pace" in race_lap_data.columns and "second_half_pace" in race_lap_data.columns:
                             pace_change = race_lap_data["second_half_pace"] - race_lap_data["first_half_pace"]
@@ -370,7 +371,7 @@ class RaceFeatureExtractor:
             # feature_count管理
             current_features = len([col for col in df_features.columns if col not in df.columns])
             self.feature_count += current_features
-            
+
             logger.info(f"ペース予想特徴量抽出完了: {current_features}個追加")
 
             return df_features
@@ -465,10 +466,10 @@ class RaceFeatureExtractor:
                     venue_stats = course_statistics[
                         course_statistics["venue"] == venue
                     ]
-                    
+
                     if len(venue_stats) > 0:
                         venue_df = df[df["venue"] == venue]
-                        
+
                         # 枠順別勝率統計
                         if "post_position" in df.columns and "win_rate_by_position" in venue_stats.columns:
                             for idx, row in venue_df.iterrows():
@@ -476,12 +477,12 @@ class RaceFeatureExtractor:
                                 position_stats = venue_stats[
                                     venue_stats["post_position"] == post_pos
                                 ]
-                                
+
                                 if len(position_stats) > 0:
                                     df_features.loc[idx, "course_position_advantage"] = (
                                         position_stats["win_rate_by_position"].iloc[0]
                                     )
-                        
+
                         # 距離別有利枠統計
                         if "distance" in df.columns and "distance_position_bias" in venue_stats.columns:
                             for idx, row in venue_df.iterrows():
@@ -490,7 +491,7 @@ class RaceFeatureExtractor:
                                     (venue_stats["distance"] == distance) |
                                     (abs(venue_stats["distance"] - distance) <= 200)
                                 ]
-                                
+
                                 if len(distance_stats) > 0:
                                     df_features.loc[idx, "course_distance_bias"] = (
                                         distance_stats["distance_position_bias"].mean()
@@ -499,7 +500,7 @@ class RaceFeatureExtractor:
             # feature_count管理
             current_features = len([col for col in df_features.columns if col not in df.columns])
             self.feature_count += current_features
-            
+
             logger.info(f"枠順有利不利特徴量抽出完了: {current_features}個追加")
 
             return df_features
@@ -580,7 +581,7 @@ class RaceFeatureExtractor:
             # feature_count管理
             current_features = len([col for col in df_features.columns if col not in df.columns])
             self.feature_count += current_features
-            
+
             logger.info(f"季節・時期特徴量抽出完了: {current_features}個追加")
 
             return df_features
