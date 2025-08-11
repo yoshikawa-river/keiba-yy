@@ -340,10 +340,13 @@ class DataQualityReporter:
                 }
 
                 # 分布の特徴
+                from typing import cast
+
                 stats["is_normal"] = (
-                    abs(stats["skewness"]) < 0.5 and abs(stats["kurtosis"]) < 3
+                    abs(cast(float, stats["skewness"])) < 0.5
+                    and abs(cast(float, stats["kurtosis"])) < 3
                 )
-                stats["is_skewed"] = abs(stats["skewness"]) > 1
+                stats["is_skewed"] = abs(cast(float, stats["skewness"])) > 1
                 stats["has_outliers"] = self._detect_outliers_iqr(data)
 
                 distribution_stats.append(stats)
@@ -394,7 +397,8 @@ class DataQualityReporter:
         lower_bound = Q1 - threshold * IQR
         upper_bound = Q3 + threshold * IQR
 
-        return (data < lower_bound) | (data > upper_bound)
+        outlier_mask = (data < lower_bound) | (data > upper_bound)
+        return bool(outlier_mask.any())
 
     def _generate_distribution_summary(self, stats: list[dict]) -> dict[str, Any]:
         """分布統計のサマリー生成

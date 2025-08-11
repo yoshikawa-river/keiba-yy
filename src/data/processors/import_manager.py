@@ -302,7 +302,8 @@ class ImportManager:
 
     def _get_last_import(self, directory_name: str) -> Optional[dict[str, Any]]:
         """最後のインポート情報を取得"""
-        return self.import_history.get(directory_name, [])
+        history = self.import_history.get(directory_name, [])
+        return history[-1] if history else None
 
     def _calculate_success_rate(self, imports: list[dict[str, Any]]) -> float:
         """成功率を計算"""

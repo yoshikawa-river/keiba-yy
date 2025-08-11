@@ -3,7 +3,7 @@
 レースのレベル、出走頭数、ペース予想、展開予想などを抽出する
 """
 
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -660,7 +660,7 @@ class RaceFeatureExtractor:
                 f"全レース特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> dict[str, any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:

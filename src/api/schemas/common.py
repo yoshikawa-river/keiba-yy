@@ -99,8 +99,8 @@ class WebSocketMessage(BaseModel):
     data: Any = Field(..., description="メッセージデータ")
     timestamp: datetime = Field(default_factory=datetime.utcnow, description="送信時刻")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "type": "prediction_update",
                 "data": {
@@ -111,6 +111,7 @@ class WebSocketMessage(BaseModel):
                 "timestamp": "2023-12-01T10:00:00",
             }
         }
+    }
 
 
 class NotificationPreference(BaseModel):

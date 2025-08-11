@@ -3,6 +3,8 @@
 他馬との能力差、オッズベースの特徴量、人気順位などを抽出する
 """
 
+from typing import Any
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -533,7 +535,7 @@ class RelativeFeatureExtractor:
                 f"全相対特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> dict[str, any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量サマリー情報を取得
 
         Returns:

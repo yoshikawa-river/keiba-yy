@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 """
 認証関連のスキーマ定義
@@ -23,7 +23,8 @@ class UserCreate(UserBase):
 
     password: str = Field(..., min_length=8, max_length=100, description="パスワード")
 
-    @validator("password")
+    @field_validator("password")
+    @classmethod
     def validate_password(cls, v):
         """パスワードの強度チェック"""
         if not re.search(r"[A-Z]", v):
@@ -52,8 +53,7 @@ class User(UserBase):
     id: int
     created_at: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class Token(BaseModel):
@@ -92,10 +92,16 @@ class PasswordChangeRequest(BaseModel):
     current_password: str = Field(..., description="現在のパスワード")
     new_password: str = Field(..., min_length=8, description="新しいパスワード")
 
-    @validator("new_password")
-    def validate_new_password(cls, v, values):
+    @field_validator("new_password")
+    @classmethod
+    def validate_new_password(cls, v, info):
         """新しいパスワードの検証"""
-        if "current_password" in values and v == values["current_password"]:
+        if (
+            hasattr(info, "data")
+            and info.data
+            and "current_password" in info.data
+            and v == info.data["current_password"]
+        ):
             raise ValueError("新しいパスワードは現在のパスワードと異なる必要があります")
         # パスワード強度チェック（UserCreateと同じロジック）
         if not re.search(r"[A-Z]", v):
@@ -119,8 +125,7 @@ class APIKey(BaseModel):
     last_used_at: Optional[datetime] = None
     is_active: bool = True
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
 
 
 class APIKeyCreate(BaseModel):

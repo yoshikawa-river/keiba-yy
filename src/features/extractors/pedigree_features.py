@@ -3,7 +3,7 @@
 父馬、母父馬、兄弟馬の成績、血統の距離適性などを抽出する
 """
 
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -64,10 +64,10 @@ class PedigreeFeatureExtractor:
                     if len(sire_data) > 0:
                         # 全体成績
                         stats["sire_progeny_count"] = len(sire_data)
-                        stats["sire_win_count"] = (
-                            sire_data["finish_position"] == 1
-                        ).sum()
-                        stats["sire_win_rate"] = (
+                        stats["sire_win_count"] = int(
+                            (sire_data["finish_position"] == 1).sum()
+                        )
+                        stats["sire_win_rate"] = int(
                             stats["sire_win_count"] / stats["sire_progeny_count"]
                         )
                         stats["sire_place_rate"] = (
@@ -305,10 +305,10 @@ class PedigreeFeatureExtractor:
                         if len(sibling_data) > 0:
                             stats["sibling_count"] = len(siblings)
                             stats["sibling_race_count"] = len(sibling_data)
-                            stats["sibling_win_count"] = (
-                                sibling_data["finish_position"] == 1
-                            ).sum()
-                            stats["sibling_win_rate"] = (
+                            stats["sibling_win_count"] = int(
+                                (sibling_data["finish_position"] == 1).sum()
+                            )
+                            stats["sibling_win_rate"] = int(
                                 stats["sibling_win_count"] / stats["sibling_race_count"]
                             )
                             stats["sibling_avg_finish"] = sibling_data[
@@ -398,7 +398,9 @@ class PedigreeFeatureExtractor:
                         stats["cross_win_rate"] = (
                             same_cross["finish_position"] == 1
                         ).sum() / len(same_cross)
-                        stats["cross_avg_finish"] = same_cross["finish_position"].mean()
+                        stats["cross_avg_finish"] = int(
+                            same_cross["finish_position"].mean()
+                        )
                         stats["is_golden_cross"] = (
                             1
                             if stats["cross_win_rate"] > 0.2
@@ -408,7 +410,7 @@ class PedigreeFeatureExtractor:
                     else:
                         stats["cross_count"] = 0
                         stats["cross_win_rate"] = 0
-                        stats["cross_avg_finish"] = np.nan
+                        stats["cross_avg_finish"] = 0
                         stats["is_golden_cross"] = 0
 
                     # 血統系統の特徴
@@ -419,7 +421,7 @@ class PedigreeFeatureExtractor:
                     stats = {
                         "cross_count": 0,
                         "cross_win_rate": 0,
-                        "cross_avg_finish": np.nan,
+                        "cross_avg_finish": 0,
                         "is_golden_cross": 0,
                         "is_inbreed": 0,
                     }
@@ -507,7 +509,7 @@ class PedigreeFeatureExtractor:
             "is_first_foal": 0,
         }
 
-    def _check_inbreeding(self, sire_id: any, dam_sire_id: any, row: pd.Series) -> int:
+    def _check_inbreeding(self, sire_id: Any, dam_sire_id: Any, row: pd.Series) -> int:
         """インブリードのチェック(簡易版)
 
         Args:
@@ -584,7 +586,7 @@ class PedigreeFeatureExtractor:
                 f"全血統特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> dict[str, any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量サマリー情報を取得
 
         Returns:

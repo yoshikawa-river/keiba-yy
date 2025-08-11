@@ -99,7 +99,7 @@ class DataConverter:
             return None
 
     @staticmethod
-    def nrace_to_dict(nrace: NRace) -> dict[str, Any]:
+    def nrace_to_dict(nrace) -> dict[str, Any]:
         """N_RACEをビジネスロジック用の辞書に変換"""
         # レース日付の構築
         race_date = None
@@ -185,7 +185,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def numa_to_dict(numa: NUma) -> dict[str, Any]:
+    def numa_to_dict(numa) -> dict[str, Any]:
         """N_UMAをビジネスロジック用の辞書に変換"""
         # 生年月日の変換
         birth_date = DataConverter.parse_date(numa.BirthDate)
@@ -266,7 +266,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def numarace_to_dict(numarace: NUmaRace) -> dict[str, Any]:
+    def numarace_to_dict(numarace) -> dict[str, Any]:
         """N_UMA_RACEをビジネスロジック用の辞書に変換"""
         # レース日付の構築
         race_date = None
@@ -365,7 +365,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def nkisyu_to_dict(nkisyu: NKisyu) -> dict[str, Any]:
+    def nkisyu_to_dict(nkisyu) -> dict[str, Any]:
         """N_KISYUをビジネスロジック用の辞書に変換"""
         return {
             # 識別情報
@@ -396,7 +396,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def nchokyo_to_dict(nchokyo: NChokyo) -> dict[str, Any]:
+    def nchokyo_to_dict(nchokyo) -> dict[str, Any]:
         """N_CHOKYOをビジネスロジック用の辞書に変換"""
         return {
             # 識別情報

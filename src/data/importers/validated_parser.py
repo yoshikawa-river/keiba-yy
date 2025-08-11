@@ -18,6 +18,9 @@ from src.data.validators.schema_validator import Schema
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
 
+    schema_validator: Optional[SchemaValidator]
+    data_validator: Optional[DataValidator]
+
     def __init__(
         self,
         db_session: Session,
@@ -38,16 +41,14 @@ class ValidatedCSVParser(BaseCSVParser):
 
         # バリデーターの初期化
         if self.schema:
-            self.schema_validator: Optional[SchemaValidator] = SchemaValidator(
-                self.schema
-            )
+            self.schema_validator = SchemaValidator(self.schema)
         else:
-            self.schema_validator: Optional[SchemaValidator] = None
+            self.schema_validator = None
 
         if self.validate_business_logic:
-            self.data_validator: Optional[DataValidator] = DataValidator(db_session)
+            self.data_validator = DataValidator(db_session)
         else:
-            self.data_validator: Optional[DataValidator] = None
+            self.data_validator = None
 
     def _validate_row_with_validators(
         self, row_data: dict[str, Any]
@@ -82,9 +83,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
         Args:
             batch_df: バッチデータフレーム
-
-        Returns:
-            処理結果統計
+            dry_run: ドライランモード
         """
         success = 0
         error = 0
@@ -154,8 +153,6 @@ class ValidatedCSVParser(BaseCSVParser):
         self.statistics["error_count"] += error
         self.statistics["skip_count"] += skip
 
-        return {"success": success, "error": error, "skip": skip}
-
     def get_validation_report(self) -> dict[str, Any]:
         """
         バリデーションレポートを取得
@@ -163,7 +160,9 @@ class ValidatedCSVParser(BaseCSVParser):
         Returns:
             バリデーションレポート
         """
-        report = {
+        from typing import Any
+
+        report: dict[str, Any] = {
             "statistics": self.statistics,
             "errors": self.errors,
             "warnings": self.warnings,

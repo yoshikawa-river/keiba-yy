@@ -5,12 +5,7 @@ Provides basic functionality used throughout the application
 """
 
 from src.core.config import Settings, get_settings, settings
-from src.core.database import (
-    DatabaseManager,
-    db_manager,
-    get_db,
-    session_scope,
-)
+from src.core.database import DatabaseManager, db_manager, get_db, session_scope
 from src.core.exceptions import (
     AuthenticationError,
     AuthorizationError,

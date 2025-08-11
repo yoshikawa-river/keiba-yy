@@ -3,6 +3,7 @@
 """
 
 from datetime import datetime
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -30,7 +31,7 @@ router = APIRouter(
 )
 
 # モックユーザーデータベース（実際にはDBを使用）
-mock_users = {
+mock_users: dict[str, dict[str, Any]] = {
     "testuser": {
         "id": 1,
         "username": "testuser",
@@ -90,12 +91,12 @@ async def register(
 
     # レスポンス用のユーザーオブジェクト
     user = User(
-        id=new_user["id"],
-        username=new_user["username"],
-        email=new_user["email"],
-        full_name=new_user["full_name"],
-        is_active=new_user["is_active"],
-        created_at=new_user["created_at"],
+        id=cast(int, new_user["id"]),
+        username=cast(str, new_user["username"]),
+        email=cast(str, new_user["email"]),
+        full_name=cast(str, new_user["full_name"]),
+        is_active=cast(bool, new_user["is_active"]),
+        created_at=cast(datetime, new_user["created_at"]),
     )
 
     return ResponseBase(success=True, data=user, message="ユーザー登録が完了しました")
@@ -117,16 +118,18 @@ async def login(
     if not user:
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
-    if not jwt_handler.verify_password(form_data.password, user["hashed_password"]):
+    if not jwt_handler.verify_password(
+        form_data.password, cast(str, user["hashed_password"])
+    ):
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
-    if not user["is_active"]:
+    if not cast(bool, user["is_active"]):
         raise AuthenticationException("このアカウントは無効化されています")
 
     # トークン作成
     access_token_data = {
-        "sub": user["username"],
-        "user_id": user["id"],
+        "sub": cast(str, user["username"]),
+        "user_id": cast(int, user["id"]),
         "scopes": form_data.scopes,
     }
 
@@ -156,18 +159,24 @@ async def login_custom(
     if not user:
         # メールアドレスでも検索
         for u in mock_users.values():
-            if u["email"] == login_request.username:
+            if cast(str, u["email"]) == login_request.username:
                 user = u
                 break
 
     if not user:
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
-    if not jwt_handler.verify_password(login_request.password, user["hashed_password"]):
+    if not jwt_handler.verify_password(
+        login_request.password, cast(str, user["hashed_password"])
+    ):
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
     # トークン作成
-    access_token_data = {"sub": user["username"], "user_id": user["id"], "scopes": []}
+    access_token_data = {
+        "sub": cast(str, user["username"]),
+        "user_id": cast(int, user["id"]),
+        "scopes": [],
+    }
 
     access_token = jwt_handler.create_access_token(data=access_token_data)
     refresh_token = jwt_handler.create_refresh_token(data=access_token_data)
@@ -250,9 +259,14 @@ async def change_password(
     """
     # 現在のパスワード確認
     user = mock_users.get(current_user.username)
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="ユーザーが見つかりません",
+        )
 
     if not jwt_handler.verify_password(
-        password_change.current_password, user["hashed_password"]
+        password_change.current_password, cast(str, user["hashed_password"])
     ):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

@@ -32,6 +32,7 @@ class Trainer:
     """ダミーTrainerクラス"""
 
     def __init__(self, **kwargs):
+        self.id: int = kwargs.get("id", 0)  # Default id
         for k, v in kwargs.items():
             setattr(self, k, v)
 

@@ -8,7 +8,7 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Optional
+from typing import Optional, cast
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -127,11 +127,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # レート制限が無効な場合はスキップ
         if not settings.rate_limit_enabled:
-            return await call_next(request)
+            return cast(Response, await call_next(request))
 
         # 静的ファイルやヘルスチェックは除外
         if request.url.path in ["/", "/health", "/docs", "/redoc", "/openapi.json"]:
-            return await call_next(request)
+            return cast(Response, await call_next(request))
 
         # クライアント識別子を取得
         client_id = self.get_client_identifier(request)
@@ -158,7 +158,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             raise RateLimitException(retry_after=reset_after)
 
         # リクエスト処理
-        response = await call_next(request)
+        response = cast(Response, await call_next(request))
 
         # レート制限情報をヘッダーに追加
         response.headers["X-RateLimit-Limit"] = str(limit)

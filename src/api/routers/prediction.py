@@ -246,7 +246,7 @@ async def get_batch_results(
     """
     # モック実装（実際はデータベースから取得）
     # ここでは空のリストを返す
-    results = []
+    results: list[RacePredictionResponse] = []
 
     return ResponseBase(
         success=True, data=results, message="バッチ処理結果を取得しました"

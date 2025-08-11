@@ -1,0 +1,16 @@
+[flake8]
+max-line-length = 88
+extend-ignore = E501, E722, E402, E203, W503
+exclude = 
+    .venv,
+    venv,
+    build,
+    dist,
+    __pycache__,
+    .git,
+    .tox,
+    .mypy_cache,
+    alembic/versions,
+    data,
+    volumes,
+    notebooks

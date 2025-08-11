@@ -285,7 +285,9 @@ class BatchProcessor:
         Returns:
             品質検証結果
         """
-        quality_report = {
+        from typing import Any
+
+        quality_report: dict[str, Any] = {
             "total_files": len(csv_files),
             "file_quality": {},
             "overall_score": 0,
@@ -341,7 +343,7 @@ class BatchProcessor:
                 "row_count": csv_file.row_count,
             }
 
-            quality_report["issues"].extend(  # type: ignore
+            quality_report["issues"].extend(
                 [{"file": str(csv_file.path), "issue": issue} for issue in file_issues]
             )
 

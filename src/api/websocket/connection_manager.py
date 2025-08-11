@@ -98,8 +98,9 @@ class ConnectionManager:
             conn_info = self.connection_info.get(client_id)
 
             # チャンネル購読を解除
-            for channel in list(conn_info.get("subscribed_channels", [])):
-                await self.unsubscribe(client_id, channel)
+            if conn_info:
+                for channel in list(conn_info.get("subscribed_channels", [])):
+                    await self.unsubscribe(client_id, channel)
 
             # ユーザー接続から削除
             if conn_info and conn_info.get("user_id"):
