@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
@@ -112,8 +112,8 @@ async def require_api_key(api_key: str = Depends(get_api_key)) -> str:
 
 
 async def get_optional_user(
-    credentials: HTTPAuthorizationCredentials | None = Security(security),
-) -> User | None:
+    credentials: Optional[HTTPAuthorizationCredentials] = Security(security),
+) -> Optional[User]:
     """オプショナルユーザー取得（認証不要エンドポイント用）"""
     if credentials is None:
         return None
@@ -133,7 +133,7 @@ class RateLimitChecker:
 
     async def __call__(
         self,
-        user: User | None = Depends(get_optional_user),
+        user: Optional[User] = Depends(get_optional_user),
         api_key: Optional[str] = Depends(get_api_key),
     ) -> bool:
         """レート制限チェック"""

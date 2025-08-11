@@ -80,9 +80,9 @@ class RaceInfo(BaseModel):
     track: str = Field(..., description="競馬場")
     race_type: RaceType = Field(..., description="レースタイプ")
     distance: int = Field(..., ge=800, le=3600, description="距離（メートル）")
-    race_grade: RaceGrade | None = Field(None, description="レースグレード")
-    weather: WeatherCondition | None = Field(None, description="天候")
-    track_condition: TrackCondition | None = Field(None, description="馬場状態")
+    race_grade: Optional[RaceGrade] = Field(None, description="レースグレード")
+    weather: Optional[WeatherCondition] = Field(None, description="天候")
+    track_condition: Optional[TrackCondition] = Field(None, description="馬場状態")
     prize_money: Optional[int] = Field(None, ge=0, description="賞金総額")
     field_size: int = Field(..., ge=2, le=18, description="出走頭数")
 
@@ -125,7 +125,7 @@ class PredictionResult(BaseModel):
     predicted_rank: int = Field(..., ge=1, le=18, description="予測順位")
     confidence_score: Optional[float] = Field(None, ge=0, le=1, description="予測信頼度")
     expected_value: Optional[float] = Field(None, description="期待値")
-    features: dict[str, Any] | None = Field(None, description="使用した特徴量")
+    features: Optional[dict[str, Any]] = Field(None, description="使用した特徴量")
 
 
 class RacePredictionResponse(BaseModel):
@@ -137,8 +137,8 @@ class RacePredictionResponse(BaseModel):
     predicted_at: datetime = Field(..., description="予測実行日時")
     model_version: str = Field(..., description="モデルバージョン")
     predictions: list[PredictionResult] = Field(..., description="予測結果リスト")
-    recommended_bets: dict[str, list[int]] | None = Field(None, description="推奨馬券")
-    metadata: dict[str, Any] | None = Field(None, description="メタデータ")
+    recommended_bets: Optional[dict[str, list[int]]] = Field(None, description="推奨馬券")
+    metadata: Optional[dict[str, Any]] = Field(None, description="メタデータ")
 
     class Config:
         schema_extra = {
@@ -190,7 +190,7 @@ class BatchPredictionResponse(BaseModel):
     total_races: int = Field(..., description="総レース数")
     completed_races: int = Field(default=0, description="完了レース数")
     created_at: datetime = Field(..., description="作成日時")
-    estimated_completion: datetime | None = Field(None, description="完了予定時刻")
+    estimated_completion: Optional[datetime] = Field(None, description="完了予定時刻")
     results_url: Optional[str] = Field(None, description="結果取得URL")
 
 
@@ -204,7 +204,7 @@ class PredictionHistory(BaseModel):
     predicted_at: datetime
     model_version: str
     accuracy_score: Optional[float] = None
-    actual_results: dict[str, Any] | None = None
+    actual_results: Optional[dict[str, Any]] = None
 
     class Config:
         orm_mode = True
