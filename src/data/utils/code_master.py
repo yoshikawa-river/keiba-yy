@@ -5,7 +5,6 @@ JRA-VANの各種コードを意味のある値に変換するユーティリテ�
 """
 
 
-
 class CodeMaster:
     """JRA-VANコードマスター"""
 

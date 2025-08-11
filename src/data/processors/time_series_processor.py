@@ -125,7 +125,10 @@ class TimeSeriesProcessor:
         return date_columns
 
     def create_time_features(
-        self, df: pd.DataFrame, date_column: str, features: list[str | None] | None = None
+        self,
+        df: pd.DataFrame,
+        date_column: str,
+        features: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """時系列特徴量の生成
 

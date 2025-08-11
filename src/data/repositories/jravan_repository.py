@@ -114,9 +114,7 @@ class RaceRepository:
 
         return cast(list[NRace], query.all())
 
-    def get_recent_races(
-        self, days: int = 7, jyo_cd: str | None = None
-    ) -> list[NRace]:
+    def get_recent_races(self, days: int = 7, jyo_cd: str | None = None) -> list[NRace]:
         """最近のレースを取得"""
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days)

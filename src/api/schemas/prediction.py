@@ -122,9 +122,7 @@ class PredictionResult(BaseModel):
     win_probability: float = Field(..., ge=0, le=1, description="勝率")
     place_probability: float = Field(..., ge=0, le=1, description="複勝率")
     predicted_rank: int = Field(..., ge=1, le=18, description="予測順位")
-    confidence_score: float | None = Field(
-        None, ge=0, le=1, description="予測信頼度"
-    )
+    confidence_score: float | None = Field(None, ge=0, le=1, description="予測信頼度")
     expected_value: float | None = Field(None, description="期待値")
     features: dict[str, Any | None] = Field(None, description="使用した特徴量")
 
@@ -138,9 +136,7 @@ class RacePredictionResponse(BaseModel):
     predicted_at: datetime = Field(..., description="予測実行日時")
     model_version: str = Field(..., description="モデルバージョン")
     predictions: list[PredictionResult] = Field(..., description="予測結果リスト")
-    recommended_bets: dict[str, list[int | None]] = Field(
-        None, description="推奨馬券"
-    )
+    recommended_bets: dict[str, list[int | None]] = Field(None, description="推奨馬券")
     metadata: dict[str, Any | None] = Field(None, description="メタデータ")
 
     model_config = {
