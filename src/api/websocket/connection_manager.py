@@ -31,7 +31,7 @@ class ConnectionManager:
         self.heartbeat_tasks: dict[str, asyncio.Task] = {}
 
     async def connect(
-        self, websocket: WebSocket, client_id: str, user_id: str | None = None
+        self, websocket: WebSocket, client_id: str, user_id: Optional[str] = None
     ) -> bool:
         """WebSocket接続を確立"""
         try:
@@ -139,7 +139,7 @@ class ConnectionManager:
                 await self.disconnect(client_id)
 
     async def broadcast(
-        self, message: WebSocketMessage, exclude_client: str | None = None
+        self, message: WebSocketMessage, exclude_client: Optional[str] = None
     ):
         """全クライアントにブロードキャスト"""
         disconnected_clients = []
@@ -212,7 +212,7 @@ class ConnectionManager:
         )
 
     async def publish_to_channel(
-        self, channel: str, message: WebSocketMessage, exclude_client: str | None = None
+        self, channel: str, message: WebSocketMessage, exclude_client: Optional[str] = None
     ):
         """チャンネルにメッセージを配信"""
         if channel in self.channel_subscribers:

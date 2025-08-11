@@ -84,7 +84,7 @@ def require_scopes(required_scopes: list[str]):
     return scope_checker
 
 
-async def get_api_key(api_key: str | None = Security(api_key_header)) -> str | None:
+async def get_api_key(api_key: Optional[str] = Security(api_key_header)) -> str | None:
     """APIキーを取得"""
     if api_key is None:
         return None
@@ -133,7 +133,7 @@ class RateLimitChecker:
     async def __call__(
         self,
         user: User | None = Depends(get_optional_user),
-        api_key: str | None = Depends(get_api_key),
+        api_key: Optional[str] = Depends(get_api_key),
     ) -> bool:
         """レート制限チェック"""
         # TODO: Redisを使用した実際のレート制限実装

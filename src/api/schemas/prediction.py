@@ -4,7 +4,7 @@
 
 from datetime import date, datetime
 from enum import Enum
-from typing import Any
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field, validator
 
@@ -58,16 +58,16 @@ class HorseInfo(BaseModel):
     name: str = Field(..., description="馬名")
     age: int = Field(..., ge=2, le=10, description="年齢")
     sex: str = Field(..., pattern="^(牡|牝|セ)$", description="性別")
-    weight: float | None = Field(None, ge=300, le=700, description="馬体重")
-    weight_change: int | None = Field(None, ge=-50, le=50, description="馬体重増減")
+    weight: Optional[float] = Field(None, ge=300, le=700, description="馬体重")
+    weight_change: Optional[int] = Field(None, ge=-50, le=50, description="馬体重増減")
     post_position: int = Field(..., ge=1, le=18, description="枠番")
     horse_number: int = Field(..., ge=1, le=18, description="馬番")
     jockey_name: str = Field(..., description="騎手名")
     jockey_weight: float = Field(..., ge=45, le=65, description="斤量")
     trainer_name: str = Field(..., description="調教師名")
-    owner_name: str | None = Field(None, description="馬主名")
-    odds: float | None = Field(None, ge=1.0, description="オッズ")
-    popularity: int | None = Field(None, ge=1, le=18, description="人気順")
+    owner_name: Optional[str] = Field(None, description="馬主名")
+    odds: Optional[float] = Field(None, ge=1.0, description="オッズ")
+    popularity: Optional[int] = Field(None, ge=1, le=18, description="人気順")
 
 
 class RaceInfo(BaseModel):
@@ -83,7 +83,7 @@ class RaceInfo(BaseModel):
     race_grade: RaceGrade | None = Field(None, description="レースグレード")
     weather: WeatherCondition | None = Field(None, description="天候")
     track_condition: TrackCondition | None = Field(None, description="馬場状態")
-    prize_money: int | None = Field(None, ge=0, description="賞金総額")
+    prize_money: Optional[int] = Field(None, ge=0, description="賞金総額")
     field_size: int = Field(..., ge=2, le=18, description="出走頭数")
 
 
@@ -123,8 +123,8 @@ class PredictionResult(BaseModel):
     win_probability: float = Field(..., ge=0, le=1, description="勝率")
     place_probability: float = Field(..., ge=0, le=1, description="複勝率")
     predicted_rank: int = Field(..., ge=1, le=18, description="予測順位")
-    confidence_score: float | None = Field(None, ge=0, le=1, description="予測信頼度")
-    expected_value: float | None = Field(None, description="期待値")
+    confidence_score: Optional[float] = Field(None, ge=0, le=1, description="予測信頼度")
+    expected_value: Optional[float] = Field(None, description="期待値")
     features: dict[str, Any] | None = Field(None, description="使用した特徴量")
 
 
@@ -176,10 +176,10 @@ class BatchPredictionRequest(BaseModel):
     races: list[PredictionRequest] = Field(
         ..., min_items=1, max_items=100, description="予測対象レースリスト"
     )
-    priority: str | None = Field(
+    priority: Optional[str] = Field(
         default="normal", pattern="^(high|normal|low)$", description="処理優先度"
     )
-    callback_url: str | None = Field(None, description="結果通知用URL")
+    callback_url: Optional[str] = Field(None, description="結果通知用URL")
 
 
 class BatchPredictionResponse(BaseModel):
@@ -191,7 +191,7 @@ class BatchPredictionResponse(BaseModel):
     completed_races: int = Field(default=0, description="完了レース数")
     created_at: datetime = Field(..., description="作成日時")
     estimated_completion: datetime | None = Field(None, description="完了予定時刻")
-    results_url: str | None = Field(None, description="結果取得URL")
+    results_url: Optional[str] = Field(None, description="結果取得URL")
 
 
 class PredictionHistory(BaseModel):
@@ -203,7 +203,7 @@ class PredictionHistory(BaseModel):
     race_date: date
     predicted_at: datetime
     model_version: str
-    accuracy_score: float | None = None
+    accuracy_score: Optional[float] = None
     actual_results: dict[str, Any] | None = None
 
     class Config:
