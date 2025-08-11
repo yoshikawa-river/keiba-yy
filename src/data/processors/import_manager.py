@@ -34,7 +34,7 @@ class ImportManager:
     def import_from_directory(
         self,
         directory_name: str,
-        file_types: list[FileType | None] = None,
+        file_types: list[FileType | None] | None = None,
         batch_size: int = 1000,
         validate: bool = True,
         dry_run: bool = False,
@@ -99,7 +99,7 @@ class ImportManager:
         self,
         directory_name: str,
         since: datetime | None = None,
-        file_types: list[FileType | None] = None,
+        file_types: list[FileType | None] | None = None,
     ) -> BatchResult:
         """
         増分インポート(前回インポート以降の新規ファイルのみ)

@@ -31,8 +31,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         horse_id_column: str = "horse_id",
-        result_columns: dict[str, str | None] = None,
-        group_by: list[str | None] = None,
+        result_columns: dict[str, str | None] | None = None,
+        group_by: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """馬別成績集計
 
@@ -124,8 +124,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         jockey_id_column: str = "jockey_id",
-        result_columns: dict[str, str | None] = None,
-        group_by: list[str | None] = None,
+        result_columns: dict[str, str | None] | None = None,
+        group_by: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """騎手別成績集計
 
@@ -194,8 +194,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         trainer_id_column: str = "trainer_id",
-        result_columns: dict[str, str | None] = None,
-        group_by: list[str | None] = None,
+        result_columns: dict[str, str | None] | None = None,
+        group_by: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """調教師別成績集計
 
@@ -264,8 +264,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         course_columns: dict[str, str],
-        result_columns: dict[str, str | None] = None,
-        group_by: list[str | None] = None,
+        result_columns: dict[str, str | None] | None = None,
+        group_by: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """コース別成績集計
 

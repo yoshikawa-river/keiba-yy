@@ -265,7 +265,7 @@ class CSVFileDetector:
         return max(0, row_count)  # 負の値を防ぐ
 
     def get_files_by_type(
-        self, file_type: FileType, csv_files: list[CSVFile | None] = None
+        self, file_type: FileType, csv_files: list[CSVFile | None] | None = None
     ) -> list[CSVFile]:
         """
         特定タイプのファイルのみを取得

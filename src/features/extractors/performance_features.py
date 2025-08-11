@@ -121,7 +121,7 @@ class PerformanceFeatureExtractor:
         performance_history: pd.DataFrame,
         entity_column: str = "horse_id",
         date_column: str = "race_date",
-        n_recent: list[int | None] = None,
+        n_recent: list[int | None] | None = None,
     ) -> pd.DataFrame:
         """直近N走の成績特徴量抽出
 
@@ -318,7 +318,7 @@ class PerformanceFeatureExtractor:
         performance_history: pd.DataFrame,
         entity_column: str = "horse_id",
         date_column: str = "race_date",
-        distance_ranges: list[tuple[int, int | None]] = None,
+        distance_ranges: list[tuple[int, int | None]] | None = None,
     ) -> pd.DataFrame:
         """距離別成績特徴量の抽出
 

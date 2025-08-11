@@ -22,8 +22,8 @@ class SchemaField:
         min_value: float | None = None,
         max_value: float | None = None,
         pattern: str | None = None,
-        enum_values: list[Any | None] = None,
-        custom_validator: Callable[[Any | None, str | bool]] = None,
+        enum_values: list[Any | None] | None = None,
+        custom_validator: Callable[[Any | None, str | bool]] | None = None,
     ):
         self.name = name
         self.field_type = field_type

@@ -290,7 +290,7 @@ class DataQualityReporter:
     def generate_distribution_report(
         self,
         df: pd.DataFrame,
-        columns: list[str | None] = None,
+        columns: list[str | None] | None = None,
         output_file: str | None = None,
     ) -> dict[str, Any]:
         """データ分布レポートの生成
@@ -479,7 +479,7 @@ class DataQualityReporter:
     def generate_outlier_report(
         self,
         df: pd.DataFrame,
-        columns: list[str | None] = None,
+        columns: list[str | None] | None = None,
         method: str = "iqr",
         threshold: float = 1.5,
         output_file: str | None = None,

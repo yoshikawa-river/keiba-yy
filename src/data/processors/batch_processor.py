@@ -113,9 +113,9 @@ class BatchProcessor:
 
     def process_all(
         self,
-        file_types: list[FileType | None] = None,
+        file_types: list[FileType | None] | None = None,
         file_pattern: str = "*.csv",
-        progress_callback: Callable[[int, int | None, None]] = None,
+        progress_callback: Callable[[int, int | None, None]] | None = None,
     ) -> BatchResult:
         """
         すべてのCSVファイルを処理

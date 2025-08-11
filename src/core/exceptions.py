@@ -24,7 +24,7 @@ class KeibaAIException(Exception):
         message: str,
         error_code: str | None = None,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        details: dict[str, Any | None] = None,
+        details: dict[str, Any | None] | None = None,
     ):
         """
         カスタム例外の初期化
@@ -56,7 +56,7 @@ class KeibaAIException(Exception):
 class ValidationError(KeibaAIException):
     """バリデーションエラー"""
 
-    def __init__(self, message: str, details: dict[str, Any | None] = None):
+    def __init__(self, message: str, details: dict[str, Any | None] | None = None):
         super().__init__(
             message=message,
             error_code="VALIDATION_ERROR",
@@ -150,7 +150,7 @@ class DataImportError(KeibaAIException):
 class DataProcessingError(KeibaAIException):
     """データ処理エラー"""
 
-    def __init__(self, message: str, details: dict[str, Any | None] = None):
+    def __init__(self, message: str, details: dict[str, Any | None] | None = None):
         super().__init__(
             message=message,
             error_code="DATA_PROCESSING_ERROR",
@@ -162,7 +162,7 @@ class DataProcessingError(KeibaAIException):
 class FeatureExtractionError(KeibaAIException):
     """特徴量抽出エラー"""
 
-    def __init__(self, message: str, details: dict[str, Any | None] = None):
+    def __init__(self, message: str, details: dict[str, Any | None] | None = None):
         super().__init__(
             message=message,
             error_code="FEATURE_EXTRACTION_ERROR",
