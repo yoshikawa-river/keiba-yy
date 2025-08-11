@@ -5,7 +5,7 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from src.api.dependencies.auth import require_api_key
+from src.api.dependencies.auth import get_api_key, get_optional_user, rate_limit_100, require_api_key
 from src.api.main import app
 
 client = TestClient(app)
@@ -17,8 +17,29 @@ async def mock_require_api_key() -> str:
     return "sk_test_api_key_1234567890123456789012345"
 
 
+# テスト用のレート制限依存関数
+async def mock_rate_limit() -> bool:
+    """テスト用のモックレート制限依存関数"""
+    return True
+
+
+# テスト用のAPIキー取得依存関数
+async def mock_get_api_key() -> str:
+    """テスト用のモックAPIキー取得依存関数"""
+    return "sk_test_api_key_1234567890123456789012345"
+
+
+# テスト用のオプショナルユーザー依存関数
+async def mock_get_optional_user():
+    """テスト用のモックオプショナルユーザー依存関数"""
+    return None
+
+
 # テスト時に依存関数をオーバーライド
 app.dependency_overrides[require_api_key] = mock_require_api_key
+app.dependency_overrides[rate_limit_100] = mock_rate_limit
+app.dependency_overrides[get_api_key] = mock_get_api_key
+app.dependency_overrides[get_optional_user] = mock_get_optional_user
 
 
 class TestPredictionAPI:
