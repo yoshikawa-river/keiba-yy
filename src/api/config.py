@@ -56,9 +56,10 @@ class Settings(BaseSettings):
     max_batch_size: int = 100
     prediction_timeout: int = 30  # seconds
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = False
+    model_config = {
+        "env_file": ".env",
+        "case_sensitive": False,
+    }
 
 
 @lru_cache
