@@ -4,7 +4,6 @@ Core module
 Provides basic functionality used throughout the application
 """
 
-from typing import Any, Optional, Union
 from src.core.config import Settings, get_settings, settings
 from src.core.database import (
     DatabaseManager,

@@ -2,10 +2,10 @@
 エラーハンドリングミドルウェア
 """
 
-from typing import Any, Optional, Union
 import logging
 import traceback
 import uuid
+from typing import Union
 
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError

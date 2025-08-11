@@ -3,7 +3,7 @@
 通算成績、直近N走の成績、コース別成績、距離別成績、馬場状態別成績などを抽出する
 """
 
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 import pandas as pd

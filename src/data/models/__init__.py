@@ -4,7 +4,6 @@ mykeibaDBテーブルモデル
 実際のmykeibaDBスキーマに対応したSQLAlchemyモデル
 """
 
-from typing import Any, Optional, Union
 from .mykeibadb_models import (
     BanushiMaster,
     Base,

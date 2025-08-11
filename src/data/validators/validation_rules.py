@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from datetime import datetime
-from typing import Any, Optional, Union
+from typing import Any
 
 from src.data.validators.schema_validator import Schema, SchemaField
 

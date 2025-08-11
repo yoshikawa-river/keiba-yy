@@ -1,4 +1,4 @@
-from typing import Any, Optional, Union
+from typing import Any
 
 import pandas as pd
 from loguru import logger

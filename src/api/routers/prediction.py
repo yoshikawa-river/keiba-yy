@@ -2,7 +2,7 @@ import asyncio
 import random
 import uuid
 from datetime import date, datetime
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from loguru import logger

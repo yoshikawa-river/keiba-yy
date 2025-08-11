@@ -3,8 +3,8 @@
 日付データの標準化、時系列特徴量の生成、ラグ特徴量の作成を行う
 """
 
-from typing import Any, Optional, Union
 from datetime import datetime
+from typing import Optional
 
 import numpy as np
 import pandas as pd

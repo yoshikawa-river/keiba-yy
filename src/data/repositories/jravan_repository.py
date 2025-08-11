@@ -1,5 +1,5 @@
 from datetime import date, datetime, timedelta
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from sqlalchemy import and_, func, or_
 from sqlalchemy.orm import Session

@@ -5,7 +5,7 @@
 エラーハンドリングのユーティリティを提供
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from fastapi import HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError

@@ -3,8 +3,8 @@
 馬別、騎手別、調教師別、コース別の成績集計を行う
 """
 
-from typing import Any, Optional, Union
 from datetime import timedelta
+from typing import Optional
 
 import numpy as np
 import pandas as pd

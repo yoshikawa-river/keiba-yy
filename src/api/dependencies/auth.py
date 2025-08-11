@@ -2,8 +2,8 @@
 認証関連の依存関数
 """
 
-from typing import Any, Optional, Union
 from datetime import datetime
+from typing import Optional
 
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer

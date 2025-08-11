@@ -7,7 +7,7 @@ SQLAlchemyを使用したデータベース接続の管理と
 
 from collections.abc import Generator
 from contextlib import contextmanager
-from typing import Optional, Union
+from typing import Optional
 
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine

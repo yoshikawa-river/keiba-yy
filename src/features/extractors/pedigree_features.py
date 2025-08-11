@@ -3,7 +3,7 @@
 父馬、母父馬、兄弟馬の成績、血統の距離適性などを抽出する
 """
 
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 import pandas as pd

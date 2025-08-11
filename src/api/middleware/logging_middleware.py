@@ -2,7 +2,6 @@
 ロギングミドルウェア
 """
 
-from typing import Any, Optional, Union
 import json
 import logging
 import time

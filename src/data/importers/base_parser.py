@@ -5,7 +5,7 @@ CSVパーサーの基底クラス
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import pandas as pd
 from sqlalchemy.orm import Session

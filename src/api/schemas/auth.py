@@ -1,6 +1,6 @@
-from typing import Any, Optional, Union
 import re
 from datetime import datetime
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator
 

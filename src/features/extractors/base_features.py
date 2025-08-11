@@ -3,7 +3,7 @@
 馬齢、性別、斤量、馬体重、枠番、馬番、前走からの間隔などの基本特徴量を抽出する
 """
 
-from typing import Optional, Union
+from typing import Optional
 
 import pandas as pd
 from loguru import logger

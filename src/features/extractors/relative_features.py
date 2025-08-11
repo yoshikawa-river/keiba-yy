@@ -3,7 +3,6 @@
 他馬との能力差、オッズベースの特徴量、人気順位などを抽出する
 """
 
-from typing import Any, Optional, Union
 import numpy as np
 import pandas as pd
 from loguru import logger

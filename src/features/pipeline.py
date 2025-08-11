@@ -4,7 +4,7 @@
 Phase1統合済み + Phase2未統合抽出器を全て統合管理。
 """
 
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import pandas as pd
 from loguru import logger

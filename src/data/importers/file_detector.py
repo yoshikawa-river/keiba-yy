@@ -5,11 +5,11 @@ TARGET frontier JVから出力されたCSVファイルを検出し、
 ファイルタイプを自動判定する機能を提供
 """
 
-from typing import Any, Optional, Union
 import csv
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
+from typing import Optional
 
 import chardet
 

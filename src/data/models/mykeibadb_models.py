@@ -4,7 +4,6 @@ mykeibaDBテーブルモデル定義
 実際のMySQLスキーマに対応したSQLAlchemyモデル
 """
 
-from typing import Any, Optional, Union
 from datetime import datetime
 
 from sqlalchemy import Column, Index, PrimaryKeyConstraint, String

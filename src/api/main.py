@@ -2,7 +2,6 @@
 FastAPI メインアプリケーション
 """
 
-from typing import Any, Optional, Union
 import time
 import uuid
 from datetime import datetime

@@ -2,13 +2,13 @@
 レート制限ミドルウェア
 """
 
-from typing import Any, Optional, Union
 import asyncio
 import hashlib
 import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
+from typing import Optional
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware

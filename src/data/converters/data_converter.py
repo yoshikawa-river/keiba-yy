@@ -1,7 +1,7 @@
 import builtins
 import contextlib
 from datetime import date, datetime, time
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 from src.data.utils.code_master import CodeMaster
 

@@ -3,7 +3,7 @@
 レースのレベル、出走頭数、ペース予想、展開予想などを抽出する
 """
 
-from typing import Optional, Union
+from typing import Optional
 
 import numpy as np
 import pandas as pd

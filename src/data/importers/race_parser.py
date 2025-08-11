@@ -6,7 +6,7 @@ TARGET frontier JVから出力されたレース情報CSVをパースし、
 """
 
 from datetime import date, datetime
-from typing import Any, Optional, Union
+from typing import Any, Optional
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
