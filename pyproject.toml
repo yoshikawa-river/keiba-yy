@@ -185,6 +185,7 @@ ignore = [
     "C408",   # unnecessary-collection-call (dict() is sometimes clearer)
     "RUF022", # unsorted-dunder-all (not critical)
     "PLW2901", # redefined-loop-name (sometimes intentional)
+    "UP007",  # use-union-syntax (Python 3.9 compatibility)
 ]
 
 [tool.ruff.lint.per-file-ignores]
