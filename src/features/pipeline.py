@@ -136,9 +136,7 @@ class ComprehensiveFeaturePipeline:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"Phase1特徴量抽出中にエラーが発生: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"Phase1特徴量抽出中にエラーが発生: {e!s}") from e
 
     def extract_phase2_features(
         self,
@@ -264,9 +262,7 @@ class ComprehensiveFeaturePipeline:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"包括的特徴量抽出中にエラーが発生: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"包括的特徴量抽出中にエラーが発生: {e!s}") from e
 
     def get_feature_summary(self) -> dict[str, Any]:
         """特徴量サマリー情報を取得
