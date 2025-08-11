@@ -4,7 +4,7 @@
 Phase1の血統基本特徴量15個を実装。
 """
 
-from typing import Optional
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -44,12 +44,10 @@ class PedigreeBasicExtractor:
             "Epiphaneia": "roberto",
             "Kizuna": "sunday",
             "Gold Ship": "sunday",
-            
             # ノーザンダンサー系
             "Northern Dancer": "northern",
             "Danzig": "northern",
             "Storm Cat": "northern",
-            
             # その他の主要系統
             "Mr. Prospector": "prospector",
             "Bold Ruler": "bold",
@@ -65,7 +63,7 @@ class PedigreeBasicExtractor:
         }
 
     def extract_sire_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """父系特徴量（5個）
 
@@ -97,8 +95,14 @@ class PedigreeBasicExtractor:
                         sire_name = horse_pedigree.iloc[0]["sire_name"]
                         bloodline = self.major_bloodlines.get(sire_name, "other")
                         bloodline_map = {
-                            "sunday": 1, "kingmambo": 2, "northern": 3,
-                            "prospector": 4, "bold": 5, "native": 6, "roberto": 7, "other": 0
+                            "sunday": 1,
+                            "kingmambo": 2,
+                            "northern": 3,
+                            "prospector": 4,
+                            "bold": 5,
+                            "native": 6,
+                            "roberto": 7,
+                            "other": 0,
                         }
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "sire_bloodline"
@@ -145,7 +149,7 @@ class PedigreeBasicExtractor:
         return df_features
 
     def extract_dam_sire_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """母父系特徴量（5個）
 
@@ -176,8 +180,14 @@ class PedigreeBasicExtractor:
                         dam_sire_name = horse_pedigree.iloc[0]["dam_sire_name"]
                         bloodline = self.major_bloodlines.get(dam_sire_name, "other")
                         bloodline_map = {
-                            "sunday": 1, "kingmambo": 2, "northern": 3,
-                            "prospector": 4, "bold": 5, "native": 6, "roberto": 7, "other": 0
+                            "sunday": 1,
+                            "kingmambo": 2,
+                            "northern": 3,
+                            "prospector": 4,
+                            "bold": 5,
+                            "native": 6,
+                            "roberto": 7,
+                            "other": 0,
                         }
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "dam_sire_bloodline"
@@ -225,7 +235,7 @@ class PedigreeBasicExtractor:
         return df_features
 
     def extract_bloodline_compatibility_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """血統相性・距離適性特徴量（5個）
 
@@ -245,10 +255,13 @@ class PedigreeBasicExtractor:
 
                 if len(horse_pedigree) > 0:
                     # 1. 父×母父の相性スコア（ニックス）
-                    if "sire_name" in horse_pedigree.columns and "dam_sire_name" in horse_pedigree.columns:
+                    if (
+                        "sire_name" in horse_pedigree.columns
+                        and "dam_sire_name" in horse_pedigree.columns
+                    ):
                         sire = horse_pedigree.iloc[0]["sire_name"]
                         dam_sire = horse_pedigree.iloc[0]["dam_sire_name"]
-                        
+
                         # 良好な組み合わせの例（実際はもっと詳細なデータが必要）
                         good_nicks = [
                             ("Deep Impact", "Storm Cat"),
@@ -256,22 +269,25 @@ class PedigreeBasicExtractor:
                             ("King Kamehameha", "Sunday Silence"),
                             ("Lord Kanaloa", "Sunday Silence"),
                         ]
-                        
+
                         nick_score = 0.5  # デフォルト
                         if (sire, dam_sire) in good_nicks:
                             nick_score = 1.0
                         elif sire == dam_sire:  # 同一は避ける
                             nick_score = 0.2
-                            
+
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "nick_score"
                         ] = nick_score
 
                     # 2. 距離適性スコア（父系の距離適性とレース距離の一致度）
-                    if "sire_name" in horse_pedigree.columns and "distance" in df.columns:
+                    if (
+                        "sire_name" in horse_pedigree.columns
+                        and "distance" in df.columns
+                    ):
                         sire = horse_pedigree.iloc[0]["sire_name"]
                         distance = df[df["horse_id"] == horse_id]["distance"].iloc[0]
-                        
+
                         # 距離カテゴリを判定
                         if distance <= 1400:
                             dist_cat = "sprint"
@@ -281,16 +297,17 @@ class PedigreeBasicExtractor:
                             dist_cat = "intermediate"
                         else:
                             dist_cat = "long"
-                        
+
                         # 適性スコア計算
                         aptitude_score = 0.5
                         for cat, sires in self.distance_aptitude.items():
                             if cat == dist_cat and sire in sires:
                                 aptitude_score = 1.0
                                 break
-                        
+
                         df_features.loc[
-                            df_features["horse_id"] == horse_id, "distance_aptitude_score"
+                            df_features["horse_id"] == horse_id,
+                            "distance_aptitude_score",
                         ] = aptitude_score
 
                     # 3. インブリード指標（簡易版）
@@ -302,19 +319,30 @@ class PedigreeBasicExtractor:
                         ] = float(has_inbreeding)
 
                     # 4. 父系と母父系の系統一致度
-                    if "sire_bloodline" in df_features.columns and "dam_sire_bloodline" in df_features.columns:
-                        sire_bl = df_features[df_features["horse_id"] == horse_id]["sire_bloodline"].iloc[0]
-                        dam_sire_bl = df_features[df_features["horse_id"] == horse_id]["dam_sire_bloodline"].iloc[0]
-                        
+                    if (
+                        "sire_bloodline" in df_features.columns
+                        and "dam_sire_bloodline" in df_features.columns
+                    ):
+                        sire_bl = df_features[df_features["horse_id"] == horse_id][
+                            "sire_bloodline"
+                        ].iloc[0]
+                        dam_sire_bl = df_features[df_features["horse_id"] == horse_id][
+                            "dam_sire_bloodline"
+                        ].iloc[0]
+
                         # 同系統の場合
                         if sire_bl == dam_sire_bl and sire_bl != 0:
                             bloodline_match = 1.0
                         # 相性の良い組み合わせ
-                        elif (sire_bl, dam_sire_bl) in [(1, 3), (2, 1), (3, 4)]:  # Sunday×Northern等
+                        elif (sire_bl, dam_sire_bl) in [
+                            (1, 3),
+                            (2, 1),
+                            (3, 4),
+                        ]:  # Sunday×Northern等
                             bloodline_match = 0.8
                         else:
                             bloodline_match = 0.5
-                            
+
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "bloodline_match_score"
                         ] = bloodline_match
@@ -347,7 +375,7 @@ class PedigreeBasicExtractor:
         return df_features
 
     def extract_all_pedigree_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """全血統基本特徴量を抽出（15個）
 
@@ -384,7 +412,7 @@ class PedigreeBasicExtractor:
                 f"血統基本特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> dict[str, any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:

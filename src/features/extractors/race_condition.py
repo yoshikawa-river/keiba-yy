@@ -4,7 +4,6 @@
 基本的なレース条件特徴量15個を実装。
 """
 
-import numpy as np
 import pandas as pd
 from loguru import logger
 
@@ -55,9 +54,7 @@ class RaceConditionExtractor:
             "小倉": {"turn": "right", "scale": "small"},
         }
 
-    def extract_basic_race_features(
-        self, df: pd.DataFrame
-    ) -> pd.DataFrame:
+    def extract_basic_race_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """基本レース条件特徴量（8個）
 
         Args:
@@ -88,7 +85,9 @@ class RaceConditionExtractor:
             df_features["class_rank"] = df["race_class"].map(self.class_ranks).fillna(1)
 
             # 5. 高グレードレースフラグ（G1-G3）
-            df_features["is_graded_race"] = df["race_class"].isin(["G1", "G2", "G3"]).astype(float)
+            df_features["is_graded_race"] = (
+                df["race_class"].isin(["G1", "G2", "G3"]).astype(float)
+            )
 
         # 6. 出走頭数
         if "field_size" in df.columns:
@@ -124,9 +123,7 @@ class RaceConditionExtractor:
 
         return df_features
 
-    def extract_track_features(
-        self, df: pd.DataFrame
-    ) -> pd.DataFrame:
+    def extract_track_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """競馬場・コース特徴量（7個）
 
         Args:
@@ -141,24 +138,38 @@ class RaceConditionExtractor:
         # 1. 競馬場カテゴリ（エンコーディング）
         if "venue" in df.columns:
             venue_mapping = {
-                "東京": 1, "中山": 2, "京都": 3, "阪神": 4, "中京": 5,
-                "新潟": 6, "福島": 7, "札幌": 8, "函館": 9, "小倉": 10
+                "東京": 1,
+                "中山": 2,
+                "京都": 3,
+                "阪神": 4,
+                "中京": 5,
+                "新潟": 6,
+                "福島": 7,
+                "札幌": 8,
+                "函館": 9,
+                "小倉": 10,
             }
             df_features["venue_encoded"] = df["venue"].map(venue_mapping).fillna(0)
 
             # 2. 左回り/右回りフラグ
             df_features["is_left_turn"] = df["venue"].apply(
-                lambda x: 1 if self.track_characteristics.get(x, {}).get("turn") == "left" else 0
+                lambda x: 1
+                if self.track_characteristics.get(x, {}).get("turn") == "left"
+                else 0
             )
 
             # 3. 大規模競馬場フラグ
             df_features["is_large_track"] = df["venue"].apply(
-                lambda x: 1 if self.track_characteristics.get(x, {}).get("scale") == "large" else 0
+                lambda x: 1
+                if self.track_characteristics.get(x, {}).get("scale") == "large"
+                else 0
             )
 
             # 4. ローカル競馬場フラグ（小規模）
             df_features["is_local_track"] = df["venue"].apply(
-                lambda x: 1 if self.track_characteristics.get(x, {}).get("scale") == "small" else 0
+                lambda x: 1
+                if self.track_characteristics.get(x, {}).get("scale") == "small"
+                else 0
             )
 
         # 5. 芝/ダート/障害フラグ
@@ -169,15 +180,15 @@ class RaceConditionExtractor:
         # 6. 馬場状態エンコーディング
         if "track_condition" in df.columns:
             condition_mapping = {
-                "firm": 1,      # 良
-                "good": 1,      # 良
+                "firm": 1,  # 良
+                "good": 1,  # 良
                 "yielding": 2,  # 稍重
-                "soft": 3,      # 重
-                "heavy": 4,     # 不良
+                "soft": 3,  # 重
+                "heavy": 4,  # 不良
             }
-            df_features["track_condition_encoded"] = df["track_condition"].map(
-                condition_mapping
-            ).fillna(1)
+            df_features["track_condition_encoded"] = (
+                df["track_condition"].map(condition_mapping).fillna(1)
+            )
 
         # デフォルト値の設定
         track_features = [
@@ -202,9 +213,7 @@ class RaceConditionExtractor:
 
         return df_features
 
-    def extract_all_race_condition_features(
-        self, df: pd.DataFrame
-    ) -> pd.DataFrame:
+    def extract_all_race_condition_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """全レース条件特徴量を抽出（15個）
 
         Args:
