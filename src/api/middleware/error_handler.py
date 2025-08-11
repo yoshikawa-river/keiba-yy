@@ -5,8 +5,8 @@
 import logging
 import traceback
 import uuid
-# from typing import Union  # Python 3.11+ では不要
 
+# from typing import Union  # Python 3.11+ では不要
 from fastapi import Request, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
