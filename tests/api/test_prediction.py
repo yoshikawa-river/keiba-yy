@@ -37,7 +37,6 @@ async def mock_get_api_key() -> str:
 # テスト用のオプショナルユーザー依存関数
 async def mock_get_optional_user():
     """テスト用のモックオプショナルユーザー依存関数"""
-    return None
 
 
 # テスト時に依存関数をオーバーライド
