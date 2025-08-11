@@ -96,7 +96,12 @@ class PasswordChangeRequest(BaseModel):
     @classmethod
     def validate_new_password(cls, v, info):
         """新しいパスワードの検証"""
-        if hasattr(info, 'data') and info.data and "current_password" in info.data and v == info.data["current_password"]:
+        if (
+            hasattr(info, "data")
+            and info.data
+            and "current_password" in info.data
+            and v == info.data["current_password"]
+        ):
             raise ValueError("新しいパスワードは現在のパスワードと異なる必要があります")
         # パスワード強度チェック（UserCreateと同じロジック）
         if not re.search(r"[A-Z]", v):

@@ -99,7 +99,7 @@ class PredictionRequest(BaseModel):
     @classmethod
     def validate_horses(cls, v, info):
         """出走馬の検証"""
-        if hasattr(info, 'data') and info.data and "race_info" in info.data:
+        if hasattr(info, "data") and info.data and "race_info" in info.data:
             if len(v) != info.data["race_info"].field_size:
                 raise ValueError(
                     f"出走頭数が一致しません。期待: {info.data['race_info'].field_size}, 実際: {len(v)}"
