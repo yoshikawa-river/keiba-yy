@@ -14,7 +14,7 @@ app = Celery(
     "keiba_ai",
     broker=redis_url,
     backend=redis_url,
-    include=["src.tasks.data_tasks", "src.tasks.ml_tasks"],
+    include=[],
 )
 
 # 設定

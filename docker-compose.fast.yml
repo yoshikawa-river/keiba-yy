@@ -1,0 +1,50 @@
+# 開発用高速起動設定
+# 使用方法: docker compose -f docker-compose.yml -f docker-compose.fast.yml up -d
+
+services:
+  # MySQL - ヘルスチェック高速化
+  mysql:
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DATABASE_ROOT_PASSWORD:-root_password}"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+      start_period: 5s
+
+  # Redis - ヘルスチェック高速化
+  redis:
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 2s
+      retries: 3
+      start_period: 2s
+
+  # その他のサービスのヘルスチェックを無効化（開発時のみ）
+  app:
+    healthcheck:
+      disable: true
+
+  jupyter:
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/api"]
+      interval: 5s
+      timeout: 3s
+      retries: 2
+      start_period: 10s
+
+  streamlit:
+    healthcheck:
+      disable: true
+
+  mlflow:
+    healthcheck:
+      disable: true
+
+  celery:
+    healthcheck:
+      disable: true
+
+  flower:
+    healthcheck:
+      disable: true

@@ -1,4 +1,4 @@
-.PHONY: help build up down restart logs shell db-shell jupyter test lint format format-check setup-hooks clean
+.PHONY: help build up down restart docker_up docker_down docker_restart docker_quick_up docker_fast_up docker_fast_restart docker_status docker_benchmark docker_profile docker_logs_startup docker_up_core docker_up_api docker_up_analytics logs shell db-shell jupyter test lint format format-check setup-hooks clean
 
 # デフォルトターゲット
 .DEFAULT_GOAL := help
@@ -26,6 +26,90 @@ down: ## コンテナを停止
 
 restart: ## コンテナを再起動
 	docker compose restart
+
+# Docker管理（高速版）
+docker_up: ## コンテナを高速起動（キャッシュ活用）
+	@echo "🚀 Starting containers with optimized settings..."
+	docker compose up -d --no-build
+	@echo "✅ Containers started successfully!"
+
+docker_down: ## コンテナを完全停止
+	@echo "⏹️  Stopping all containers..."
+	docker compose down
+	@echo "✅ All containers stopped!"
+
+docker_restart: ## コンテナを高速再起動
+	@echo "🔄 Restarting containers..."
+	$(MAKE) docker_down
+	$(MAKE) docker_up
+	@echo "✅ Containers restarted successfully!"
+
+# Docker高速操作
+docker_quick_up: ## 超高速起動（ヘルスチェックスキップ）
+	@echo "⚡ Quick starting containers..."
+	docker compose up -d --no-build --no-deps
+	@echo "✅ Quick start completed!"
+
+docker_fast_up: ## 高速起動（最適化設定使用）
+	@echo "🚀 Starting containers with fast configuration..."
+	docker compose -f docker-compose.yml -f docker-compose.fast.yml up -d --no-build
+	@echo "✅ Fast start completed!"
+
+docker_fast_restart: ## 高速再起動
+	@echo "🔄 Fast restarting containers..."
+	$(MAKE) docker_down
+	$(MAKE) docker_fast_up
+	@echo "✅ Fast restart completed!"
+
+docker_status: ## コンテナ状態を確認
+	@echo "📊 Container Status:"
+	docker compose ps
+
+docker_benchmark: ## 起動時間を測定
+	@echo "⏱️  Benchmarking startup time..."
+	@echo "Normal startup:"
+	@time $(MAKE) docker_down && $(MAKE) docker_up
+	@sleep 5
+	@echo "Fast startup:"
+	@time $(MAKE) docker_down && $(MAKE) docker_fast_up
+
+docker_profile: ## 起動プロセスを分析
+	@echo "🔍 Profiling container startup process..."
+	@echo "Starting containers and monitoring startup..."
+	docker compose -f docker-compose.yml -f docker-compose.fast.yml up -d --no-build
+	@echo "Waiting for containers to stabilize..."
+	@for i in {1..30}; do \
+		echo "Check $$i/30:"; \
+		docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}"; \
+		echo "---"; \
+		sleep 2; \
+		if [ "$$(docker compose ps --filter status=running | wc -l)" -ge 8 ]; then \
+			echo "✅ All containers are running!"; \
+			break; \
+		fi; \
+	done
+
+docker_logs_startup: ## 起動時のログを確認
+	@echo "📋 Showing startup logs for all services..."
+	docker compose logs --tail=20 mysql redis app celery mlflow jupyter streamlit flower
+
+# サービス別操作
+docker_up_core: ## コアサービスのみ起動（MySQL, Redis）
+	@echo "🗄️ Starting core services..."
+	docker compose up -d mysql redis
+	@echo "✅ Core services started!"
+
+docker_up_api: ## APIサービス起動（App, Celery, Flower）
+	@echo "🔧 Starting API services..."
+	$(MAKE) docker_up_core
+	docker compose up -d app celery flower
+	@echo "✅ API services started!"
+
+docker_up_analytics: ## 分析環境起動（Jupyter, MLflow, Streamlit）
+	@echo "📊 Starting analytics services..."
+	$(MAKE) docker_up_core
+	docker compose up -d jupyter mlflow streamlit
+	@echo "✅ Analytics services started!"
 
 logs: ## ログを表示（全サービス）
 	docker compose logs -f

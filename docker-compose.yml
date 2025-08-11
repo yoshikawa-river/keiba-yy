@@ -209,7 +209,7 @@ services:
       TZ: "Asia/Tokyo"
     ports:
       - "${FLOWER_PORT:-5555}:5555"
-    command: celery -A src.tasks.celery_app flower --port=5555
+    command: celery -A src.tasks.celery_app flower --port=5555 --broker=redis://redis:6379/0
     networks:
       - keiba-network
 
