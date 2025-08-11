@@ -6,7 +6,7 @@ from datetime import date, datetime
 from enum import Enum
 from typing import Any, Optional
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator
 
 
 class RaceType(str, Enum):
@@ -95,13 +95,14 @@ class PredictionRequest(BaseModel):
     include_confidence: bool = Field(default=True, description="信頼度を含める")
     include_features: bool = Field(default=False, description="特徴量を含める")
 
-    @validator("horses")
-    def validate_horses(cls, v, values):
+    @field_validator("horses")
+    @classmethod
+    def validate_horses(cls, v, info):
         """出走馬の検証"""
-        if "race_info" in values:
-            if len(v) != values["race_info"].field_size:
+        if hasattr(info, 'data') and info.data and "race_info" in info.data:
+            if len(v) != info.data["race_info"].field_size:
                 raise ValueError(
-                    f"出走頭数が一致しません。期待: {values['race_info'].field_size}, 実際: {len(v)}"
+                    f"出走頭数が一致しません。期待: {info.data['race_info'].field_size}, 実際: {len(v)}"
                 )
 
         # 馬番の重複チェック
@@ -138,8 +139,8 @@ class RacePredictionResponse(BaseModel):
     recommended_bets: Optional[dict[str, list[int]]] = Field(None, description="推奨馬券")
     metadata: Optional[dict[str, Any]] = Field(None, description="メタデータ")
 
-    class Config:
-        schema_extra = {
+    model_config = {
+        "json_schema_extra": {
             "example": {
                 "race_id": "202312010101",
                 "race_name": "有馬記念",
@@ -166,6 +167,7 @@ class RacePredictionResponse(BaseModel):
                 },
             }
         }
+    }
 
 
 class BatchPredictionRequest(BaseModel):
@@ -202,5 +204,4 @@ class PredictionHistory(BaseModel):
     accuracy_score: Optional[float] = None
     actual_results: Optional[dict[str, Any]] = None
 
-    class Config:
-        orm_mode = True
+    model_config = {"from_attributes": True}
