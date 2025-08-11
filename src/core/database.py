@@ -1,11 +1,11 @@
-from typing import Optional
-
 """
 データベース接続管理
 
 SQLAlchemyを使用したデータベース接続の管理と
 セッション管理を提供する
 """
+
+from typing import Optional
 
 
 from collections.abc import Generator

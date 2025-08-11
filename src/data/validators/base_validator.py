@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 """
 基底バリデータークラス
@@ -25,9 +25,9 @@ class ValidationResult:
     """バリデーション結果"""
 
     is_valid: bool
-    errors: list[ValidationError] = field(default_factory=list)
-    warnings: list[str] = field(default_factory=list)
-    metadata: dict[str, Any] = field(default_factory=dict)
+    errors: List[ValidationError] = field(default_factory=list)
+    warnings: List[str] = field(default_factory=list)
+    metadata: Dict[str, Any] = field(default_factory=dict)
 
     def add_error(
         self, field: str, value: Any, message: str, error_type: str = "validation_error"
@@ -77,7 +77,7 @@ class BaseValidator(ABC):
         """
         pass
 
-    def validate_batch(self, data_list: list[Any]) -> list[ValidationResult]:
+    def validate_batch(self, data_list: List[Any]) -> List[ValidationResult]:
         """
         複数データをバッチでバリデーション
 
@@ -93,7 +93,7 @@ class BaseValidator(ABC):
         return results
 
     def _check_required_fields(
-        self, data: dict[str, Any], required_fields: list[str]
+        self, data: Dict[str, Any], required_fields: List[str]
     ) -> ValidationResult:
         """
         必須フィールドをチェック
@@ -232,7 +232,7 @@ class BaseValidator(ABC):
         return None
 
     def _check_enum_value(
-        self, field: str, value: Any, valid_values: list[Any]
+        self, field: str, value: Any, valid_values: List[Any]
     ) -> Optional[ValidationError]:
         """
         列挙値をチェック

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Dict, List, Optional
 
 """データ集計処理機能
 
@@ -31,8 +31,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         horse_id_column: str = "horse_id",
-        result_columns: Optional[dict[str, str]] = None,
-        group_by: Optional[list[str]] = None,
+        result_columns: Optional[Dict[str, str]] = None,
+        group_by: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """馬別成績集計
 
@@ -124,8 +124,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         jockey_id_column: str = "jockey_id",
-        result_columns: Optional[dict[str, str]] = None,
-        group_by: Optional[list[str]] = None,
+        result_columns: Optional[Dict[str, str]] = None,
+        group_by: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """騎手別成績集計
 
@@ -194,8 +194,8 @@ class DataAggregator:
         self,
         df: pd.DataFrame,
         trainer_id_column: str = "trainer_id",
-        result_columns: Optional[dict[str, str]] = None,
-        group_by: Optional[list[str]] = None,
+        result_columns: Optional[Dict[str, str]] = None,
+        group_by: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """調教師別成績集計
 
@@ -263,9 +263,9 @@ class DataAggregator:
     def aggregate_course_performance(
         self,
         df: pd.DataFrame,
-        course_columns: dict[str, str],
-        result_columns: Optional[dict[str, str]] = None,
-        group_by: Optional[list[str]] = None,
+        course_columns: Dict[str, str],
+        result_columns: Optional[Dict[str, str]] = None,
+        group_by: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """コース別成績集計
 
@@ -332,7 +332,7 @@ class DataAggregator:
         df: pd.DataFrame,
         entity_id_column: str,
         date_column: str,
-        result_columns: dict[str, str],
+        result_columns: Dict[str, str],
         n_recent: int = 5,
         days_window: Optional[int] = None,
     ) -> pd.DataFrame:

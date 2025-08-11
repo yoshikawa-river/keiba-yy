@@ -3,6 +3,7 @@ FastAPI メインアプリケーション
 """
 
 import time
+import uuid
 from datetime import datetime
 
 from fastapi import FastAPI, Request
@@ -59,8 +60,6 @@ app.include_router(websocket.router, tags=["websocket"])
 @app.middleware("http")
 async def add_request_id_header(request: Request, call_next):
     """リクエストIDをヘッダーに追加"""
-    import uuid
-
     request_id = str(uuid.uuid4())
     response = await call_next(request)
     response.headers["x-request-id"] = request_id

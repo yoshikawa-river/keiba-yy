@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 """
 JRA-VANデータリポジトリ
@@ -36,7 +36,7 @@ class RaceRepository:
         end_date: date,
         jyo_cd: Optional[str] = None,
         limit: Optional[int] = None,
-    ) -> list[NRace]:
+    ) -> List[NRace]:
         """
         日付範囲でレースを取得
 
@@ -85,7 +85,7 @@ class RaceRepository:
 
     def get_by_jyo(
         self, jyo_cd: str, year: Optional[str] = None, limit: Optional[int] = None
-    ) -> list[NRace]:
+    ) -> List[NRace]:
         """競馬場でレースを取得"""
         query = self.db.query(NRace).filter(NRace.JyoCD == jyo_cd)
 
@@ -101,7 +101,7 @@ class RaceRepository:
 
     def get_grade_races(
         self, grade_cd: str, year: Optional[str] = None, limit: Optional[int] = None
-    ) -> list[NRace]:
+    ) -> List[NRace]:
         """グレードレースを取得"""
         query = self.db.query(NRace).filter(NRace.GradeCD == grade_cd)
 
@@ -126,7 +126,7 @@ class RaceRepository:
         """年ごとのレース数を取得"""
         return self.db.query(func.count(NRace.Year)).filter(NRace.Year == year).scalar()
 
-    def get_race_with_entries(self, race_key: RaceKey) -> Optional[dict[str, Any]]:
+    def get_race_with_entries(self, race_key: RaceKey) -> Optional[Dict[str, Any]]:
         """レースと出走情報を同時に取得"""
         race = self.get_by_key(race_key)
         if not race:
@@ -158,7 +158,7 @@ class UmaRaceRepository:
 
     def get_race_entries(
         self, race_key: RaceKey, include_canceled: bool = False
-    ) -> list[NUmaRace]:
+    ) -> List[NUmaRace]:
         """
         レースの出走馬を取得
 
@@ -176,7 +176,7 @@ class UmaRaceRepository:
 
     def get_horse_history(
         self, ketto_num: str, before_date: Optional[date] = None, limit: int = 10
-    ) -> list[NUmaRace]:
+    ) -> List[NUmaRace]:
         """
         馬の過去レース履歴を取得
 
@@ -207,7 +207,7 @@ class UmaRaceRepository:
 
     def get_jockey_results(
         self, kisyu_code: str, year: Optional[str] = None, limit: Optional[int] = None
-    ) -> list[NUmaRace]:
+    ) -> List[NUmaRace]:
         """騎手の成績を取得"""
         query = self.db.query(NUmaRace).filter(NUmaRace.KisyuCode == kisyu_code)
 
@@ -223,7 +223,7 @@ class UmaRaceRepository:
 
     def get_trainer_results(
         self, chokyo_code: str, year: Optional[str] = None, limit: Optional[int] = None
-    ) -> list[NUmaRace]:
+    ) -> List[NUmaRace]:
         """調教師の成績を取得"""
         query = self.db.query(NUmaRace).filter(NUmaRace.ChokyosiCode == chokyo_code)
 
@@ -237,7 +237,7 @@ class UmaRaceRepository:
 
         return query.all()
 
-    def get_horse_vs_jockey(self, ketto_num: str, kisyu_code: str) -> list[NUmaRace]:
+    def get_horse_vs_jockey(self, ketto_num: str, kisyu_code: str) -> List[NUmaRace]:
         """馬と騎手の組み合わせ成績を取得"""
         return (
             self.db.query(NUmaRace)
@@ -248,7 +248,7 @@ class UmaRaceRepository:
             .all()
         )
 
-    def calculate_win_rate(self, results: list[NUmaRace]) -> dict[str, Any]:
+    def calculate_win_rate(self, results: list[NUmaRace]) -> Dict[str, Any]:
         """
         成績から勝率等を計算
 

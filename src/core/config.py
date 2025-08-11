@@ -1,11 +1,11 @@
-from typing import Optional
-
 """
 アプリケーション設定管理
 
 環境変数と設定ファイルから設定を読み込み、
 アプリケーション全体で使用する設定を管理する
 """
+
+from typing import Optional
 
 import os
 from functools import lru_cache

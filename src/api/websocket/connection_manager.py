@@ -1,8 +1,8 @@
-from typing import Any, Optional
-
 """
 WebSocket接続管理
 """
+
+from typing import Any, Dict, Optional, Set
 
 import asyncio
 import logging
@@ -21,15 +21,15 @@ class ConnectionManager:
 
     def __init__(self):
         # 接続中のWebSocketを管理
-        self.active_connections: dict[str, WebSocket] = {}
+        self.active_connections: Dict[str, WebSocket] = {}
         # ユーザーごとの接続を管理
-        self.user_connections: dict[str, set[str]] = {}
+        self.user_connections: Dict[str, Set[str]] = {}
         # チャンネル（トピック）ごとの購読者を管理
-        self.channel_subscribers: dict[str, set[str]] = {}
+        self.channel_subscribers: Dict[str, Set[str]] = {}
         # 接続情報
-        self.connection_info: dict[str, dict[str, Any]] = {}
+        self.connection_info: Dict[str, Dict[str, Any]] = {}
         # ハートビートタスク
-        self.heartbeat_tasks: dict[str, asyncio.Task] = {}
+        self.heartbeat_tasks: Dict[str, asyncio.Task] = {}
 
     async def connect(
         self, websocket: WebSocket, client_id: str, user_id: Optional[str] = None
@@ -262,7 +262,7 @@ class ConnectionManager:
         except Exception as e:
             logger.exception(f"Heartbeat error for {client_id}: {e}")
 
-    async def handle_message(self, client_id: str, message: dict[str, Any]):
+    async def handle_message(self, client_id: str, message: Dict[str, Any]):
         """クライアントからのメッセージを処理"""
         try:
             msg_type = message.get("type")
@@ -334,7 +334,7 @@ class ConnectionManager:
                 client_id,
             )
 
-    def get_stats(self) -> dict[str, Any]:
+    def get_stats(self) -> Dict[str, Any]:
         """接続統計を取得"""
         return {
             "total_connections": len(self.active_connections),
