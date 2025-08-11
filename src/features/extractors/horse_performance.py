@@ -130,9 +130,7 @@ class HorsePerformanceExtractor:
                         trend = np.polyfit(x, y, 1)[0]
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "recent_form_trend"
-                        ] = (
-                            trend * -1
-                        )  # 改善は正の値
+                        ] = trend * -1  # 改善は正の値
 
         # デフォルト値の設定
         stat_features = [
@@ -193,15 +191,15 @@ class HorsePerformanceExtractor:
                     # 生涯勝率、連対率、複勝率
                     df_features.loc[
                         df_features["horse_id"] == horse_id, "career_win_rate"
-                    ] = (wins / total_starts if total_starts > 0 else 0)
+                    ] = wins / total_starts if total_starts > 0 else 0
 
                     df_features.loc[
                         df_features["horse_id"] == horse_id, "career_place_rate"
-                    ] = (places / total_starts if total_starts > 0 else 0)
+                    ] = places / total_starts if total_starts > 0 else 0
 
                     df_features.loc[
                         df_features["horse_id"] == horse_id, "career_show_rate"
-                    ] = (shows / total_starts if total_starts > 0 else 0)
+                    ] = shows / total_starts if total_starts > 0 else 0
 
                     # 生涯出走数
                     df_features.loc[
@@ -218,9 +216,7 @@ class HorsePerformanceExtractor:
                         df_features.loc[
                             df_features["horse_id"] == horse_id,
                             "career_earnings_per_start",
-                        ] = (
-                            total_earnings / total_starts if total_starts > 0 else 0
-                        )
+                        ] = total_earnings / total_starts if total_starts > 0 else 0
 
                     # G1・重賞勝利数
                     if "race_grade" in horse_career.columns:
@@ -489,13 +485,17 @@ class HorsePerformanceExtractor:
             # 条件別成績（7個）
             df_features = self.extract_conditional_performance(df_features, history_df)
 
-            logger.info(f"✅ 馬の成績特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(
+                f"✅ 馬の成績特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得

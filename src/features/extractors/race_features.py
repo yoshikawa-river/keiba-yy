@@ -151,7 +151,9 @@ class RaceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"レースレベル特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"レースレベル特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_field_competition_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """出走馬の競争レベル特徴量抽出
@@ -258,7 +260,9 @@ class RaceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"出走馬競争レベル特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"出走馬競争レベル特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_pace_features(
         self, df: pd.DataFrame, historical_lap_times: Optional[pd.DataFrame] = None
@@ -387,7 +391,9 @@ class RaceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"ペース予想特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"ペース予想特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_position_advantage_features(
         self, df: pd.DataFrame, course_statistics: Optional[pd.DataFrame] = None
@@ -505,9 +511,9 @@ class RaceFeatureExtractor:
                                 ]
 
                                 if len(distance_stats) > 0:
-                                    df_features.loc[
-                                        idx, "course_distance_bias"
-                                    ] = distance_stats["distance_position_bias"].mean()
+                                    df_features.loc[idx, "course_distance_bias"] = (
+                                        distance_stats["distance_position_bias"].mean()
+                                    )
 
             # feature_count管理
             current_features = len(
@@ -520,7 +526,9 @@ class RaceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"枠順有利不利特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"枠順有利不利特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_seasonal_race_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """季節・時期による特徴量抽出
@@ -601,7 +609,9 @@ class RaceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"季節・時期特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"季節・時期特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_all_race_features(
         self,
@@ -646,7 +656,9 @@ class RaceFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"全レース特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"全レース特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
