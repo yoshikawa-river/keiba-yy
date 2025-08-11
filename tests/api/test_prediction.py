@@ -5,9 +5,20 @@
 import pytest
 from fastapi.testclient import TestClient
 
+from src.api.dependencies.auth import require_api_key
 from src.api.main import app
 
 client = TestClient(app)
+
+
+# テスト用のAPIキー依存関数
+async def mock_require_api_key() -> str:
+    """テスト用のモックAPIキー依存関数"""
+    return "sk_test_api_key_1234567890123456789012345"
+
+
+# テスト時に依存関数をオーバーライド
+app.dependency_overrides[require_api_key] = mock_require_api_key
 
 
 class TestPredictionAPI:
@@ -93,11 +104,10 @@ class TestPredictionAPI:
         response = client.post(
             "/api/v1/predictions/race",
             json=race_request_data,
-            headers={"X-API-Key": api_key},
         )
 
-        # APIキーが無効なためエラーになるが、エンドポイントは動作する
-        assert response.status_code in [200, 401]
+        # モックAPIキーで認証が通るため200を期待
+        assert response.status_code == 200
 
         if response.status_code == 200:
             data = response.json()
@@ -125,7 +135,6 @@ class TestPredictionAPI:
         response = client.post(
             "/api/v1/predictions/race",
             json=invalid_data,
-            headers={"X-API-Key": api_key},
         )
         assert response.status_code == 422
 
@@ -137,11 +146,11 @@ class TestPredictionAPI:
         }
 
         response = client.post(
-            "/api/v1/predictions/batch", json=batch_data, headers={"X-API-Key": api_key}
+            "/api/v1/predictions/batch", json=batch_data
         )
 
-        # APIキーチェックまたは成功
-        assert response.status_code in [200, 401]
+        # モック認証で成功を期待
+        assert response.status_code == 200
 
         if response.status_code == 200:
             data = response.json()
@@ -154,10 +163,9 @@ class TestPredictionAPI:
         response = client.get(
             "/api/v1/predictions/history",
             params={"page": 1, "size": 10},
-            headers={"X-API-Key": api_key},
         )
 
-        assert response.status_code in [200, 401]
+        assert response.status_code == 200
 
         if response.status_code == 200:
             data = response.json()
@@ -168,10 +176,10 @@ class TestPredictionAPI:
     def test_get_available_models(self, api_key):
         """利用可能モデル一覧取得テスト"""
         response = client.get(
-            "/api/v1/predictions/models", headers={"X-API-Key": api_key}
+            "/api/v1/predictions/models"
         )
 
-        assert response.status_code in [200, 401]
+        assert response.status_code == 200
 
         if response.status_code == 200:
             data = response.json()
@@ -224,6 +232,6 @@ class TestPredictionAPI:
         }
 
         response = client.post(
-            "/api/v1/predictions/race", json=data, headers={"X-API-Key": api_key}
+            "/api/v1/predictions/race", json=data
         )
         assert response.status_code == 422
