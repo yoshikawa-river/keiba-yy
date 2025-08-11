@@ -34,7 +34,9 @@ class Settings(BaseSettings):
     DATABASE_PORT: int = Field(default=3306, description="データベースポート")
     DATABASE_NAME: str = Field(default="keiba_db", description="データベース名")
     DATABASE_USER: str = Field(default="keiba_user", description="データベースユーザー")
-    DATABASE_PASSWORD: str = Field(default="keiba_password", description="データベースパスワード")
+    DATABASE_PASSWORD: str = Field(
+        default="keiba_password", description="データベースパスワード"
+    )
     DATABASE_POOL_SIZE: int = Field(default=10, description="コネクションプールサイズ")
     DATABASE_MAX_OVERFLOW: int = Field(default=20, description="最大オーバーフロー数")
     DATABASE_POOL_PRE_PING: bool = Field(default=True, description="接続前のping確認")
@@ -64,7 +66,9 @@ class Settings(BaseSettings):
         description="アプリケーションシークレットキー",
     )
     ALGORITHM: str = Field(default="HS256", description="JWT署名アルゴリズム")
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(default=30, description="アクセストークン有効期限(分)")
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
+        default=30, description="アクセストークン有効期限(分)"
+    )
 
     # === ログ設定 ===
     LOG_LEVEL: str = Field(default="INFO", description="ログレベル")
@@ -91,7 +95,9 @@ class Settings(BaseSettings):
     DATA_DIR: Path | None = Field(default=None, description="データディレクトリ")
     MODEL_DIR: Path | None = Field(default=None, description="モデルディレクトリ")
     LOG_DIR: Path | None = Field(default=None, description="ログディレクトリ")
-    PREDICTION_DIR: Path | None = Field(default=None, description="予測結果ディレクトリ")
+    PREDICTION_DIR: Path | None = Field(
+        default=None, description="予測結果ディレクトリ"
+    )
 
     # === 機械学習設定 ===
     ML_RANDOM_SEED: int = Field(default=42, description="乱数シード")
