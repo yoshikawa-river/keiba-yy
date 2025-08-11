@@ -1,3 +1,5 @@
+from typing import Any, Optional, Union
+
 """
 ロギング設定
 
@@ -9,7 +11,6 @@ import sys
 from collections.abc import Callable
 from functools import wraps
 from pathlib import Path
-from typing import Any, Optional
 
 from loguru import logger
 
@@ -26,7 +27,7 @@ class LoggerManager:
     def setup_logging(
         self,
         log_level: Optional[str] = None,
-        log_file: str | Optional[Path] = None,
+        log_file: Optional[Union[str, Path]] = None,
         log_format: Optional[str] = None,
         serialize: bool = False,
         backtrace: bool = True,

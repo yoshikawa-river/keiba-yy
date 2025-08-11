@@ -1,10 +1,11 @@
+from typing import Any
+
 """
 バリデーション統合パーサー
 
 バリデーション機能を統合したCSVパーサー
 """
 
-from typing import Any, Dict
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -48,7 +49,7 @@ class ValidatedCSVParser(BaseCSVParser):
             self.data_validator: Optional[DataValidator] = None
 
     def _validate_row_with_validators(
-        self, row_data: Dict[str, Any]
+        self, row_data: dict[str, Any]
     ) -> ValidationResult:
         """
         バリデーターを使用して行データを検証
@@ -154,7 +155,7 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return {"success": success, "error": error, "skip": skip}
 
-    def get_validation_report(self) -> Dict[str, Any]:
+    def get_validation_report(self) -> dict[str, Any]:
         """
         バリデーションレポートを取得
 
@@ -185,17 +186,17 @@ class ValidatedCSVParser(BaseCSVParser):
 
         return report
 
-    def _count_error_types(self) -> Dict[str, int]:
+    def _count_error_types(self) -> dict[str, int]:
         """エラータイプをカウント"""
-        error_types: Dict[str, int] = {}
+        error_types: dict[str, int] = {}
         for error in self.errors:
             error_type = error.get("type", "unknown")
             error_types[error_type] = error_types.get(error_type, 0) + 1
         return error_types
 
-    def _count_warning_types(self) -> Dict[str, int]:
+    def _count_warning_types(self) -> dict[str, int]:
         """警告タイプをカウント"""
-        warning_types: Dict[str, int] = {}
+        warning_types: dict[str, int] = {}
         for warning in self.warnings:
             warning_type = warning.get("type", "unknown")
             warning_types[warning_type] = warning_types.get(warning_type, 0) + 1

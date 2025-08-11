@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 """
 予測関連のAPIエンドポイント
 """
@@ -6,11 +8,6 @@ import asyncio
 import random
 import uuid
 from datetime import date, datetime
-<<<<<<< HEAD
-from typing import Any, Dict, List, Optional
-=======
-from typing import Any
->>>>>>> origin/main
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from loguru import logger
@@ -45,13 +42,8 @@ class MockPredictor:
         self.model_version = "v1.0.0-mock"
 
     async def predict_race(
-<<<<<<< HEAD
-        self, race_info: RaceInfo, horses: List[HorseInfo]
-    ) -> List[PredictionResult]:
-=======
         self, race_info: RaceInfo, horses: list[HorseInfo]
     ) -> list[PredictionResult]:
->>>>>>> origin/main
         """レース予測（モック）"""
         # 処理時間のシミュレーション
         await asyncio.sleep(random.uniform(0.1, 0.5))
@@ -105,13 +97,8 @@ class MockPredictor:
         return results
 
     def generate_recommended_bets(
-<<<<<<< HEAD
-        self, predictions: List[PredictionResult]
-    ) -> Dict[str, List[int]]:
-=======
         self, predictions: list[PredictionResult]
     ) -> dict[str, list[int]]:
->>>>>>> origin/main
         """推奨馬券生成（モック）"""
         # 上位馬の馬番を取得
         top_horses = sorted(predictions, key=lambda x: x.win_probability, reverse=True)[
@@ -137,11 +124,7 @@ predictor = MockPredictor()
 async def predict_race(
     request: PredictionRequest,
     background_tasks: BackgroundTasks,
-<<<<<<< HEAD
     api_key: Optional[str] = Depends(require_api_key),
-=======
-    api_key: str | None = Depends(require_api_key),
->>>>>>> origin/main
     _: bool = Depends(rate_limit_100),
 ) -> ResponseBase[RacePredictionResponse]:
     """
@@ -190,11 +173,7 @@ async def predict_race(
 async def predict_batch(
     request: BatchPredictionRequest,
     background_tasks: BackgroundTasks,
-<<<<<<< HEAD
     api_key: Optional[str] = Depends(require_api_key),
-=======
-    api_key: str | None = Depends(require_api_key),
->>>>>>> origin/main
     _: bool = Depends(rate_limit_100),
 ) -> ResponseBase[BatchPredictionResponse]:
     """
@@ -237,11 +216,7 @@ async def predict_batch(
     "/batch/{batch_id}/status", response_model=ResponseBase[BatchPredictionResponse]
 )
 async def get_batch_status(
-<<<<<<< HEAD
     batch_id: str, api_key: Optional[str] = Depends(require_api_key)
-=======
-    batch_id: str, api_key: str | None = Depends(require_api_key)
->>>>>>> origin/main
 ) -> ResponseBase[BatchPredictionResponse]:
     """
     バッチ予測ステータス取得
@@ -262,19 +237,11 @@ async def get_batch_status(
 
 @router.get(
     "/batch/{batch_id}/results",
-<<<<<<< HEAD
-    response_model=ResponseBase[List[RacePredictionResponse]],
-)
-async def get_batch_results(
-    batch_id: str, api_key: Optional[str] = Depends(require_api_key)
-) -> ResponseBase[List[RacePredictionResponse]]:
-=======
     response_model=ResponseBase[list[RacePredictionResponse]],
 )
 async def get_batch_results(
-    batch_id: str, api_key: str | None = Depends(require_api_key)
+    batch_id: str, api_key: Optional[str] = Depends(require_api_key)
 ) -> ResponseBase[list[RacePredictionResponse]]:
->>>>>>> origin/main
     """
     バッチ予測結果取得
     """
@@ -290,17 +257,10 @@ async def get_batch_results(
 @router.get("/history", response_model=PaginatedResponse[PredictionHistory])
 async def get_prediction_history(
     pagination: PaginationParams = Depends(),
-<<<<<<< HEAD
     start_date: Optional[date] = Query(None, description="開始日"),
     end_date: Optional[date] = Query(None, description="終了日"),
     race_id: Optional[str] = Query(None, description="レースID"),
     api_key: Optional[str] = Depends(require_api_key),
-=======
-    start_date: date | None = Query(None, description="開始日"),
-    end_date: date | None = Query(None, description="終了日"),
-    race_id: str | None = Query(None, description="レースID"),
-    api_key: str | None = Depends(require_api_key),
->>>>>>> origin/main
 ) -> PaginatedResponse[PredictionHistory]:
     """
     予測履歴取得
@@ -329,17 +289,10 @@ async def get_prediction_history(
     )
 
 
-<<<<<<< HEAD
-@router.get("/models", response_model=ResponseBase[List[Dict[str, Any]]])
-async def get_available_models(
-    api_key: Optional[str] = Depends(require_api_key),
-) -> ResponseBase[List[Dict[str, Any]]]:
-=======
 @router.get("/models", response_model=ResponseBase[list[dict[str, Any]]])
 async def get_available_models(
-    api_key: str | None = Depends(require_api_key),
+    api_key: Optional[str] = Depends(require_api_key),
 ) -> ResponseBase[list[dict[str, Any]]]:
->>>>>>> origin/main
     """
     利用可能なモデル一覧取得
     """
@@ -385,11 +338,7 @@ async def save_prediction_history(prediction: RacePredictionResponse):
 
 
 async def process_batch_predictions(
-<<<<<<< HEAD
-    batch_id: str, races: List[PredictionRequest], callback_url: Optional[str]
-=======
-    batch_id: str, races: list[PredictionRequest], callback_url: str | None
->>>>>>> origin/main
+    batch_id: str, races: list[PredictionRequest], callback_url: Optional[str]
 ):
     """バッチ予測処理（モック）"""
     # 実際は各レースを処理してデータベースに保存

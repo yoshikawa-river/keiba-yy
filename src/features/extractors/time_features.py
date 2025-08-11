@@ -1,10 +1,11 @@
+from typing import Any, Optional
+
 """タイム特徴量抽出モジュール
 
 走破タイム、上がりタイム、スピード指数など時間関連の特徴量を生成する。
 基本タイム特徴量20個を実装。
 """
 
-from typing import Any, Optional
 
 import numpy as np
 import pandas as pd

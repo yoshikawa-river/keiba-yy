@@ -1,3 +1,5 @@
+from typing import Any, Optional, Union
+
 """
 スキーマバリデーター
 
@@ -5,7 +7,6 @@
 """
 
 from collections.abc import Callable
-from typing import Any, Dict, List, Optional, Union
 
 from src.core.logging import logger
 from src.data.validators.base_validator import BaseValidator, ValidationResult
@@ -22,7 +23,7 @@ class SchemaField:
         min_value: Optional[float] = None,
         max_value: Optional[float] = None,
         pattern: Optional[str] = None,
-        enum_values: Optional[List[Any]] = None,
+        enum_values: Optional[list[Any]] = None,
         custom_validator: Optional[Callable[[Any], bool]] = None,
     ):
         self.name = name
@@ -38,7 +39,7 @@ class SchemaField:
 class Schema:
     """データスキーマ定義"""
 
-    def __init__(self, name: str, fields: List[SchemaField]):
+    def __init__(self, name: str, fields: list[SchemaField]):
         self.name = name
         self.fields = {field.name: field for field in fields}
         self.required_fields = [field.name for field in fields if field.required]
@@ -58,7 +59,7 @@ class SchemaValidator(BaseValidator):
         super().__init__(strict_mode)
         self.schema = schema
 
-    def validate(self, data: Dict[str, Any]) -> ValidationResult:
+    def validate(self, data: dict[str, Any]) -> ValidationResult:
         """
         スキーマに基づいてデータをバリデーション
 

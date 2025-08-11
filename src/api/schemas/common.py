@@ -2,12 +2,9 @@
 共通スキーマ定義
 """
 
+from typing import Any, Generic, Optional, TypeVar
+
 from datetime import datetime
-<<<<<<< HEAD
-from typing import Any, Dict, Generic, List, Optional, TypeVar
-=======
-from typing import Any, Generic, TypeVar
->>>>>>> origin/main
 
 from pydantic import BaseModel, Field
 
@@ -18,13 +15,8 @@ class ResponseBase(BaseModel, Generic[T]):
     """基本レスポンス形式"""
 
     success: bool = Field(..., description="処理成功フラグ")
-<<<<<<< HEAD
     data: Optional[T] = Field(None, description="レスポンスデータ")
     message: Optional[str] = Field(None, description="メッセージ")
-=======
-    data: T | None = Field(None, description="レスポンスデータ")
-    message: str | None = Field(None, description="メッセージ")
->>>>>>> origin/main
     timestamp: datetime = Field(
         default_factory=datetime.utcnow, description="レスポンス生成時刻"
     )
@@ -45,11 +37,7 @@ class PaginationParams(BaseModel):
 class PaginatedResponse(BaseModel, Generic[T]):
     """ページネーション付きレスポンス"""
 
-<<<<<<< HEAD
-    items: List[T] = Field(..., description="データリスト")
-=======
     items: list[T] = Field(..., description="データリスト")
->>>>>>> origin/main
     total: int = Field(..., ge=0, description="総件数")
     page: int = Field(..., ge=1, description="現在のページ")
     size: int = Field(..., ge=1, description="ページサイズ")
@@ -59,11 +47,7 @@ class PaginatedResponse(BaseModel, Generic[T]):
 
     @classmethod
     def create(
-<<<<<<< HEAD
-        cls, items: List[T], total: int, page: int, size: int
-=======
         cls, items: list[T], total: int, page: int, size: int
->>>>>>> origin/main
     ) -> "PaginatedResponse[T]":
         """ページネーションレスポンスを作成"""
         pages = (total + size - 1) // size if size > 0 else 0
@@ -81,15 +65,9 @@ class PaginatedResponse(BaseModel, Generic[T]):
 class ErrorDetail(BaseModel):
     """エラー詳細"""
 
-<<<<<<< HEAD
     field: Optional[str] = Field(None, description="エラーフィールド")
     message: str = Field(..., description="エラーメッセージ")
     code: Optional[str] = Field(None, description="エラーコード")
-=======
-    field: str | None = Field(None, description="エラーフィールド")
-    message: str = Field(..., description="エラーメッセージ")
-    code: str | None = Field(None, description="エラーコード")
->>>>>>> origin/main
 
 
 class ErrorResponse(BaseModel):
@@ -98,19 +76,11 @@ class ErrorResponse(BaseModel):
     success: bool = Field(default=False, description="処理成功フラグ")
     error: str = Field(..., description="エラー種別")
     message: str = Field(..., description="エラーメッセージ")
-<<<<<<< HEAD
-    details: Optional[List[ErrorDetail]] = Field(None, description="エラー詳細")
+    details: Optional[list[ErrorDetail]] = Field(None, description="エラー詳細")
     timestamp: datetime = Field(
         default_factory=datetime.utcnow, description="エラー発生時刻"
     )
     request_id: Optional[str] = Field(None, description="リクエストID")
-=======
-    details: list[ErrorDetail] | None = Field(None, description="エラー詳細")
-    timestamp: datetime = Field(
-        default_factory=datetime.utcnow, description="エラー発生時刻"
-    )
-    request_id: str | None = Field(None, description="リクエストID")
->>>>>>> origin/main
 
 
 class HealthCheck(BaseModel):
@@ -120,11 +90,7 @@ class HealthCheck(BaseModel):
     version: str = Field(..., description="APIバージョン")
     timestamp: datetime = Field(..., description="チェック時刻")
     uptime: int = Field(..., description="稼働時間（秒）")
-<<<<<<< HEAD
-    services: Dict[str, bool] = Field(default_factory=dict, description="サービス状態")
-=======
     services: dict[str, bool] = Field(default_factory=dict, description="サービス状態")
->>>>>>> origin/main
 
 
 class WebSocketMessage(BaseModel):
@@ -153,13 +119,8 @@ class NotificationPreference(BaseModel):
 
     email_enabled: bool = Field(default=True, description="メール通知")
     push_enabled: bool = Field(default=False, description="プッシュ通知")
-<<<<<<< HEAD
     webhook_url: Optional[str] = Field(None, description="Webhook URL")
-    notification_types: List[str] = Field(
-=======
-    webhook_url: str | None = Field(None, description="Webhook URL")
     notification_types: list[str] = Field(
->>>>>>> origin/main
         default_factory=lambda: ["prediction_complete", "error"],
         description="通知タイプ",
     )

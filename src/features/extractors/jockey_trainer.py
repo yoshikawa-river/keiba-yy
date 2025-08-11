@@ -1,10 +1,11 @@
+from typing import Any, Optional
+
 """騎手・調教師特徴量抽出モジュール
 
 騎手と調教師の成績、相性、コンビネーションなどの特徴量を生成する。
 基本的な騎手・調教師特徴量20個を実装。
 """
 
-from typing import Any, Optional
 
 import numpy as np
 import pandas as pd

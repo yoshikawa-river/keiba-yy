@@ -1,10 +1,11 @@
+from typing import Any, Optional
+
 """馬の成績特徴量抽出モジュール
 
 過去成績から統計的特徴量を生成する。
 過去N走の着順、勝率、連対率、複勝率、成績トレンドなど30個の特徴量を抽出。
 """
 
-from typing import Any, Optional
 
 import numpy as np
 import pandas as pd

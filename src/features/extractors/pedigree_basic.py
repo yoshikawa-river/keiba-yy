@@ -1,10 +1,11 @@
+from typing import Any
+
 """血統基本特徴量抽出モジュール
 
 父、母父、系統などの基本的な血統情報から特徴量を生成する。
 Phase1の血統基本特徴量15個を実装。
 """
 
-from typing import Any, Dict
 
 import numpy as np
 import pandas as pd
@@ -412,7 +413,7 @@ class PedigreeBasicExtractor:
                 f"血統基本特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> Dict[str, Any]:
+    def get_feature_info(self) -> dict[str, Any]:
         """特徴量情報の取得
 
         Returns:

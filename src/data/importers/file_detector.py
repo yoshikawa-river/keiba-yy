@@ -9,7 +9,7 @@ import csv
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Optional, Tuple
 
 import chardet
 
@@ -35,7 +35,7 @@ class CSVFile:
     file_type: FileType
     encoding: str
     delimiter: str
-    headers: List[str]
+    headers: list[str]
     row_count: int
     file_size: int  # バイト単位
 
@@ -58,7 +58,7 @@ class CSVFileDetector:
         self.import_dir = import_dir
         self.type_patterns = self._initialize_type_patterns()
 
-    def _initialize_type_patterns(self) -> Dict[FileType, List[str]]:
+    def _initialize_type_patterns(self) -> dict[FileType, list[str]]:
         """ファイルタイプ判定用のパターンを初期化"""
         return {
             FileType.RACE_INFO: ["レース名", "開催日", "競馬場", "距離", "レース番号"],
@@ -68,7 +68,7 @@ class CSVFileDetector:
             FileType.TRAINING_DATA: ["調教日", "調教内容", "タイム", "調教師"],
         }
 
-    def detect_files(self, pattern: str = "*.csv") -> List[CSVFile]:
+    def detect_files(self, pattern: str = "*.csv") -> list[CSVFile]:
         """
         CSVファイルを検出して分類
 
@@ -78,7 +78,7 @@ class CSVFileDetector:
         Returns:
             検出されたCSVファイルのリスト
         """
-        csv_files: List[CSVFile] = []
+        csv_files: list[CSVFile] = []
 
         if not self.import_dir.exists():
             logger.warning(f"インポートディレクトリが存在しません: {self.import_dir}")
@@ -178,7 +178,7 @@ class CSVFileDetector:
 
         return normalized
 
-    def _detect_headers(self, file_path: Path, encoding: str) -> Tuple[List[str], str]:
+    def _detect_headers(self, file_path: Path, encoding: str) -> tuple[list[str], str]:
         """
         ヘッダーとデリミタを検出
 
@@ -211,7 +211,7 @@ class CSVFileDetector:
 
         return headers, delimiter
 
-    def _detect_file_type(self, headers: List[str]) -> FileType:
+    def _detect_file_type(self, headers: list[str]) -> FileType:
         """
         ヘッダーからファイルタイプを判定
 
@@ -266,8 +266,8 @@ class CSVFileDetector:
         return max(0, row_count)  # 負の値を防ぐ
 
     def get_files_by_type(
-        self, file_type: FileType, csv_files: Optional[List[CSVFile]] = None
-    ) -> List[CSVFile]:
+        self, file_type: FileType, csv_files: Optional[list[CSVFile]] = None
+    ) -> list[CSVFile]:
         """
         特定タイプのファイルのみを取得
 

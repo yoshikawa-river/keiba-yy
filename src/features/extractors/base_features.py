@@ -3,7 +3,6 @@
 馬齢、性別、斤量、馬体重、枠番、馬番、前走からの間隔などの基本特徴量を抽出する
 """
 
-from typing import Dict, List
 import pandas as pd
 from loguru import logger
 
@@ -481,7 +480,7 @@ class BaseFeatureExtractor:
                 f"全基本特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> Dict[str, List[str]]:
+    def get_feature_info(self) -> dict[str, list[str]]:
         """特徴量情報の取得
 
         Returns:

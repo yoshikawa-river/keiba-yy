@@ -3,7 +3,6 @@
 欠損値処理、外れ値検出・処理、データ正規化、カテゴリ変数エンコーディングを行う
 """
 
-from typing import Dict, List, Tuple
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -26,8 +25,8 @@ class DataCleaner:
         self,
         df: pd.DataFrame,
         strategy: str = "mean",
-        columns: Optional[List[str]] = None,
-        custom_values: Optional[Dict[str, any]] = None,
+        columns: Optional[list[str]] = None,
+        custom_values: Optional[dict[str, any]] = None,
     ) -> pd.DataFrame:
         """欠損値処理
 
@@ -109,10 +108,10 @@ class DataCleaner:
     def detect_outliers(
         self,
         df: pd.DataFrame,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         method: str = "iqr",
         threshold: float = 1.5,
-    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    ) -> tuple[pd.DataFrame, pd.DataFrame]:
         """外れ値検出
 
         Args:
@@ -192,7 +191,7 @@ class DataCleaner:
         df: pd.DataFrame,
         outlier_flags: pd.DataFrame,
         method: str = "clip",
-        clip_percentile: Tuple[float, float] = (1, 99),
+        clip_percentile: tuple[float, float] = (1, 99),
     ) -> pd.DataFrame:
         """外れ値処理
 
@@ -251,9 +250,9 @@ class DataCleaner:
     def normalize_data(
         self,
         df: pd.DataFrame,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         method: str = "standard",
-        feature_range: Tuple[float, float] = (0, 1),
+        feature_range: tuple[float, float] = (0, 1),
     ) -> pd.DataFrame:
         """データ正規化
 
@@ -307,7 +306,7 @@ class DataCleaner:
     def encode_categorical(
         self,
         df: pd.DataFrame,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         method: str = "label",
         handle_unknown: str = "error",
     ) -> pd.DataFrame:

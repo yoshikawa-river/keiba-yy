@@ -1,3 +1,5 @@
+from typing import Optional
+
 """
 JRA-VANコードマスター
 
@@ -6,7 +8,6 @@ JRA-VANの各種コードを意味のある値に変換するユーティリテ�
 
 
 
-from typing import Dict, Optional
 class CodeMaster:
     """JRA-VANコードマスター"""
 
@@ -403,7 +404,7 @@ class CodeMaster:
         return f"{year}{jyo_cd}{kaiji}{nichiji}{race_num}"
 
     @classmethod
-    def parse_race_key(cls, race_key: str) -> Dict[str, str]:
+    def parse_race_key(cls, race_key: str) -> dict[str, str]:
         """
         レースキーをパース
         "2024050101" -> {"year": "2024", "jyo_cd": "05", ...}

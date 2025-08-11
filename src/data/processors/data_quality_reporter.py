@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 """データ品質レポート機能
 
 欠損値統計、データ分布可視化、異常値レポートを生成する
@@ -6,7 +8,6 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -43,7 +44,7 @@ class DataQualityReporter:
 
     def generate_missing_value_report(
         self, df: pd.DataFrame, output_file: Optional[str] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """欠損値統計レポートの生成
 
         Args:
@@ -135,7 +136,7 @@ class DataQualityReporter:
                 f"欠損値統計レポート生成中にエラーが発生しました: {e!s}"
             ) from e
 
-    def _analyze_missing_patterns(self, df: pd.DataFrame) -> Dict[str, Any]:
+    def _analyze_missing_patterns(self, df: pd.DataFrame) -> dict[str, Any]:
         """欠損値パターンの分析
 
         Args:
@@ -185,7 +186,7 @@ class DataQualityReporter:
 
     def _generate_missing_value_recommendations(
         self, missing_df: pd.DataFrame
-    ) -> List[str]:
+    ) -> list[str]:
         """欠損値処理の推奨事項を生成
 
         Args:
@@ -290,9 +291,9 @@ class DataQualityReporter:
     def generate_distribution_report(
         self,
         df: pd.DataFrame,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         output_file: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """データ分布レポートの生成
 
         Args:
@@ -396,7 +397,7 @@ class DataQualityReporter:
 
         return (data < lower_bound) | (data > upper_bound)
 
-    def _generate_distribution_summary(self, stats: List[dict]) -> Dict[str, Any]:
+    def _generate_distribution_summary(self, stats: list[dict]) -> dict[str, Any]:
         """分布統計のサマリー生成
 
         Args:
@@ -420,7 +421,7 @@ class DataQualityReporter:
         }
 
     def _visualize_distributions(
-        self, df: pd.DataFrame, columns: List[str], output_file: str
+        self, df: pd.DataFrame, columns: list[str], output_file: str
     ):
         """データ分布の可視化
 
@@ -475,11 +476,11 @@ class DataQualityReporter:
     def generate_outlier_report(
         self,
         df: pd.DataFrame,
-        columns: Optional[List[str]] = None,
+        columns: Optional[list[str]] = None,
         method: str = "iqr",
         threshold: float = 1.5,
         output_file: Optional[str] = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """異常値レポートの生成
 
         Args:
@@ -597,7 +598,7 @@ class DataQualityReporter:
                 f"異常値レポート生成中にエラーが発生しました: {e!s}"
             ) from e
 
-    def _generate_outlier_summary(self, stats: List[dict]) -> Dict[str, Any]:
+    def _generate_outlier_summary(self, stats: list[dict]) -> dict[str, Any]:
         """外れ値統計のサマリー生成
 
         Args:
@@ -621,7 +622,7 @@ class DataQualityReporter:
             ].tolist(),
         }
 
-    def _generate_outlier_recommendations(self, stats: List[dict]) -> List[str]:
+    def _generate_outlier_recommendations(self, stats: list[dict]) -> list[str]:
         """外れ値処理の推奨事項を生成
 
         Args:
@@ -665,7 +666,7 @@ class DataQualityReporter:
         return recommendations
 
     def _visualize_outliers(
-        self, df: pd.DataFrame, stats: List[dict], output_file: str
+        self, df: pd.DataFrame, stats: list[dict], output_file: str
     ):
         """外れ値の可視化
 
@@ -724,7 +725,7 @@ class DataQualityReporter:
 
     def generate_comprehensive_report(
         self, df: pd.DataFrame, output_prefix: Optional[str] = None
-    ) -> Dict[str, Dict[str, Any]]:
+    ) -> dict[str, dict[str, Any]]:
         """包括的なデータ品質レポートの生成
 
         Args:

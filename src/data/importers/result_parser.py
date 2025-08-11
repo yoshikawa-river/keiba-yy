@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 """
 レース結果CSVパーサー
 
@@ -6,7 +8,6 @@ TARGET frontier JVから出力されたレース結果CSVをパースし、
 """
 
 from datetime import time
-from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -22,7 +23,7 @@ from src.data.models.result import RaceEntry, RaceResult
 class ResultCSVParser(BaseCSVParser):
     """レース結果CSVパーサー"""
 
-    def _get_column_mappings(self) -> Dict[str, str]:
+    def _get_column_mappings(self) -> dict[str, str]:
         """CSVカラムとDBカラムのマッピング"""
         return {
             "レースID": "race_key",
@@ -45,11 +46,11 @@ class ResultCSVParser(BaseCSVParser):
             "コメント": "comment",
         }
 
-    def _get_required_columns(self) -> List[str]:
+    def _get_required_columns(self) -> list[str]:
         """必須カラムのリスト"""
         return ["レースID", "馬番", "馬ID", "騎手ID", "斤量"]
 
-    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
         """
         行データを変換
 
@@ -130,7 +131,7 @@ class ResultCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
         """
         レース結果データのバリデーション
 
@@ -167,7 +168,7 @@ class ResultCSVParser(BaseCSVParser):
 
         return True, None
 
-    def _save_row(self, row_data: Dict[str, Any]) -> bool:
+    def _save_row(self, row_data: dict[str, Any]) -> bool:
         """
         レース結果データを保存
 

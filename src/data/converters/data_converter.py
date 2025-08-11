@@ -1,3 +1,5 @@
+from typing import Any
+
 """
 データコンバーター
 
@@ -7,7 +9,6 @@ mykeibaDBデータ形式と内部形式の変換
 import builtins
 import contextlib
 from datetime import date, datetime, time
-from typing import Any, Dict
 
 from src.data.utils.code_master import CodeMaster
 
@@ -41,7 +42,7 @@ class RaceKey:
         return cls(year, jyo_cd, kaiji, nichiji, race_num)
 
     @classmethod
-    def from_dict(cls, data: Dict[str, str]):
+    def from_dict(cls, data: dict[str, str]):
         """辞書から複合キーを生成"""
         return cls(
             year=data.get("Year", ""),
@@ -99,7 +100,7 @@ class DataConverter:
             return None
 
     @staticmethod
-    def nrace_to_dict(nrace: NRace) -> Dict[str, Any]:
+    def nrace_to_dict(nrace: NRace) -> dict[str, Any]:
         """N_RACEをビジネスロジック用の辞書に変換"""
         # レース日付の構築
         race_date = None
@@ -185,7 +186,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def numa_to_dict(numa: NUma) -> Dict[str, Any]:
+    def numa_to_dict(numa: NUma) -> dict[str, Any]:
         """N_UMAをビジネスロジック用の辞書に変換"""
         # 生年月日の変換
         birth_date = DataConverter.parse_date(numa.BirthDate)
@@ -266,7 +267,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def numarace_to_dict(numarace: NUmaRace) -> Dict[str, Any]:
+    def numarace_to_dict(numarace: NUmaRace) -> dict[str, Any]:
         """N_UMA_RACEをビジネスロジック用の辞書に変換"""
         # レース日付の構築
         race_date = None
@@ -365,7 +366,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def nkisyu_to_dict(nkisyu: NKisyu) -> Dict[str, Any]:
+    def nkisyu_to_dict(nkisyu: NKisyu) -> dict[str, Any]:
         """N_KISYUをビジネスロジック用の辞書に変換"""
         return {
             # 識別情報
@@ -396,7 +397,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def nchokyo_to_dict(nchokyo: NChokyo) -> Dict[str, Any]:
+    def nchokyo_to_dict(nchokyo: NChokyo) -> dict[str, Any]:
         """N_CHOKYOをビジネスロジック用の辞書に変換"""
         return {
             # 識別情報

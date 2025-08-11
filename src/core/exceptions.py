@@ -1,3 +1,5 @@
+from typing import Any, Optional
+
 """
 エラーハンドリング基盤
 
@@ -5,7 +7,6 @@
 エラーハンドリングのユーティリティを提供
 """
 
-from typing import Any, Dict, Optional
 
 from fastapi import HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -24,7 +25,7 @@ class KeibaAIException(Exception):
         message: str,
         error_code: Optional[str] = None,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        details: Optional[Dict[str, Any]] = None,
+        details: Optional[dict[str, Any]] = None,
     ):
         """
         カスタム例外の初期化
@@ -41,7 +42,7 @@ class KeibaAIException(Exception):
         self.details = details or {}
         super().__init__(self.message)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """例外を辞書形式に変換"""
         return {
             "error": self.error_code,
@@ -56,7 +57,7 @@ class KeibaAIException(Exception):
 class ValidationError(KeibaAIException):
     """バリデーションエラー"""
 
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
         super().__init__(
             message=message,
             error_code="VALIDATION_ERROR",
@@ -150,7 +151,7 @@ class DataImportError(KeibaAIException):
 class DataProcessingError(KeibaAIException):
     """データ処理エラー"""
 
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
         super().__init__(
             message=message,
             error_code="DATA_PROCESSING_ERROR",
@@ -162,7 +163,7 @@ class DataProcessingError(KeibaAIException):
 class FeatureExtractionError(KeibaAIException):
     """特徴量抽出エラー"""
 
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None):
+    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
         super().__init__(
             message=message,
             error_code="FEATURE_EXTRACTION_ERROR",

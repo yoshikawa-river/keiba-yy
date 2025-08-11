@@ -3,7 +3,6 @@
 父馬、母父馬、兄弟馬の成績、血統の距離適性などを抽出する
 """
 
-from typing import Dict
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -453,7 +452,7 @@ class PedigreeFeatureExtractor:
             return "intermediate"
         return "long"
 
-    def _get_default_sire_stats(self) -> Dict[str, any]:
+    def _get_default_sire_stats(self) -> dict[str, any]:
         """デフォルトの父馬統計
 
         Returns:
@@ -470,7 +469,7 @@ class PedigreeFeatureExtractor:
             "is_important_sire": 0,
         }
 
-    def _get_default_dam_sire_stats(self) -> Dict[str, any]:
+    def _get_default_dam_sire_stats(self) -> dict[str, any]:
         """デフォルトの母父馬統計
 
         Returns:
@@ -484,7 +483,7 @@ class PedigreeFeatureExtractor:
             "dam_sire_speed_index": 0,
         }
 
-    def _get_default_sibling_stats(self) -> Dict[str, any]:
+    def _get_default_sibling_stats(self) -> dict[str, any]:
         """デフォルトの兄弟馬統計
 
         Returns:

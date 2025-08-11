@@ -1,3 +1,5 @@
+from typing import Optional
+
 """
 データベース接続管理
 
@@ -6,7 +8,6 @@ SQLAlchemyを使用したデータベース接続の管理と
 """
 
 
-from typing import Optional
 from collections.abc import Generator
 from contextlib import contextmanager
 
