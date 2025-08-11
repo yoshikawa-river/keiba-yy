@@ -3,6 +3,8 @@
 父馬、母父馬、兄弟馬の成績、血統の距離適性などを抽出する
 """
 
+from typing import Optional
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -16,13 +18,14 @@ class PedigreeFeatureExtractor:
     def __init__(self):
         """初期化"""
         self.feature_names = []
+        self.feature_count = 0  # 特徴量カウント管理
         self.important_sires = set()  # 重要な種牡馬リスト
 
     def extract_sire_features(
         self,
         df: pd.DataFrame,
         sire_performance: pd.DataFrame,
-        horse_pedigree: pd.DataFrame | None = None,
+        horse_pedigree: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """父馬の成績特徴量抽出
 
@@ -136,6 +139,7 @@ class PedigreeFeatureExtractor:
                 sire_df = pd.DataFrame(sire_stats, index=df.index)
                 df_features = pd.concat([df_features, sire_df], axis=1)
                 self.feature_names.extend(sire_df.columns.tolist())
+                self.feature_count += len(sire_df.columns)
 
             logger.info(
                 f"父馬の成績特徴量抽出完了: 特徴量数={len(sire_df.columns) if sire_stats else 0}"
@@ -152,7 +156,7 @@ class PedigreeFeatureExtractor:
         self,
         df: pd.DataFrame,
         dam_sire_performance: pd.DataFrame,
-        horse_pedigree: pd.DataFrame | None = None,
+        horse_pedigree: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """母父馬の成績特徴量抽出
 
@@ -235,6 +239,7 @@ class PedigreeFeatureExtractor:
                 dam_sire_df = pd.DataFrame(dam_sire_stats, index=df.index)
                 df_features = pd.concat([df_features, dam_sire_df], axis=1)
                 self.feature_names.extend(dam_sire_df.columns.tolist())
+                self.feature_count += len(dam_sire_df.columns)
 
             logger.info("母父馬の成績特徴量抽出完了")
 
@@ -342,6 +347,7 @@ class PedigreeFeatureExtractor:
                 sibling_df = pd.DataFrame(sibling_stats, index=df.index)
                 df_features = pd.concat([df_features, sibling_df], axis=1)
                 self.feature_names.extend(sibling_df.columns.tolist())
+                self.feature_count += len(sibling_df.columns)
 
             logger.info("兄弟馬の成績特徴量抽出完了")
 
@@ -425,6 +431,7 @@ class PedigreeFeatureExtractor:
                 affinity_df = pd.DataFrame(affinity_stats, index=df.index)
                 df_features = pd.concat([df_features, affinity_df], axis=1)
                 self.feature_names.extend(affinity_df.columns.tolist())
+                self.feature_count += len(affinity_df.columns)
 
             logger.info("血統相性特徴量抽出完了")
 
@@ -452,7 +459,7 @@ class PedigreeFeatureExtractor:
             return "intermediate"
         return "long"
 
-    def _get_default_sire_stats(self) -> dict[str, any]:
+    def _get_default_sire_stats(self) -> dict:
         """デフォルトの父馬統計
 
         Returns:
@@ -469,7 +476,7 @@ class PedigreeFeatureExtractor:
             "is_important_sire": 0,
         }
 
-    def _get_default_dam_sire_stats(self) -> dict[str, any]:
+    def _get_default_dam_sire_stats(self) -> dict:
         """デフォルトの母父馬統計
 
         Returns:
@@ -483,7 +490,7 @@ class PedigreeFeatureExtractor:
             "dam_sire_speed_index": 0,
         }
 
-    def _get_default_sibling_stats(self) -> dict[str, any]:
+    def _get_default_sibling_stats(self) -> dict:
         """デフォルトの兄弟馬統計
 
         Returns:
@@ -526,7 +533,7 @@ class PedigreeFeatureExtractor:
         dam_sire_performance: pd.DataFrame,
         sibling_performance: pd.DataFrame,
         horse_pedigree: pd.DataFrame,
-        bloodline_cross_performance: pd.DataFrame | None = None,
+        bloodline_cross_performance: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """全ての血統特徴量を抽出
 
@@ -565,7 +572,10 @@ class PedigreeFeatureExtractor:
                     df_features, bloodline_cross_performance
                 )
 
-            logger.info(f"全血統特徴量抽出完了: 特徴量数={len(self.feature_names)}")
+            logger.info(
+                f"✅ 血統特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
+            logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
@@ -573,3 +583,20 @@ class PedigreeFeatureExtractor:
             raise FeatureExtractionError(
                 f"全血統特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
+
+    def get_feature_info(self) -> dict[str, any]:
+        """特徴量サマリー情報を取得
+
+        Returns:
+            特徴量の統計情報辞書
+        """
+        return {
+            "feature_names": self.feature_names,
+            "feature_count": self.feature_count,
+            "categories": {
+                "sire": "父馬成績特徴量",
+                "dam_sire": "母父馬成績特徴量",
+                "sibling": "兄弟馬成績特徴量",
+                "affinity": "血統相性特徴量",
+            },
+        }

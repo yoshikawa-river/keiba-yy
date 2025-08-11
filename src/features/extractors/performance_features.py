@@ -3,6 +3,8 @@
 通算成績、直近N走の成績、コース別成績、距離別成績、馬場状態別成績などを抽出する
 """
 
+from typing import Optional
+
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -17,6 +19,7 @@ class PerformanceFeatureExtractor:
         """初期化"""
         self.feature_names = []
         self.performance_windows = [3, 5, 10]  # 直近N走の設定
+        self.feature_count = 0  # 特徴量カウント管理
 
     def extract_career_performance(
         self,
@@ -101,6 +104,7 @@ class PerformanceFeatureExtractor:
             df_features = pd.concat([df_features, career_df], axis=1)
 
             self.feature_names.extend(career_df.columns.tolist())
+            self.feature_count += len(career_df.columns)
 
             logger.info(f"通算成績特徴量抽出完了: 特徴量数={len(career_df.columns)}")
 
@@ -117,7 +121,7 @@ class PerformanceFeatureExtractor:
         performance_history: pd.DataFrame,
         entity_column: str = "horse_id",
         date_column: str = "race_date",
-        n_recent: list[int] | None = None,
+        n_recent: Optional[list[int]] = None,
     ) -> pd.DataFrame:
         """直近N走の成績特徴量抽出
 
@@ -205,6 +209,7 @@ class PerformanceFeatureExtractor:
                 df_features = pd.concat([df_features, recent_df], axis=1)
 
                 self.feature_names.extend(recent_df.columns.tolist())
+                self.feature_count += len(recent_df.columns)
 
             logger.info("直近成績特徴量抽出完了")
 
@@ -296,6 +301,7 @@ class PerformanceFeatureExtractor:
                 course_df = pd.DataFrame(course_stats, index=df.index)
                 df_features = pd.concat([df_features, course_df], axis=1)
                 self.feature_names.extend(course_df.columns.tolist())
+                self.feature_count += len(course_df.columns)
 
             logger.info("コース別成績特徴量抽出完了")
 
@@ -312,7 +318,7 @@ class PerformanceFeatureExtractor:
         performance_history: pd.DataFrame,
         entity_column: str = "horse_id",
         date_column: str = "race_date",
-        distance_ranges: list[tuple[int, int]] | None = None,
+        distance_ranges: Optional[list[tuple[int, int]]] = None,
     ) -> pd.DataFrame:
         """距離別成績特徴量の抽出
 
@@ -400,6 +406,7 @@ class PerformanceFeatureExtractor:
                 distance_df = pd.DataFrame(distance_stats, index=df.index)
                 df_features = pd.concat([df_features, distance_df], axis=1)
                 self.feature_names.extend(distance_df.columns.tolist())
+                self.feature_count += len(distance_df.columns)
 
             logger.info("距離別成績特徴量抽出完了")
 
@@ -502,6 +509,7 @@ class PerformanceFeatureExtractor:
                 condition_df = pd.DataFrame(condition_stats, index=df.index)
                 df_features = pd.concat([df_features, condition_df], axis=1)
                 self.feature_names.extend(condition_df.columns.tolist())
+                self.feature_count += len(condition_df.columns)
 
             logger.info("馬場状態別成績特徴量抽出完了")
 
@@ -601,7 +609,10 @@ class PerformanceFeatureExtractor:
                 df_features, performance_history, entity_column, date_column
             )
 
-            logger.info(f"全過去成績特徴量抽出完了: 特徴量数={len(self.feature_names)}")
+            logger.info(
+                f"✅ 過去成績特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
+            logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
@@ -609,3 +620,21 @@ class PerformanceFeatureExtractor:
             raise FeatureExtractionError(
                 f"全過去成績特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
+
+    def get_feature_info(self) -> dict[str, any]:
+        """特徴量サマリー情報を取得
+
+        Returns:
+            特徴量の統計情報辞書
+        """
+        return {
+            "feature_names": self.feature_names,
+            "feature_count": self.feature_count,
+            "categories": {
+                "career": "通算成績特徴量",
+                "recent": "直近成績特徴量",
+                "course": "コース別成績特徴量",
+                "distance": "距離別成績特徴量",
+                "track_condition": "馬場状態別成績特徴量",
+            },
+        }
