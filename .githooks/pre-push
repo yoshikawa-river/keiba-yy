@@ -30,13 +30,9 @@ if [ -n "$changed_files" ]; then
     echo "📝 Found Python files to format:"
     echo "$changed_files"
     
-    # Black formatting
-    echo "🖤 Running Black formatter..."
-    docker compose exec -T app black src/
-    
-    # isort import sorting
-    echo "📦 Running isort..."
-    docker compose exec -T app isort src/
+    # Ruff format (Black replacement)
+    echo "🦀 Running Ruff formatter..."
+    docker compose exec -T app ruff format src/
     
     # フォーマット後の変更があるかチェック
     if ! git diff --quiet; then
@@ -62,17 +58,17 @@ fi
 
 echo "🔍 Running linting checks..."
 
-# Flake8 linting
-echo "🐍 Running Flake8..."
-if ! docker compose exec -T app flake8 src/; then
-    echo "❌ Flake8 linting failed!"
+# Ruff check (Flake8 replacement)
+echo "🦀 Running Ruff linting..."
+if ! docker compose exec -T app ruff check src/ --output-format=github; then
+    echo "❌ Ruff linting failed!"
     echo "💡 Please fix the linting errors before pushing"
     exit 1
 fi
 
 # MyPy type checking
 echo "🔍 Running MyPy type checking..."
-if ! docker compose exec -T app mypy src/; then
+if ! docker compose exec -T app mypy src/ --show-error-codes --pretty; then
     echo "❌ MyPy type checking failed!"
     echo "💡 Please fix the type errors before pushing"
     exit 1

@@ -59,6 +59,9 @@ jobs:
         
         # Format check
         uv run ruff format --check src/ tests/ scripts/
+        
+        # MyPy type checking
+        uv run mypy src/ --show-error-codes --pretty
 
   test:
     name: Run Tests
