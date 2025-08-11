@@ -19,19 +19,11 @@ class SchemaField:
         name: str,
         field_type: type,
         required: bool = False,
-<<<<<<< HEAD
         min_value: float | None = None,
         max_value: float | None = None,
         pattern: str | None = None,
-        enum_values: list[Any | None] | None = None,
-        custom_validator: Callable[[Any | None, str | bool]] | None = None,
-=======
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
-        pattern: Optional[str] = None,
-        enum_values: Optional[list[Any]] = None,
-        custom_validator: Optional[Callable[[Any], str | bool]] = None,
->>>>>>> origin/main
+        enum_values: list[Any] | None = None,
+        custom_validator: Callable[[Any], Union[str, bool]] | None = None,
     ):
         self.name = name
         self.field_type = field_type

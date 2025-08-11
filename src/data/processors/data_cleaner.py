@@ -27,13 +27,8 @@ class DataCleaner:
         self,
         df: pd.DataFrame,
         strategy: str = "mean",
-<<<<<<< HEAD
-        columns: list[str | None] | None = None,
-        custom_values: dict[str, Any | None] | None = None,
-=======
-        columns: Optional[list[str]] = None,
-        custom_values: Optional[dict[str, Any]] = None,
->>>>>>> origin/main
+        columns: list[str] | None = None,
+        custom_values: dict[str, Any] | None = None,
     ) -> pd.DataFrame:
         """欠損値処理
 

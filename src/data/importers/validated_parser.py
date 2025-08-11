@@ -18,13 +18,8 @@ from src.data.validators.schema_validator import Schema
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
 
-<<<<<<< HEAD
     schema_validator: SchemaValidator | None
     data_validator: DataValidator | None
-=======
-    schema_validator: Optional[SchemaValidator]
-    data_validator: Optional[DataValidator]
->>>>>>> origin/main
 
     def __init__(
         self,
