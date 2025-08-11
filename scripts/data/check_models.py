@@ -17,15 +17,7 @@ from decimal import Decimal
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from src.data.models import (
-    Base,
-    Horse,
-    Jockey,
-    Race,
-    Racecourse,
-    RaceEntry,
-    Trainer,
-)
+from src.data.models import Base, Horse, Jockey, Race, Racecourse, RaceEntry, Trainer
 
 
 def main():

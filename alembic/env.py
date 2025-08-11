@@ -17,9 +17,7 @@ from alembic import context
 sys.path.append(str(Path(__file__).parents[1]))
 
 # モデルのインポート(全てのモデルをインポートすることで、Base.metadataに登録される)
-from src.data.models import (
-    Base,
-)
+from src.data.models import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

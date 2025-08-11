@@ -364,9 +364,7 @@ def main():
         print("==================")
         print("Usage:")
         print("  python sync_mykeibadb.py full           # 全データ同期")
-        print(
-            "  python sync_mykeibadb.py recent [days]  # 最近のデータ同期（デフォルト7日）"
-        )
+        print("  python sync_mykeibadb.py recent [days]  # 最近のデータ同期（デフォルト7日）")
         print("  python sync_mykeibadb.py verify         # 同期検証")
         print("  python sync_mykeibadb.py schedule       # 定期実行モード")
         print("\nEnvironment variables required:")

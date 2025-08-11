@@ -127,6 +127,4 @@ class APIKeyCreate(BaseModel):
     """APIキー作成リクエスト"""
 
     name: str = Field(..., max_length=100, description="APIキー名")
-    expires_in_days: Optional[int] = Field(
-        None, ge=1, le=365, description="有効期限（日数）"
-    )
+    expires_in_days: Optional[int] = Field(None, ge=1, le=365, description="有効期限（日数）")

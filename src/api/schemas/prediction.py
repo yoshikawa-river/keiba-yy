@@ -91,9 +91,7 @@ class PredictionRequest(BaseModel):
     """予測リクエスト"""
 
     race_info: RaceInfo = Field(..., description="レース情報")
-    horses: list[HorseInfo] = Field(
-        ..., min_items=2, max_items=18, description="出走馬情報"
-    )
+    horses: list[HorseInfo] = Field(..., min_items=2, max_items=18, description="出走馬情報")
     include_confidence: bool = Field(default=True, description="信頼度を含める")
     include_features: bool = Field(default=False, description="特徴量を含める")
 
@@ -123,9 +121,7 @@ class PredictionResult(BaseModel):
     win_probability: float = Field(..., ge=0, le=1, description="勝率")
     place_probability: float = Field(..., ge=0, le=1, description="複勝率")
     predicted_rank: int = Field(..., ge=1, le=18, description="予測順位")
-    confidence_score: Optional[float] = Field(
-        None, ge=0, le=1, description="予測信頼度"
-    )
+    confidence_score: Optional[float] = Field(None, ge=0, le=1, description="予測信頼度")
     expected_value: Optional[float] = Field(None, description="期待値")
     features: Optional[dict[str, Any]] = Field(None, description="使用した特徴量")
 
@@ -139,9 +135,7 @@ class RacePredictionResponse(BaseModel):
     predicted_at: datetime = Field(..., description="予測実行日時")
     model_version: str = Field(..., description="モデルバージョン")
     predictions: list[PredictionResult] = Field(..., description="予測結果リスト")
-    recommended_bets: Optional[dict[str, list[int]]] = Field(
-        None, description="推奨馬券"
-    )
+    recommended_bets: Optional[dict[str, list[int]]] = Field(None, description="推奨馬券")
     metadata: Optional[dict[str, Any]] = Field(None, description="メタデータ")
 
     class Config:

@@ -164,7 +164,7 @@ class TimeFeatureExtractor:
                     if base_time and last_time:
                         df_features.loc[
                             df_features["horse_id"] == horse_id, "time_deviation"
-                        ] = last_time - base_time
+                        ] = (last_time - base_time)
 
                     # 距離補正タイム
                     if "distance" in horse_history.columns:
@@ -331,7 +331,9 @@ class TimeFeatureExtractor:
                             df_features.loc[
                                 df_features["horse_id"] == horse_id,
                                 "last3f_consistency",
-                            ] = 1 / (1 + cv)  # 安定性スコア
+                            ] = 1 / (
+                                1 + cv
+                            )  # 安定性スコア
 
                     # 相対上がりタイム（同レース内での比較）
                     if "race_id" in horse_history.columns:
@@ -409,17 +411,13 @@ class TimeFeatureExtractor:
             # 上がり3Fタイム特徴量（10個）
             df_features = self.extract_last3f_features(df_features, history_df)
 
-            logger.info(
-                f"✅ タイム特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
-            )
+            logger.info(f"✅ タイム特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(
-                f"タイム特徴量抽出中にエラーが発生しました: {e!s}"
-            ) from e
+            raise FeatureExtractionError(f"タイム特徴量抽出中にエラーが発生しました: {e!s}") from e
 
     def _time_to_seconds(self, time_str: str) -> float:
         """タイム文字列を秒に変換
