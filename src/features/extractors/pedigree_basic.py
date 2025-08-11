@@ -7,8 +7,6 @@ Phase1の血統基本特徴量15個を実装。
 from typing import Any
 
 import numpy as np
-from typing import Optional
-
 import pandas as pd
 from loguru import logger
 
@@ -65,7 +63,7 @@ class PedigreeBasicExtractor:
         }
 
     def extract_sire_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """父系特徴量（5個）
 
@@ -151,7 +149,7 @@ class PedigreeBasicExtractor:
         return df_features
 
     def extract_dam_sire_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """母父系特徴量（5個）
 
@@ -237,7 +235,7 @@ class PedigreeBasicExtractor:
         return df_features
 
     def extract_bloodline_compatibility_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """血統相性・距離適性特徴量（5個）
 
@@ -377,7 +375,7 @@ class PedigreeBasicExtractor:
         return df_features
 
     def extract_all_pedigree_features(
-        self, df: pd.DataFrame, pedigree_df: Optional[pd.DataFrame] = None
+        self, df: pd.DataFrame, pedigree_df: pd.DataFrame | None = None
     ) -> pd.DataFrame:
         """全血統基本特徴量を抽出（15個）
 
