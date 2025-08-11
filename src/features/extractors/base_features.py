@@ -470,8 +470,12 @@ class BaseFeatureExtractor:
             self.feature_names = self.numerical_features + self.categorical_features
             self.feature_count = len(self.feature_names)
 
-            logger.info(f"✅ 基本特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
-            logger.info(f"数値特徴量: {len(self.numerical_features)}個, カテゴリ特徴量: {len(self.categorical_features)}個")
+            logger.info(
+                f"✅ 基本特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
+            logger.info(
+                f"数値特徴量: {len(self.numerical_features)}個, カテゴリ特徴量: {len(self.categorical_features)}個"
+            )
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features

@@ -521,7 +521,9 @@ class RelativeFeatureExtractor:
             # ペース相対特徴量
             df_features = self.extract_pace_relative_features(df_features)
 
-            logger.info(f"✅ 相対特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(
+                f"✅ 相対特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features

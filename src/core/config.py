@@ -89,7 +89,9 @@ class Settings(BaseSettings):
 
     # === JRA-VAN設定 ===
     JRAVAN_USER_ID: Optional[str] = Field(default=None, description="JRA-VANユーザーID")
-    JRAVAN_PASSWORD: Optional[str] = Field(default=None, description="JRA-VANパスワード")
+    JRAVAN_PASSWORD: Optional[str] = Field(
+        default=None, description="JRA-VANパスワード"
+    )
 
     # === パス設定 ===
     BASE_DIR: Path = Path(__file__).resolve().parent.parent.parent

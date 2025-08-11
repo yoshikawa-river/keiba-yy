@@ -609,7 +609,9 @@ class PerformanceFeatureExtractor:
                 df_features, performance_history, entity_column, date_column
             )
 
-            logger.info(f"✅ 過去成績特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(
+                f"✅ 過去成績特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
