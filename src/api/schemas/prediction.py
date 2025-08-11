@@ -124,7 +124,7 @@ class PredictionResult(BaseModel):
     predicted_rank: int = Field(..., ge=1, le=18, description="予測順位")
     confidence_score: float | None = Field(None, ge=0, le=1, description="予測信頼度")
     expected_value: float | None = Field(None, description="期待値")
-    features: dict[str, Any | None] = Field(None, description="使用した特徴量")
+    features: dict[str, Any] | None = Field(None, description="使用した特徴量")
 
 
 class RacePredictionResponse(BaseModel):
