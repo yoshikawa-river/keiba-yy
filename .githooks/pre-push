@@ -1,0 +1,84 @@
+#!/bin/bash
+
+set -e
+
+echo "🔍 Running pre-push hooks..."
+
+# リモートとブランチの情報を取得
+remote="$1"
+url="$2"
+
+# 現在のブランチ名を取得
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+echo "📤 Pushing to: $remote ($url)"
+echo "🌿 Current branch: $current_branch"
+
+# Docker環境が起動しているかチェック
+if ! docker compose ps | grep -q "Up"; then
+    echo "⚠️  Docker containers are not running. Starting containers..."
+    docker compose up -d app
+    sleep 5
+fi
+
+echo "🎨 Running code formatting..."
+
+# 変更されたPythonファイルを取得
+changed_files=$(git diff --name-only HEAD origin/$current_branch 2>/dev/null | grep '\.py$' || true)
+
+if [ -n "$changed_files" ]; then
+    echo "📝 Found Python files to format:"
+    echo "$changed_files"
+    
+    # Black formatting
+    echo "🖤 Running Black formatter..."
+    docker compose exec -T app black src/
+    
+    # isort import sorting
+    echo "📦 Running isort..."
+    docker compose exec -T app isort src/
+    
+    # フォーマット後の変更があるかチェック
+    if ! git diff --quiet; then
+        echo "✅ Code has been formatted. Committing changes..."
+        
+        # フォーマットされたファイルをステージング
+        git add -u
+        
+        # フォーマットコミットを作成
+        git commit -m "style: auto-format code before push
+
+🤖 Generated with [Claude Code](https://claude.ai/code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>"
+        
+        echo "📝 Formatting commit created automatically"
+    else
+        echo "✅ Code is already properly formatted"
+    fi
+else
+    echo "ℹ️  No Python files changed"
+fi
+
+echo "🔍 Running linting checks..."
+
+# Flake8 linting
+echo "🐍 Running Flake8..."
+if ! docker compose exec -T app flake8 src/; then
+    echo "❌ Flake8 linting failed!"
+    echo "💡 Please fix the linting errors before pushing"
+    exit 1
+fi
+
+# MyPy type checking
+echo "🔍 Running MyPy type checking..."
+if ! docker compose exec -T app mypy src/; then
+    echo "❌ MyPy type checking failed!"
+    echo "💡 Please fix the type errors before pushing"
+    exit 1
+fi
+
+echo "✅ All pre-push checks passed!"
+echo "🚀 Ready to push to $remote"
+
+exit 0
