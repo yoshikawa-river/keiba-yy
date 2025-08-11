@@ -6,7 +6,7 @@ TARGET frontier JVから出力された馬情報CSVをパースし、
 """
 
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -38,7 +38,7 @@ class Trainer:
 class HorseCSVParser(BaseCSVParser):
     """馬情報CSVパーサー"""
 
-    def _get_column_mappings(self) -> dict[str, str]:
+    def _get_column_mappings(self) -> Dict[str, str]:
         """CSVカラムとDBカラムのマッピング"""
         return {
             "馬ID": "horse_key",
@@ -58,11 +58,11 @@ class HorseCSVParser(BaseCSVParser):
             "通算成績": "career_record",
         }
 
-    def _get_required_columns(self) -> list[str]:
+    def _get_required_columns(self) -> List[str]:
         """必須カラムのリスト"""
         return ["馬ID", "馬名", "性齢"]
 
-    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
         """
         行データを変換
 
@@ -129,7 +129,7 @@ class HorseCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
+    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
         """
         馬データのバリデーション
 
@@ -161,7 +161,7 @@ class HorseCSVParser(BaseCSVParser):
 
         return True, None
 
-    def _save_row(self, row_data: dict[str, Any]) -> bool:
+    def _save_row(self, row_data: Dict[str, Any]) -> bool:
         """
         馬データを保存
 

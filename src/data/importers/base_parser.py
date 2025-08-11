@@ -5,7 +5,7 @@ CSVパーサーの基底クラス
 """
 
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import Any, Dict, List, Optional, Tuple
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -28,8 +28,8 @@ class BaseCSVParser(ABC):
         self.db_session = db_session
         self.column_mappings = self._get_column_mappings()
         self.required_columns = self._get_required_columns()
-        self.errors: list[dict[str, Any]] = []
-        self.warnings: list[dict[str, Any]] = []
+        self.errors: List[Dict[str, Any]] = []
+        self.warnings: List[Dict[str, Any]] = []
         self._init_statistics()
 
     def _init_statistics(self) -> None:
@@ -45,7 +45,7 @@ class BaseCSVParser(ABC):
         }
 
     @abstractmethod
-    def _get_column_mappings(self) -> dict[str, str]:
+    def _get_column_mappings(self) -> Dict[str, str]:
         """
         CSVカラムとDBカラムのマッピングを定義
 
@@ -55,7 +55,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _get_required_columns(self) -> list[str]:
+    def _get_required_columns(self) -> List[str]:
         """
         必須カラムのリストを定義
 
@@ -65,7 +65,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _transform_row(self, row: pd.Series) -> dict[str, Any]:
+    def _transform_row(self, row: pd.Series) -> Dict[str, Any]:
         """
         行データを変換
 
@@ -81,7 +81,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
+    def _validate_row(self, row: Dict[str, Any]) -> Tuple[bool, Optional[str]]:
         """
         行データをバリデーション
 
@@ -94,7 +94,7 @@ class BaseCSVParser(ABC):
         pass
 
     @abstractmethod
-    def _save_row(self, row: dict[str, Any]) -> bool:
+    def _save_row(self, row: Dict[str, Any]) -> bool:
         """
         行データをデータベースに保存
 
@@ -109,7 +109,7 @@ class BaseCSVParser(ABC):
     @log_execution_time
     def parse_file(
         self, csv_file: CSVFile, batch_size: int = 1000, dry_run: bool = False
-    ) -> dict[str, Any]:
+    ) -> Dict[str, Any]:
         """
         CSVファイルをパース
 
@@ -169,7 +169,7 @@ class BaseCSVParser(ABC):
             "warnings": self.warnings[:100],  # 最初の100件のみ
         }
 
-    def _validate_columns(self, headers: list[str]) -> None:
+    def _validate_columns(self, headers: List[str]) -> None:
         """
         必須カラムの存在確認
 
@@ -257,7 +257,7 @@ class BaseCSVParser(ABC):
                 self.statistics["error_count"] += 1
 
     def _add_error(
-        self, row_index: int, message: str, row_data: dict[str, Any]
+        self, row_index: int, message: str, row_data: Dict[str, Any]
     ) -> None:
         """エラー情報を追加"""
         self.errors.append(
@@ -269,7 +269,7 @@ class BaseCSVParser(ABC):
         )
 
     def _add_warning(
-        self, row_index: int, message: str, row_data: dict[str, Any]
+        self, row_index: int, message: str, row_data: Dict[str, Any]
     ) -> None:
         """警告情報を追加"""
         self.warnings.append(

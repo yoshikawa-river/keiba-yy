@@ -5,7 +5,7 @@
 """
 
 from datetime import date, datetime
-from typing import Any
+from typing import Any, Dict, Optional
 
 from sqlalchemy.orm import Session
 
@@ -28,7 +28,7 @@ class DataValidator(BaseValidator):
         super().__init__(strict_mode)
         self.db_session = db_session
 
-    def validate(self, data: dict[str, Any]) -> ValidationResult:
+    def validate(self, data: Dict[str, Any]) -> ValidationResult:
         """
         データをバリデーション(汎用メソッド)
 
@@ -56,7 +56,7 @@ class DataValidator(BaseValidator):
         )
         return result
 
-    def validate_race(self, data: dict[str, Any]) -> ValidationResult:
+    def validate_race(self, data: Dict[str, Any]) -> ValidationResult:
         """
         レースデータのビジネスロジック検証
 
@@ -129,7 +129,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def validate_horse(self, data: dict[str, Any]) -> ValidationResult:
+    def validate_horse(self, data: Dict[str, Any]) -> ValidationResult:
         """
         馬データのビジネスロジック検証
 
@@ -197,7 +197,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def validate_race_result(self, data: dict[str, Any]) -> ValidationResult:
+    def validate_race_result(self, data: Dict[str, Any]) -> ValidationResult:
         """
         レース結果データのビジネスロジック検証
 
@@ -260,7 +260,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def validate_odds(self, data: dict[str, Any]) -> ValidationResult:
+    def validate_odds(self, data: Dict[str, Any]) -> ValidationResult:
         """
         オッズデータのビジネスロジック検証
 
@@ -327,7 +327,7 @@ class DataValidator(BaseValidator):
 
         return result
 
-    def _get_minimum_prize_for_grade(self, grade: str) -> int | None:
+    def _get_minimum_prize_for_grade(self, grade: str) -> Optional[int]:
         """グレードに応じた最低賞金を取得"""
         min_prizes = {
             "G1": 100000000,  # 1億円
@@ -366,7 +366,7 @@ class DataValidator(BaseValidator):
         return False
 
     def validate_referential_integrity(
-        self, data_type: str, data: dict[str, Any]
+        self, data_type: str, data: Dict[str, Any]
     ) -> ValidationResult:
         """
         参照整合性を検証

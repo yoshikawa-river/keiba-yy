@@ -5,7 +5,7 @@ JRA-VANテーブルへのアクセスを管理するリポジトリクラス
 """
 
 from datetime import date, datetime, timedelta
-from typing import Any
+from typing import Any, Dict, List, Optional
 
 from sqlalchemy import and_, func, or_
 from sqlalchemy.orm import Session
@@ -20,11 +20,11 @@ class RaceRepository:
     def __init__(self, db_session: Session):
         self.db = db_session
 
-    def get_by_key(self, race_key: RaceKey) -> NRace | None:
+    def get_by_key(self, race_key: RaceKey) -> Optional[NRace]:
         """複合キーでレースを取得"""
         return self.db.query(NRace).filter_by(**race_key.to_dict()).first()
 
-    def get_by_race_id(self, race_id: str) -> NRace | None:
+    def get_by_race_id(self, race_id: str) -> Optional[NRace]:
         """レースIDでレースを取得"""
         race_key = RaceKey.from_race_id(race_id)
         return self.get_by_key(race_key)
@@ -33,9 +33,9 @@ class RaceRepository:
         self,
         start_date: date,
         end_date: date,
-        jyo_cd: str | None = None,
-        limit: int | None = None,
-    ) -> list[NRace]:
+        jyo_cd: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> List[NRace]:
         """
         日付範囲でレースを取得
 
@@ -83,8 +83,8 @@ class RaceRepository:
         return query.all()
 
     def get_by_jyo(
-        self, jyo_cd: str, year: str | None = None, limit: int | None = None
-    ) -> list[NRace]:
+        self, jyo_cd: str, year: Optional[str] = None, limit: Optional[int] = None
+    ) -> List[NRace]:
         """競馬場でレースを取得"""
         query = self.db.query(NRace).filter(NRace.JyoCD == jyo_cd)
 
@@ -99,8 +99,8 @@ class RaceRepository:
         return query.all()
 
     def get_grade_races(
-        self, grade_cd: str, year: str | None = None, limit: int | None = None
-    ) -> list[NRace]:
+        self, grade_cd: str, year: Optional[str] = None, limit: Optional[int] = None
+    ) -> List[NRace]:
         """グレードレースを取得"""
         query = self.db.query(NRace).filter(NRace.GradeCD == grade_cd)
 
@@ -114,7 +114,7 @@ class RaceRepository:
 
         return query.all()
 
-    def get_recent_races(self, days: int = 7, jyo_cd: str | None = None) -> list[NRace]:
+    def get_recent_races(self, days: int = 7, jyo_cd: Optional[str] = None) -> List[NRace]:
         """最近のレースを取得"""
         end_date = datetime.now().date()
         start_date = end_date - timedelta(days=days)
@@ -125,7 +125,7 @@ class RaceRepository:
         """年ごとのレース数を取得"""
         return self.db.query(func.count(NRace.Year)).filter(NRace.Year == year).scalar()
 
-    def get_race_with_entries(self, race_key: RaceKey) -> dict[str, Any] | None:
+    def get_race_with_entries(self, race_key: RaceKey) -> Optional[Dict[str, Any]]:
         """レースと出走情報を同時に取得"""
         race = self.get_by_key(race_key)
         if not race:
@@ -157,7 +157,7 @@ class UmaRaceRepository:
 
     def get_race_entries(
         self, race_key: RaceKey, include_canceled: bool = False
-    ) -> list[NUmaRace]:
+    ) -> List[NUmaRace]:
         """
         レースの出走馬を取得
 
@@ -174,8 +174,8 @@ class UmaRaceRepository:
         return query.order_by(NUmaRace.Umaban).all()
 
     def get_horse_history(
-        self, ketto_num: str, before_date: date | None = None, limit: int = 10
-    ) -> list[NUmaRace]:
+        self, ketto_num: str, before_date: Optional[date] = None, limit: int = 10
+    ) -> List[NUmaRace]:
         """
         馬の過去レース履歴を取得
 
@@ -205,8 +205,8 @@ class UmaRaceRepository:
         )
 
     def get_jockey_results(
-        self, kisyu_code: str, year: str | None = None, limit: int | None = None
-    ) -> list[NUmaRace]:
+        self, kisyu_code: str, year: Optional[str] = None, limit: Optional[int] = None
+    ) -> List[NUmaRace]:
         """騎手の成績を取得"""
         query = self.db.query(NUmaRace).filter(NUmaRace.KisyuCode == kisyu_code)
 
@@ -221,8 +221,8 @@ class UmaRaceRepository:
         return query.all()
 
     def get_trainer_results(
-        self, chokyo_code: str, year: str | None = None, limit: int | None = None
-    ) -> list[NUmaRace]:
+        self, chokyo_code: str, year: Optional[str] = None, limit: Optional[int] = None
+    ) -> List[NUmaRace]:
         """調教師の成績を取得"""
         query = self.db.query(NUmaRace).filter(NUmaRace.ChokyosiCode == chokyo_code)
 
@@ -236,7 +236,7 @@ class UmaRaceRepository:
 
         return query.all()
 
-    def get_horse_vs_jockey(self, ketto_num: str, kisyu_code: str) -> list[NUmaRace]:
+    def get_horse_vs_jockey(self, ketto_num: str, kisyu_code: str) -> List[NUmaRace]:
         """馬と騎手の組み合わせ成績を取得"""
         return (
             self.db.query(NUmaRace)
@@ -247,7 +247,7 @@ class UmaRaceRepository:
             .all()
         )
 
-    def calculate_win_rate(self, results: list[NUmaRace]) -> dict[str, Any]:
+    def calculate_win_rate(self, results: List[NUmaRace]) -> Dict[str, Any]:
         """
         成績から勝率等を計算
 
@@ -300,23 +300,23 @@ class UmaRepository:
     def __init__(self, db_session: Session):
         self.db = db_session
 
-    def get_by_id(self, ketto_num: str) -> NUma | None:
+    def get_by_id(self, ketto_num: str) -> Optional[NUma]:
         """血統登録番号で馬を取得"""
         return self.db.query(NUma).filter(NUma.KettoNum == ketto_num).first()
 
-    def get_by_name(self, name: str, exact: bool = True) -> list[NUma]:
+    def get_by_name(self, name: str, exact: bool = True) -> List[NUma]:
         """馬名で馬を取得"""
         if exact:
             return self.db.query(NUma).filter(NUma.Bamei == name).all()
         return self.db.query(NUma).filter(NUma.Bamei.like(f"%{name}%")).all()
 
-    def get_by_father(self, father_id: str) -> list[NUma]:
+    def get_by_father(self, father_id: str) -> List[NUma]:
         """父馬で検索"""
         return (
             self.db.query(NUma).filter(NUma.Ketto3InfoHansyokuNum1 == father_id).all()
         )
 
-    def get_by_mother_father(self, mother_father_id: str) -> list[NUma]:
+    def get_by_mother_father(self, mother_father_id: str) -> List[NUma]:
         """母父で検索"""
         return (
             self.db.query(NUma)
@@ -324,7 +324,7 @@ class UmaRepository:
             .all()
         )
 
-    def get_active_horses(self) -> list[NUma]:
+    def get_active_horses(self) -> List[NUma]:
         """現役馬を取得（削除されていない馬）"""
         return (
             self.db.query(NUma)
@@ -343,11 +343,11 @@ class KisyuRepository:
     def __init__(self, db_session: Session):
         self.db = db_session
 
-    def get_by_id(self, kisyu_code: str) -> NKisyu | None:
+    def get_by_id(self, kisyu_code: str) -> Optional[NKisyu]:
         """騎手コードで騎手を取得"""
         return self.db.query(NKisyu).filter(NKisyu.KisyuCode == kisyu_code).first()
 
-    def get_by_name(self, name: str, exact: bool = True) -> list[NKisyu]:
+    def get_by_name(self, name: str, exact: bool = True) -> List[NKisyu]:
         """騎手名で騎手を取得"""
         if exact:
             return (
@@ -366,11 +366,11 @@ class KisyuRepository:
             .all()
         )
 
-    def get_by_tozai(self, tozai_cd: str) -> list[NKisyu]:
+    def get_by_tozai(self, tozai_cd: str) -> List[NKisyu]:
         """東西所属で騎手を取得"""
         return self.db.query(NKisyu).filter(NKisyu.TozaiCD == tozai_cd).all()
 
-    def get_active_jockeys(self) -> list[NKisyu]:
+    def get_active_jockeys(self) -> List[NKisyu]:
         """現役騎手を取得"""
         return (
             self.db.query(NKisyu)
@@ -389,13 +389,13 @@ class ChokyoRepository:
     def __init__(self, db_session: Session):
         self.db = db_session
 
-    def get_by_id(self, chokyo_code: str) -> NChokyo | None:
+    def get_by_id(self, chokyo_code: str) -> Optional[NChokyo]:
         """調教師コードで調教師を取得"""
         return (
             self.db.query(NChokyo).filter(NChokyo.ChokyosiCode == chokyo_code).first()
         )
 
-    def get_by_name(self, name: str, exact: bool = True) -> list[NChokyo]:
+    def get_by_name(self, name: str, exact: bool = True) -> List[NChokyo]:
         """調教師名で調教師を取得"""
         if exact:
             return (
@@ -416,11 +416,11 @@ class ChokyoRepository:
             .all()
         )
 
-    def get_by_tozai(self, tozai_cd: str) -> list[NChokyo]:
+    def get_by_tozai(self, tozai_cd: str) -> List[NChokyo]:
         """東西所属で調教師を取得"""
         return self.db.query(NChokyo).filter(NChokyo.TozaiCD == tozai_cd).all()
 
-    def get_active_trainers(self) -> list[NChokyo]:
+    def get_active_trainers(self) -> List[NChokyo]:
         """現役調教師を取得"""
         return (
             self.db.query(NChokyo)

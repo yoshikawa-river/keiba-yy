@@ -6,7 +6,7 @@ import asyncio
 import random
 import uuid
 from datetime import date, datetime
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, status
 from loguru import logger
@@ -41,8 +41,8 @@ class MockPredictor:
         self.model_version = "v1.0.0-mock"
 
     async def predict_race(
-        self, race_info: RaceInfo, horses: list[HorseInfo]
-    ) -> list[PredictionResult]:
+        self, race_info: RaceInfo, horses: List[HorseInfo]
+    ) -> List[PredictionResult]:
         """レース予測（モック）"""
         # 処理時間のシミュレーション
         await asyncio.sleep(random.uniform(0.1, 0.5))
@@ -96,8 +96,8 @@ class MockPredictor:
         return results
 
     def generate_recommended_bets(
-        self, predictions: list[PredictionResult]
-    ) -> dict[str, list[int]]:
+        self, predictions: List[PredictionResult]
+    ) -> Dict[str, List[int]]:
         """推奨馬券生成（モック）"""
         # 上位馬の馬番を取得
         top_horses = sorted(predictions, key=lambda x: x.win_probability, reverse=True)[
@@ -236,11 +236,11 @@ async def get_batch_status(
 
 @router.get(
     "/batch/{batch_id}/results",
-    response_model=ResponseBase[list[RacePredictionResponse]],
+    response_model=ResponseBase[List[RacePredictionResponse]],
 )
 async def get_batch_results(
     batch_id: str, api_key: Optional[str] = Depends(require_api_key)
-) -> ResponseBase[list[RacePredictionResponse]]:
+) -> ResponseBase[List[RacePredictionResponse]]:
     """
     バッチ予測結果取得
     """
@@ -288,10 +288,10 @@ async def get_prediction_history(
     )
 
 
-@router.get("/models", response_model=ResponseBase[list[dict[str, Any]]])
+@router.get("/models", response_model=ResponseBase[List[Dict[str, Any]]])
 async def get_available_models(
     api_key: Optional[str] = Depends(require_api_key),
-) -> ResponseBase[list[dict[str, Any]]]:
+) -> ResponseBase[List[Dict[str, Any]]]:
     """
     利用可能なモデル一覧取得
     """
@@ -337,7 +337,7 @@ async def save_prediction_history(prediction: RacePredictionResponse):
 
 
 async def process_batch_predictions(
-    batch_id: str, races: list[PredictionRequest], callback_url: Optional[str]
+    batch_id: str, races: List[PredictionRequest], callback_url: Optional[str]
 ):
     """バッチ予測処理（モック）"""
     # 実際は各レースを処理してデータベースに保存

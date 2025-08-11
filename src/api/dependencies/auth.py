@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import Depends, HTTPException, Security, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
@@ -63,7 +63,7 @@ async def get_current_active_user(
     return current_user
 
 
-def require_scopes(required_scopes: list[str]):
+def require_scopes(required_scopes: List[str]):
     """スコープ要求デコレータ"""
 
     async def scope_checker(

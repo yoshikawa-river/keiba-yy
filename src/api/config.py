@@ -3,7 +3,7 @@ API設定管理
 """
 
 from functools import lru_cache
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     refresh_token_expire_days: int = 7
 
     # CORS設定
-    backend_cors_origins: list[str] = ["http://localhost:3000", "http://localhost:8501"]
+    backend_cors_origins: List[str] = ["http://localhost:3000", "http://localhost:8501"]
 
     # データベース設定（将来の接続用）
     database_url: Optional[str] = None

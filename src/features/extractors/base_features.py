@@ -3,6 +3,7 @@
 馬齢、性別、斤量、馬体重、枠番、馬番、前走からの間隔などの基本特徴量を抽出する
 """
 
+from typing import Dict, List
 import pandas as pd
 from loguru import logger
 
@@ -19,7 +20,7 @@ class BaseFeatureExtractor:
         self.numerical_features = []
 
     def extract_horse_basic_features(
-        self, df: pd.DataFrame, horse_info: pd.DataFrame | None = None
+        self, df: pd.DataFrame, horse_info: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """馬の基本特徴量抽出
 
@@ -167,8 +168,8 @@ class BaseFeatureExtractor:
     def extract_jockey_trainer_features(
         self,
         df: pd.DataFrame,
-        jockey_stats: pd.DataFrame | None = None,
-        trainer_stats: pd.DataFrame | None = None,
+        jockey_stats: Optional[pd.DataFrame] = None,
+        trainer_stats: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """騎手・調教師の特徴量抽出
 
@@ -434,9 +435,9 @@ class BaseFeatureExtractor:
     def extract_all_base_features(
         self,
         df: pd.DataFrame,
-        horse_info: pd.DataFrame | None = None,
-        jockey_stats: pd.DataFrame | None = None,
-        trainer_stats: pd.DataFrame | None = None,
+        horse_info: Optional[pd.DataFrame] = None,
+        jockey_stats: Optional[pd.DataFrame] = None,
+        trainer_stats: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """全ての基本特徴量を抽出
 
@@ -480,7 +481,7 @@ class BaseFeatureExtractor:
                 f"全基本特徴量抽出中にエラーが発生しました: {e!s}"
             ) from e
 
-    def get_feature_info(self) -> dict[str, list[str]]:
+    def get_feature_info(self) -> Dict[str, List[str]]:
         """特徴量情報の取得
 
         Returns:

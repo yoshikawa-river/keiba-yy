@@ -5,6 +5,7 @@
 
 from datetime import datetime
 
+from typing import Dict, List, Optional, Union
 import numpy as np
 import pandas as pd
 from loguru import logger
@@ -23,7 +24,7 @@ class TimeSeriesProcessor:
     def standardize_dates(
         self,
         df: pd.DataFrame,
-        date_columns: list[str] | None = None,
+        date_columns: Optional[List[str]] = None,
         target_timezone: str = "Asia/Tokyo",
         infer_format: bool = True,
     ) -> pd.DataFrame:
@@ -81,7 +82,7 @@ class TimeSeriesProcessor:
                 f"日付データ標準化中にエラーが発生しました: {e!s}"
             ) from e
 
-    def _detect_date_columns(self, df: pd.DataFrame) -> list[str]:
+    def _detect_date_columns(self, df: pd.DataFrame) -> List[str]:
         """日付カラムの自動検出
 
         Args:
@@ -125,7 +126,7 @@ class TimeSeriesProcessor:
         return date_columns
 
     def create_time_features(
-        self, df: pd.DataFrame, date_column: str, features: list[str] | None = None
+        self, df: pd.DataFrame, date_column: str, features: Optional[List[str]] = None
     ) -> pd.DataFrame:
         """時系列特徴量の生成
 
@@ -252,10 +253,10 @@ class TimeSeriesProcessor:
     def create_lag_features(
         self,
         df: pd.DataFrame,
-        target_columns: list[str],
-        lag_periods: list[int],
-        date_column: str | None = None,
-        group_columns: list[str] | None = None,
+        target_columns: List[str],
+        lag_periods: List[int],
+        date_column: Optional[str] = None,
+        group_columns: Optional[List[str]] = None,
     ) -> pd.DataFrame:
         """ラグ特徴量の作成
 
@@ -342,8 +343,8 @@ class TimeSeriesProcessor:
         self,
         df: pd.DataFrame,
         date_column: str,
-        reference_dates: dict[str, str | datetime] | None = None,
-        group_column: str | None = None,
+        reference_dates: Optional[Dict[str, Union[str, datetime]]] = None,
+        group_column: Optional[str] = None,
     ) -> pd.DataFrame:
         """時間差特徴量の作成
 

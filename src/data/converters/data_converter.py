@@ -7,7 +7,7 @@ mykeibaDBデータ形式と内部形式の変換
 import builtins
 import contextlib
 from datetime import date, datetime, time
-from typing import Any
+from typing import Any, Dict
 
 from src.data.utils.code_master import CodeMaster
 
@@ -41,7 +41,7 @@ class RaceKey:
         return cls(year, jyo_cd, kaiji, nichiji, race_num)
 
     @classmethod
-    def from_dict(cls, data: dict[str, str]):
+    def from_dict(cls, data: Dict[str, str]):
         """辞書から複合キーを生成"""
         return cls(
             year=data.get("Year", ""),
@@ -71,7 +71,7 @@ class DataConverter:
     """JRA-VANデータ形式と内部形式の変換"""
 
     @staticmethod
-    def parse_date(date_str: str) -> date | None:
+    def parse_date(date_str: str) -> Optional[date]:
         """
         日付文字列をdateオブジェクトに変換
         "20240101" -> date(2024, 1, 1)
@@ -85,7 +85,7 @@ class DataConverter:
             return None
 
     @staticmethod
-    def parse_time(time_str: str) -> time | None:
+    def parse_time(time_str: str) -> Optional[time]:
         """
         時刻文字列をtimeオブジェクトに変換
         "1530" -> time(15, 30)
@@ -99,7 +99,7 @@ class DataConverter:
             return None
 
     @staticmethod
-    def nrace_to_dict(nrace: NRace) -> dict[str, Any]:
+    def nrace_to_dict(nrace: NRace) -> Dict[str, Any]:
         """N_RACEをビジネスロジック用の辞書に変換"""
         # レース日付の構築
         race_date = None
@@ -185,7 +185,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def numa_to_dict(numa: NUma) -> dict[str, Any]:
+    def numa_to_dict(numa: NUma) -> Dict[str, Any]:
         """N_UMAをビジネスロジック用の辞書に変換"""
         # 生年月日の変換
         birth_date = DataConverter.parse_date(numa.BirthDate)
@@ -266,7 +266,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def numarace_to_dict(numarace: NUmaRace) -> dict[str, Any]:
+    def numarace_to_dict(numarace: NUmaRace) -> Dict[str, Any]:
         """N_UMA_RACEをビジネスロジック用の辞書に変換"""
         # レース日付の構築
         race_date = None
@@ -365,7 +365,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def nkisyu_to_dict(nkisyu: NKisyu) -> dict[str, Any]:
+    def nkisyu_to_dict(nkisyu: NKisyu) -> Dict[str, Any]:
         """N_KISYUをビジネスロジック用の辞書に変換"""
         return {
             # 識別情報
@@ -396,7 +396,7 @@ class DataConverter:
         }
 
     @staticmethod
-    def nchokyo_to_dict(nchokyo: NChokyo) -> dict[str, Any]:
+    def nchokyo_to_dict(nchokyo: NChokyo) -> Dict[str, Any]:
         """N_CHOKYOをビジネスロジック用の辞書に変換"""
         return {
             # 識別情報

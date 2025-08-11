@@ -4,7 +4,7 @@
 
 import re
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr, Field, validator
 
@@ -70,7 +70,7 @@ class TokenData(BaseModel):
 
     username: Optional[str] = None
     user_id: Optional[int] = None
-    scopes: list[str] = []
+    scopes: List[str] = []
 
 
 class LoginRequest(BaseModel):

@@ -19,7 +19,7 @@ class RaceFeatureExtractor:
         self.pace_categories = ["slow", "medium", "fast", "very_fast"]
 
     def extract_race_level_features(
-        self, df: pd.DataFrame, historical_races: pd.DataFrame | None = None
+        self, df: pd.DataFrame, historical_races: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """レースレベル特徴量の抽出
 
@@ -250,7 +250,7 @@ class RaceFeatureExtractor:
             ) from e
 
     def extract_pace_features(
-        self, df: pd.DataFrame, historical_lap_times: pd.DataFrame | None = None
+        self, df: pd.DataFrame, historical_lap_times: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """ペース予想特徴量の抽出
 
@@ -350,7 +350,7 @@ class RaceFeatureExtractor:
             ) from e
 
     def extract_position_advantage_features(
-        self, df: pd.DataFrame, course_statistics: pd.DataFrame | None = None
+        self, df: pd.DataFrame, course_statistics: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         """枠順・コース形態による有利不利特徴量
 
@@ -522,9 +522,9 @@ class RaceFeatureExtractor:
     def extract_all_race_features(
         self,
         df: pd.DataFrame,
-        historical_races: pd.DataFrame | None = None,
-        historical_lap_times: pd.DataFrame | None = None,
-        course_statistics: pd.DataFrame | None = None,
+        historical_races: Optional[pd.DataFrame] = None,
+        historical_lap_times: Optional[pd.DataFrame] = None,
+        course_statistics: Optional[pd.DataFrame] = None,
     ) -> pd.DataFrame:
         """全てのレース特徴量を抽出
 

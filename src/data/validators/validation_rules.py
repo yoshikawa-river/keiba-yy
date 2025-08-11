@@ -6,7 +6,7 @@
 
 from collections.abc import Callable
 from datetime import datetime
-from typing import Any
+from typing import Any, Dict, List
 
 from src.data.validators.schema_validator import Schema, SchemaField
 
@@ -282,8 +282,8 @@ class DataQualityRules:
 
     @staticmethod
     def check_completeness(
-        data: dict[str, Any], required_fields: list[str]
-    ) -> dict[str, float]:
+        data: Dict[str, Any], required_fields: List[str]
+    ) -> Dict[str, float]:
         """
         データの完全性をチェック
 
@@ -312,7 +312,7 @@ class DataQualityRules:
         }
 
     @staticmethod
-    def check_consistency(data_list: list[dict[str, Any]]) -> dict[str, Any]:
+    def check_consistency(data_list: List[Dict[str, Any]]) -> Dict[str, Any]:
         """
         データの一貫性をチェック
 
