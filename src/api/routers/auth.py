@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 from src.api.auth.jwt_handler import jwt_handler
 from src.api.config import settings
-from src.api.dependencies.auth import get_current_user, rate_limit_100, simple_rate_limit_100
+from src.api.dependencies.auth import get_current_user, simple_rate_limit_100
 from src.api.exceptions.custom_exceptions import AuthenticationException
 from src.api.schemas.auth import (
     APIKey,

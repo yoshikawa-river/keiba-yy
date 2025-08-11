@@ -169,7 +169,7 @@ class SimpleRateLimitChecker:
         """レート制限チェック（認証なし）"""
         # TODO: Redisを使用した実際のレート制限実装
         # ここでは常にTrueを返す
-        
+
         if not settings.rate_limit_enabled:
             return True
 
