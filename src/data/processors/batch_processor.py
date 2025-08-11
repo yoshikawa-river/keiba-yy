@@ -285,8 +285,9 @@ class BatchProcessor:
         Returns:
             品質検証結果
         """
-        from typing import Any, Dict, List
-        quality_report: Dict[str, Any] = {
+        from typing import Any
+
+        quality_report: dict[str, Any] = {
             "total_files": len(csv_files),
             "file_quality": {},
             "overall_score": 0,

@@ -77,8 +77,9 @@ class ResultCSVParser(BaseCSVParser):
                 transformed["bracket_number"] = self._parse_int(row["bracket_number"])
 
             # 結果情報
-            from typing import Any, Dict
-            result_data: Dict[str, Any] = {}
+            from typing import Any
+
+            result_data: dict[str, Any] = {}
 
             if pd.notna(row.get("finish_position")):
                 finish_pos = self._parse_finish_position(row["finish_position"])

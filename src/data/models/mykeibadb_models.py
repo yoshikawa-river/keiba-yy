@@ -8,7 +8,7 @@ from datetime import datetime
 
 from sqlalchemy import Column, Index, PrimaryKeyConstraint, String
 from sqlalchemy.orm import DeclarativeBase
-from typing import Any
+
 
 class Base(DeclarativeBase):
     pass

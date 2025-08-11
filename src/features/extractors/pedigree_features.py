@@ -64,9 +64,9 @@ class PedigreeFeatureExtractor:
                     if len(sire_data) > 0:
                         # 全体成績
                         stats["sire_progeny_count"] = len(sire_data)
-                        stats["sire_win_count"] = int((
-                            sire_data["finish_position"] == 1
-                        ).sum())
+                        stats["sire_win_count"] = int(
+                            (sire_data["finish_position"] == 1).sum()
+                        )
                         stats["sire_win_rate"] = int(
                             stats["sire_win_count"] / stats["sire_progeny_count"]
                         )
@@ -148,7 +148,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"父馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"父馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_dam_sire_features(
         self,
@@ -244,7 +246,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"母父馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"母父馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_sibling_features(
         self,
@@ -301,9 +305,9 @@ class PedigreeFeatureExtractor:
                         if len(sibling_data) > 0:
                             stats["sibling_count"] = len(siblings)
                             stats["sibling_race_count"] = len(sibling_data)
-                            stats["sibling_win_count"] = int((
-                                sibling_data["finish_position"] == 1
-                            ).sum())
+                            stats["sibling_win_count"] = int(
+                                (sibling_data["finish_position"] == 1).sum()
+                            )
                             stats["sibling_win_rate"] = int(
                                 stats["sibling_win_count"] / stats["sibling_race_count"]
                             )
@@ -350,7 +354,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"兄弟馬の成績特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"兄弟馬の成績特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def extract_bloodline_affinity(
         self, df: pd.DataFrame, bloodline_cross_performance: pd.DataFrame
@@ -392,7 +398,9 @@ class PedigreeFeatureExtractor:
                         stats["cross_win_rate"] = (
                             same_cross["finish_position"] == 1
                         ).sum() / len(same_cross)
-                        stats["cross_avg_finish"] = int(same_cross["finish_position"].mean())
+                        stats["cross_avg_finish"] = int(
+                            same_cross["finish_position"].mean()
+                        )
                         stats["is_golden_cross"] = (
                             1
                             if stats["cross_win_rate"] > 0.2
@@ -432,7 +440,9 @@ class PedigreeFeatureExtractor:
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"血統相性特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"血統相性特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def _get_distance_category(self, distance: float) -> str:
         """距離カテゴリの取得
@@ -564,13 +574,17 @@ class PedigreeFeatureExtractor:
                     df_features, bloodline_cross_performance
                 )
 
-            logger.info(f"✅ 血統特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成")
+            logger.info(
+                f"✅ 血統特徴量抽出完了: 合計{self.feature_count}個の特徴量を生成"
+            )
             logger.info(f"生成された特徴量: {self.feature_names}")
 
             return df_features
 
         except Exception as e:
-            raise FeatureExtractionError(f"全血統特徴量抽出中にエラーが発生しました: {e!s}") from e
+            raise FeatureExtractionError(
+                f"全血統特徴量抽出中にエラーが発生しました: {e!s}"
+            ) from e
 
     def get_feature_info(self) -> dict[str, Any]:
         """特徴量サマリー情報を取得

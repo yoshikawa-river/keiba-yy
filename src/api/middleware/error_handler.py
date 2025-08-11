@@ -36,7 +36,10 @@ async def http_exception_handler(
 
     # エラーレスポンスの作成
     error_response = ErrorResponse(
-        error=f"HTTP_{exc.status_code}", message=str(exc.detail), details=None, request_id=request_id
+        error=f"HTTP_{exc.status_code}",
+        message=str(exc.detail),
+        details=None,
+        request_id=request_id,
     )
 
     return JSONResponse(

@@ -341,8 +341,10 @@ class DataQualityReporter:
 
                 # 分布の特徴
                 from typing import cast
+
                 stats["is_normal"] = (
-                    abs(cast(float, stats["skewness"])) < 0.5 and abs(cast(float, stats["kurtosis"])) < 3
+                    abs(cast(float, stats["skewness"])) < 0.5
+                    and abs(cast(float, stats["kurtosis"])) < 3
                 )
                 stats["is_skewed"] = abs(cast(float, stats["skewness"])) > 1
                 stats["has_outliers"] = self._detect_outliers_iqr(data)

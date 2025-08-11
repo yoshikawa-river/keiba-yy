@@ -17,7 +17,7 @@ from src.data.validators.schema_validator import Schema
 
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
-    
+
     schema_validator: Optional[SchemaValidator]
     data_validator: Optional[DataValidator]
 
@@ -160,8 +160,9 @@ class ValidatedCSVParser(BaseCSVParser):
         Returns:
             バリデーションレポート
         """
-        from typing import Any, Dict
-        report: Dict[str, Any] = {
+        from typing import Any
+
+        report: dict[str, Any] = {
             "statistics": self.statistics,
             "errors": self.errors,
             "warnings": self.warnings,

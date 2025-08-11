@@ -3,7 +3,7 @@
 """
 
 from datetime import datetime
-from typing import Any, Dict, cast
+from typing import Any, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
@@ -31,7 +31,7 @@ router = APIRouter(
 )
 
 # モックユーザーデータベース（実際にはDBを使用）
-mock_users: Dict[str, Dict[str, Any]] = {
+mock_users: dict[str, dict[str, Any]] = {
     "testuser": {
         "id": 1,
         "username": "testuser",
@@ -118,7 +118,9 @@ async def login(
     if not user:
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
-    if not jwt_handler.verify_password(form_data.password, cast(str, user["hashed_password"])):
+    if not jwt_handler.verify_password(
+        form_data.password, cast(str, user["hashed_password"])
+    ):
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
     if not cast(bool, user["is_active"]):
@@ -164,11 +166,17 @@ async def login_custom(
     if not user:
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
-    if not jwt_handler.verify_password(login_request.password, cast(str, user["hashed_password"])):
+    if not jwt_handler.verify_password(
+        login_request.password, cast(str, user["hashed_password"])
+    ):
         raise AuthenticationException("ユーザー名またはパスワードが正しくありません")
 
     # トークン作成
-    access_token_data = {"sub": cast(str, user["username"]), "user_id": cast(int, user["id"]), "scopes": []}
+    access_token_data = {
+        "sub": cast(str, user["username"]),
+        "user_id": cast(int, user["id"]),
+        "scopes": [],
+    }
 
     access_token = jwt_handler.create_access_token(data=access_token_data)
     refresh_token = jwt_handler.create_refresh_token(data=access_token_data)

@@ -22,9 +22,7 @@ class Settings(BaseSettings):
     api_port: int = Field(default=8000)
 
     # セキュリティ設定
-    secret_key: str = Field(
-        default="your-secret-key-here-change-in-production"
-    )
+    secret_key: str = Field(default="your-secret-key-here-change-in-production")
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7

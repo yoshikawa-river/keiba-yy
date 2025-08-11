@@ -27,8 +27,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         start_time = time.time()
 
         # リクエスト情報をログ
-        from typing import Any, Dict
-        request_log: Dict[str, Any] = {
+        from typing import Any
+
+        request_log: dict[str, Any] = {
             "request_id": request_id,
             "timestamp": datetime.utcnow().isoformat(),
             "method": request.method,
@@ -48,6 +49,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
 
         # リクエスト処理
         from typing import cast
+
         response = cast(Response, await call_next(request))
 
         # 処理時間計算
@@ -90,6 +92,7 @@ class PerformanceMonitoringMiddleware(BaseHTTPMiddleware):
         # memory_before = process.memory_info().rss / 1024 / 1024  # MB
 
         from typing import cast
+
         response = cast(Response, await call_next(request))
 
         process_time = time.time() - start_time

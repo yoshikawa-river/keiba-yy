@@ -128,6 +128,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         # レート制限が無効な場合はスキップ
         if not settings.rate_limit_enabled:
             from typing import cast
+
             return cast(Response, await call_next(request))
 
         # 静的ファイルやヘルスチェックは除外
