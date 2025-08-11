@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,7 +42,7 @@ class DataQualityReporter:
         plt.rcParams["axes.unicode_minus"] = False
 
     def generate_missing_value_report(
-        self, df: pd.DataFrame, output_file: Optional[str] = None
+        self, df: pd.DataFrame, output_file: str | None = None
     ) -> dict[str, Any]:
         """欠損値統計レポートの生成
 
@@ -290,8 +290,8 @@ class DataQualityReporter:
     def generate_distribution_report(
         self,
         df: pd.DataFrame,
-        columns: Optional[list[str]] = None,
-        output_file: Optional[str] = None,
+        columns: list[str | None] | None = None,
+        output_file: str | None = None,
     ) -> dict[str, Any]:
         """データ分布レポートの生成
 
@@ -479,10 +479,10 @@ class DataQualityReporter:
     def generate_outlier_report(
         self,
         df: pd.DataFrame,
-        columns: Optional[list[str]] = None,
+        columns: list[str | None] | None = None,
         method: str = "iqr",
         threshold: float = 1.5,
-        output_file: Optional[str] = None,
+        output_file: str | None = None,
     ) -> dict[str, Any]:
         """異常値レポートの生成
 
@@ -727,7 +727,7 @@ class DataQualityReporter:
         logger.info(f"異常値可視化完了: {output_path}")
 
     def generate_comprehensive_report(
-        self, df: pd.DataFrame, output_prefix: Optional[str] = None
+        self, df: pd.DataFrame, output_prefix: str | None = None
     ) -> dict[str, dict[str, Any]]:
         """包括的なデータ品質レポートの生成
 

@@ -4,7 +4,7 @@
 Phase1統合済み + Phase2未統合抽出器を全て統合管理。
 """
 
-from typing import Any, Optional
+from typing import Any
 
 import pandas as pd
 from loguru import logger
@@ -72,11 +72,11 @@ class ComprehensiveFeaturePipeline:
     def extract_phase1_features(
         self,
         df: pd.DataFrame,
-        history_df: Optional[pd.DataFrame] = None,
-        career_df: Optional[pd.DataFrame] = None,
-        jockey_stats: Optional[pd.DataFrame] = None,
-        trainer_stats: Optional[pd.DataFrame] = None,
-        pedigree_df: Optional[pd.DataFrame] = None,
+        history_df: pd.DataFrame | None = None,
+        career_df: pd.DataFrame | None = None,
+        jockey_stats: pd.DataFrame | None = None,
+        trainer_stats: pd.DataFrame | None = None,
+        pedigree_df: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """Phase1統合済み特徴量を抽出（100個）
 
@@ -143,10 +143,10 @@ class ComprehensiveFeaturePipeline:
     def extract_phase2_features(
         self,
         df: pd.DataFrame,
-        performance_history: Optional[pd.DataFrame] = None,
-        race_metadata: Optional[pd.DataFrame] = None,
-        odds_data: Optional[pd.DataFrame] = None,
-        pedigree_extended: Optional[pd.DataFrame] = None,
+        performance_history: pd.DataFrame | None = None,
+        race_metadata: pd.DataFrame | None = None,
+        odds_data: pd.DataFrame | None = None,
+        pedigree_extended: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """Phase2未統合特徴量を抽出（100-200個）
 
@@ -208,16 +208,16 @@ class ComprehensiveFeaturePipeline:
         self,
         df: pd.DataFrame,
         # Phase1データ
-        history_df: Optional[pd.DataFrame] = None,
-        career_df: Optional[pd.DataFrame] = None,
-        jockey_stats: Optional[pd.DataFrame] = None,
-        trainer_stats: Optional[pd.DataFrame] = None,
-        pedigree_df: Optional[pd.DataFrame] = None,
+        history_df: pd.DataFrame | None = None,
+        career_df: pd.DataFrame | None = None,
+        jockey_stats: pd.DataFrame | None = None,
+        trainer_stats: pd.DataFrame | None = None,
+        pedigree_df: pd.DataFrame | None = None,
         # Phase2データ
-        performance_history: Optional[pd.DataFrame] = None,
-        race_metadata: Optional[pd.DataFrame] = None,
-        odds_data: Optional[pd.DataFrame] = None,
-        pedigree_extended: Optional[pd.DataFrame] = None,
+        performance_history: pd.DataFrame | None = None,
+        race_metadata: pd.DataFrame | None = None,
+        odds_data: pd.DataFrame | None = None,
+        pedigree_extended: pd.DataFrame | None = None,
     ) -> pd.DataFrame:
         """全特徴量を一括抽出（200-300個）
 

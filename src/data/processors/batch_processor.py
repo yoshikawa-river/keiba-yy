@@ -2,7 +2,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, ClassVar, Optional
+from typing import Any, ClassVar
 
 from src.core.database import db_manager
 from src.core.exceptions import DataImportError
@@ -25,7 +25,7 @@ class BatchResult:
     """バッチ処理結果"""
 
     start_time: datetime
-    end_time: Optional[datetime] = None
+    end_time: datetime | None = None
     total_files: int = 0
     processed_files: int = 0
     failed_files: int = 0
@@ -113,9 +113,9 @@ class BatchProcessor:
 
     def process_all(
         self,
-        file_types: Optional[list[FileType]] = None,
+        file_types: list[FileType | None] | None = None,
         file_pattern: str = "*.csv",
-        progress_callback: Optional[Callable[[int, int], None]] = None,
+        progress_callback: Callable[[int, int | None, None]] | None = None,
     ) -> BatchResult:
         """
         すべてのCSVファイルを処理

@@ -5,7 +5,7 @@
 エラーハンドリングのユーティリティを提供
 """
 
-from typing import Any, Optional
+from typing import Any
 
 from fastapi import HTTPException, Request, status
 from fastapi.exceptions import RequestValidationError
@@ -22,9 +22,9 @@ class KeibaAIException(Exception):
     def __init__(
         self,
         message: str,
-        error_code: Optional[str] = None,
+        error_code: str | None = None,
         status_code: int = status.HTTP_500_INTERNAL_SERVER_ERROR,
-        details: Optional[dict[str, Any]] = None,
+        details: dict[str, Any | None] | None = None,
     ):
         """
         カスタム例外の初期化
@@ -56,7 +56,7 @@ class KeibaAIException(Exception):
 class ValidationError(KeibaAIException):
     """バリデーションエラー"""
 
-    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
+    def __init__(self, message: str, details: dict[str, Any | None] | None = None):
         super().__init__(
             message=message,
             error_code="VALIDATION_ERROR",
@@ -117,7 +117,7 @@ class AuthorizationError(KeibaAIException):
 class DatabaseError(KeibaAIException):
     """データベースエラー"""
 
-    def __init__(self, message: str, original_error: Optional[Exception] = None):
+    def __init__(self, message: str, original_error: Exception | None = None):
         details = {}
         if original_error:
             details["original_error"] = str(original_error)
@@ -134,7 +134,7 @@ class DatabaseError(KeibaAIException):
 class DataImportError(KeibaAIException):
     """データインポートエラー"""
 
-    def __init__(self, message: str, file_path: Optional[str] = None):
+    def __init__(self, message: str, file_path: str | None = None):
         details = {}
         if file_path:
             details["file_path"] = file_path
@@ -150,7 +150,7 @@ class DataImportError(KeibaAIException):
 class DataProcessingError(KeibaAIException):
     """データ処理エラー"""
 
-    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
+    def __init__(self, message: str, details: dict[str, Any | None] | None = None):
         super().__init__(
             message=message,
             error_code="DATA_PROCESSING_ERROR",
@@ -162,7 +162,7 @@ class DataProcessingError(KeibaAIException):
 class FeatureExtractionError(KeibaAIException):
     """特徴量抽出エラー"""
 
-    def __init__(self, message: str, details: Optional[dict[str, Any]] = None):
+    def __init__(self, message: str, details: dict[str, Any | None] | None = None):
         super().__init__(
             message=message,
             error_code="FEATURE_EXTRACTION_ERROR",
@@ -177,7 +177,7 @@ class FeatureExtractionError(KeibaAIException):
 class ModelNotFoundError(KeibaAIException):
     """モデルが見つからないエラー"""
 
-    def __init__(self, model_name: str, version: Optional[str] = None):
+    def __init__(self, model_name: str, version: str | None = None):
         message = f"Model not found: {model_name}"
         if version:
             message += f" (version: {version})"
@@ -193,7 +193,7 @@ class ModelNotFoundError(KeibaAIException):
 class PredictionError(KeibaAIException):
     """予測エラー"""
 
-    def __init__(self, message: str, model_name: Optional[str] = None):
+    def __init__(self, message: str, model_name: str | None = None):
         details = {}
         if model_name:
             details["model_name"] = model_name

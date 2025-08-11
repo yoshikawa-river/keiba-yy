@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 """
 基底バリデータークラス
@@ -123,7 +123,7 @@ class BaseValidator(ABC):
 
     def _check_data_type(
         self, field: str, value: Any, expected_type: type
-    ) -> Optional[ValidationError]:
+    ) -> ValidationError | None:
         """
         データ型をチェック
 
@@ -152,9 +152,9 @@ class BaseValidator(ABC):
         self,
         field: str,
         value: Any,
-        min_value: Optional[float] = None,
-        max_value: Optional[float] = None,
-    ) -> Optional[ValidationError]:
+        min_value: float | None = None,
+        max_value: float | None = None,
+    ) -> ValidationError | None:
         """
         数値の範囲をチェック
 
@@ -200,7 +200,7 @@ class BaseValidator(ABC):
 
     def _check_string_pattern(
         self, field: str, value: Any, pattern: str
-    ) -> Optional[ValidationError]:
+    ) -> ValidationError | None:
         """
         文字列パターンをチェック
 
@@ -232,7 +232,7 @@ class BaseValidator(ABC):
 
     def _check_enum_value(
         self, field: str, value: Any, valid_values: list[Any]
-    ) -> Optional[ValidationError]:
+    ) -> ValidationError | None:
         """
         列挙値をチェック
 

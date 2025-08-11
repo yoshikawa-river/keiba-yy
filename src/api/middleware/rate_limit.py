@@ -8,7 +8,7 @@ import logging
 import time
 from collections import defaultdict
 from collections.abc import Callable
-from typing import Optional, cast
+from typing import cast
 
 from fastapi import Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -69,7 +69,7 @@ class InMemoryRateLimiter:
 class RateLimitMiddleware(BaseHTTPMiddleware):
     """レート制限ミドルウェア"""
 
-    def __init__(self, app, limiter: Optional[InMemoryRateLimiter] = None):
+    def __init__(self, app, limiter: InMemoryRateLimiter | None = None):
         super().__init__(app)
         self.limiter = limiter or InMemoryRateLimiter()
 
@@ -179,7 +179,7 @@ class APIKeyRateLimiter:
         }
         self.limiter = InMemoryRateLimiter()
 
-    async def check_api_key_limit(self, api_key: str) -> tuple[bool, Optional[int]]:
+    async def check_api_key_limit(self, api_key: str) -> tuple[bool, int | None]:
         """
         APIキーのレート制限チェック
 

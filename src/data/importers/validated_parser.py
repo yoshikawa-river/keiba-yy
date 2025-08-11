@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.orm import Session
@@ -18,13 +18,13 @@ from src.data.validators.schema_validator import Schema
 class ValidatedCSVParser(BaseCSVParser):
     """バリデーション機能を統合したCSVパーサー"""
 
-    schema_validator: Optional[SchemaValidator]
-    data_validator: Optional[DataValidator]
+    schema_validator: SchemaValidator | None
+    data_validator: DataValidator | None
 
     def __init__(
         self,
         db_session: Session,
-        schema: Optional[Schema] = None,
+        schema: Schema | None = None,
         validate_business_logic: bool = True,
     ):
         """

@@ -1,5 +1,5 @@
 from datetime import time
-from typing import Any, Optional
+from typing import Any
 
 import pandas as pd
 from sqlalchemy.exc import IntegrityError
@@ -132,7 +132,7 @@ class ResultCSVParser(BaseCSVParser):
         except Exception as e:
             raise ValidationError(f"データ変換エラー: {e}") from e
 
-    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, Optional[str]]:
+    def _validate_row(self, row: dict[str, Any]) -> tuple[bool, str | None]:
         """
         レース結果データのバリデーション
 
@@ -305,7 +305,7 @@ class ResultCSVParser(BaseCSVParser):
 
         return float(value)
 
-    def _parse_finish_position(self, position: Any) -> Optional[int]:
+    def _parse_finish_position(self, position: Any) -> int | None:
         """着順をパース(中止・除外等に対応)"""
         if pd.isna(position):
             return None
@@ -327,7 +327,7 @@ class ResultCSVParser(BaseCSVParser):
 
         return special_cases.get(position)
 
-    def _parse_time(self, time_str: Any) -> Optional[time]:
+    def _parse_time(self, time_str: Any) -> time | None:
         """タイムをパース(分:秒.ミリ秒形式)"""
         if pd.isna(time_str):
             return None
@@ -357,7 +357,7 @@ class ResultCSVParser(BaseCSVParser):
         except Exception:
             return None
 
-    def _parse_margin(self, margin: Any) -> Optional[str]:
+    def _parse_margin(self, margin: Any) -> str | None:
         """着差をパース"""
         if pd.isna(margin):
             return None
@@ -389,7 +389,7 @@ class ResultCSVParser(BaseCSVParser):
 
         return str(margin)
 
-    def _parse_weight_change(self, change: Any) -> Optional[int]:
+    def _parse_weight_change(self, change: Any) -> int | None:
         """体重増減をパース"""
         if pd.isna(change):
             return None

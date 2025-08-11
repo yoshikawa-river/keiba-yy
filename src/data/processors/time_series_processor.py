@@ -4,7 +4,6 @@
 """
 
 from datetime import datetime
-from typing import Optional
 
 import numpy as np
 import pandas as pd
@@ -24,7 +23,7 @@ class TimeSeriesProcessor:
     def standardize_dates(
         self,
         df: pd.DataFrame,
-        date_columns: Optional[list[str]] = None,
+        date_columns: list[str | None] | None = None,
         target_timezone: str = "Asia/Tokyo",
         infer_format: bool = True,
     ) -> pd.DataFrame:
@@ -126,7 +125,10 @@ class TimeSeriesProcessor:
         return date_columns
 
     def create_time_features(
-        self, df: pd.DataFrame, date_column: str, features: Optional[list[str]] = None
+        self,
+        df: pd.DataFrame,
+        date_column: str,
+        features: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """時系列特徴量の生成
 
@@ -255,8 +257,8 @@ class TimeSeriesProcessor:
         df: pd.DataFrame,
         target_columns: list[str],
         lag_periods: list[int],
-        date_column: Optional[str] = None,
-        group_columns: Optional[list[str]] = None,
+        date_column: str | None = None,
+        group_columns: list[str | None] | None = None,
     ) -> pd.DataFrame:
         """ラグ特徴量の作成
 
@@ -343,8 +345,8 @@ class TimeSeriesProcessor:
         self,
         df: pd.DataFrame,
         date_column: str,
-        reference_dates: Optional[dict[str, str | datetime]] = None,
-        group_column: Optional[str] = None,
+        reference_dates: dict[str, str | datetime | None] | None = None,
+        group_column: str | None = None,
     ) -> pd.DataFrame:
         """時間差特徴量の作成
 
