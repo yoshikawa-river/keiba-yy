@@ -1,4 +1,4 @@
-.PHONY: help build up down restart logs shell db-shell jupyter test lint format clean
+.PHONY: help build up down restart logs shell db-shell jupyter test lint format format-check setup-hooks clean
 
 # デフォルトターゲット
 .DEFAULT_GOAL := help
@@ -72,6 +72,17 @@ lint: ## コードをチェック
 format: ## コードをフォーマット
 	docker compose exec app black src/
 	docker compose exec app isort src/
+
+format-check: ## フォーマットをチェック（変更なし）
+	docker compose exec app black --check src/
+	docker compose exec app isort --check-only src/
+
+setup-hooks: ## Git hooksをセットアップ
+	@echo "Setting up Git hooks..."
+	@mkdir -p .githooks
+	git config core.hooksPath .githooks
+	@echo "✅ Git hooks configured to use .githooks directory"
+	@echo "💡 Pre-push hook will automatically format code and run linting"
 
 # データベース操作
 db-migrate: ## データベースマイグレーションを実行
