@@ -5,7 +5,12 @@
 import pytest
 from fastapi.testclient import TestClient
 
-from src.api.dependencies.auth import get_api_key, get_optional_user, rate_limit_100, require_api_key
+from src.api.dependencies.auth import (
+    get_api_key,
+    get_optional_user,
+    rate_limit_100,
+    require_api_key,
+)
 from src.api.main import app
 
 client = TestClient(app)
