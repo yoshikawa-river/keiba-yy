@@ -212,7 +212,10 @@ class ConnectionManager:
         )
 
     async def publish_to_channel(
-        self, channel: str, message: WebSocketMessage, exclude_client: Optional[str] = None
+        self,
+        channel: str,
+        message: WebSocketMessage,
+        exclude_client: Optional[str] = None,
     ):
         """チャンネルにメッセージを配信"""
         if channel in self.channel_subscribers:

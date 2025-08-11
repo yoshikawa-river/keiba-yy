@@ -85,7 +85,9 @@ def require_scopes(required_scopes: list[str]):
     return scope_checker
 
 
-async def get_api_key(api_key: Optional[str] = Security(api_key_header)) -> Optional[str]:
+async def get_api_key(
+    api_key: Optional[str] = Security(api_key_header),
+) -> Optional[str]:
     """APIキーを取得"""
     if api_key is None:
         return None
