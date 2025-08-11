@@ -145,9 +145,7 @@ class TestPredictionAPI:
             "priority": "normal",
         }
 
-        response = client.post(
-            "/api/v1/predictions/batch", json=batch_data
-        )
+        response = client.post("/api/v1/predictions/batch", json=batch_data)
 
         # モック認証で成功を期待
         assert response.status_code == 200
@@ -175,9 +173,7 @@ class TestPredictionAPI:
 
     def test_get_available_models(self, api_key):
         """利用可能モデル一覧取得テスト"""
-        response = client.get(
-            "/api/v1/predictions/models"
-        )
+        response = client.get("/api/v1/predictions/models")
 
         assert response.status_code == 200
 
@@ -231,7 +227,5 @@ class TestPredictionAPI:
             ],
         }
 
-        response = client.post(
-            "/api/v1/predictions/race", json=data
-        )
+        response = client.post("/api/v1/predictions/race", json=data)
         assert response.status_code == 422
