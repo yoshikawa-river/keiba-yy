@@ -5,6 +5,7 @@ WebSocketエンドポイント
 import json
 import logging
 import uuid
+from typing import Optional
 
 from fastapi import APIRouter, Query, WebSocket, WebSocketDisconnect
 
